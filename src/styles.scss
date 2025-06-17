@@ -1,1 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Import Inter font from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// Tailwind CSS directives
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// CoST Brand Theme - Global Styles
+:root {
+  --cost-teal: #355E69;
+  --cost-cyan: #0AAEA0;
+  --cost-amber: #F0AD4E;
+  --cost-charcoal: #1F1F1F;
+  --cost-gray: #F5F6F7;
+  --cost-white: #FFFFFF;
+}
+
+// Base styles following Apple design principles
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--cost-white);
+  color: var(--cost-charcoal);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Custom component classes using CoST palette
+@layer components {
+  .btn-primary {
+    @apply bg-cost-teal hover:bg-cost-cyan text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-cost-cyan hover:bg-cost-teal text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .btn-accent {
+    @apply bg-cost-amber hover:bg-amber-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-all duration-200;
+  }
+}
+
+// Typography utilities with CoST branding
+@layer utilities {
+  .text-cost-primary {
+    color: var(--cost-teal);
+  }
+
+  .text-cost-secondary {
+    color: var(--cost-cyan);
+  }
+
+  .text-cost-accent {
+    color: var(--cost-amber);
+  }
+
+  .bg-cost-surface {
+    background-color: var(--cost-gray);
+  }
+}
