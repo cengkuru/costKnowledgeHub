@@ -1,0 +1,71 @@
+<div class="relative inline-block text-left">
+  <button
+    type="button"
+    class="inline-flex items-center justify-center w-full px-3 py-2 text-sm font-medium text-cost-charcoal bg-white border border-gray-200 rounded-lg hover:bg-cost-gray focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:ring-offset-2 transition-all duration-200"
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="isDropdownOpen"
+    aria-haspopup="true"
+  >
+    <!-- Globe icon -->
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9m0 9c-5 0-9-4-9-9s4-9 9-9"></path>
+    </svg>
+
+    {{ getCurrentLanguageName() }}
+
+    <!-- Chevron icon -->
+    <svg class="w-4 h-4 ml-2 transition-transform duration-200"
+         [class.rotate-180]="isDropdownOpen"
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <!-- Dropdown menu -->
+  <div
+    *ngIf="isDropdownOpen"
+    class="absolute right-0 z-10 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+    role="menu"
+    aria-orientation="vertical"
+  >
+    <div class="py-1" role="none">
+      <button
+        *ngFor="let language of availableLanguages"
+        type="button"
+        class="flex items-center w-full px-4 py-2 text-sm text-cost-charcoal hover:bg-cost-gray transition-colors duration-200"
+        [class.bg-cost-gray]="language.code === currentLanguage"
+        [class.font-medium]="language.code === currentLanguage"
+        (click)="selectLanguage(language.code)"
+        role="menuitem"
+      >
+        <!-- Language flag placeholder -->
+        <div class="w-5 h-3 mr-3 rounded-sm border border-gray-200 bg-gray-100 flex items-center justify-center">
+          <span class="text-xs font-medium">{{ language.code.toUpperCase() }}</span>
+        </div>
+
+        <div class="flex flex-col items-start">
+          <span class="font-medium">{{ language.nativeName }}</span>
+          <span class="text-xs text-gray-500">{{ language.name }}</span>
+        </div>
+
+        <!-- Checkmark for current language -->
+        <svg
+          *ngIf="language.code === currentLanguage"
+          class="w-4 h-4 ml-auto text-cost-cyan"
+          fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Click outside to close dropdown -->
+<div
+  *ngIf="isDropdownOpen"
+  class="fixed inset-0 z-0"
+  (click)="onClickOutside()"
+></div>

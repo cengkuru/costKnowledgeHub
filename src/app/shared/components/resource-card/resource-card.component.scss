@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.resource-card {
+  height: 100%;
+  transition: all 200ms ease-in-out;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--cost-cyan);
+  }
+}
+
+// Line clamp utilities for text truncation
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Smooth scale effect for images
+.group:hover img {
+  transform: scale(1.05);
+}
+
+// Action button hover effects
+button {
+  transition: all 200ms ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Featured badge animation
+.featured-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 640px) {
+  .resource-card {
+    &:hover {
+      transform: none; // Disable hover lift on mobile
+    }
+  }
+
+  .group:hover img {
+    transform: none; // Disable image scale on mobile
+  }
+}

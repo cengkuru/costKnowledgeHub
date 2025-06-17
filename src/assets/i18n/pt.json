@@ -1,0 +1,116 @@
+{
+  "common": {
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "download": "Baixar",
+    "share": "Compartilhar",
+    "language": "Idioma",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "noResults": "Nenhum resultado encontrado",
+    "featured": "Destaque",
+    "global": "Global",
+    "resources": "recursos",
+    "getStarted": "Começar",
+    "viewAll": "Ver Todos",
+    "clearSearch": "Limpar pesquisa",
+    "toggleFilters": "Alternar filtros",
+    "searchPlaceholder": "Pesquisar recursos, ferramentas e guias...",
+    "searchSuggestions": "Sugestões de pesquisa aparecerão aqui"
+  },
+  "navigation": {
+    "home": "Início",
+    "resources": "Recursos",
+    "about": "Sobre",
+    "contact": "Contato"
+  },
+  "hero": {
+    "title": "Transparência em Infraestrutura, Entregue",
+    "subtitle": "Acesse ferramentas, guias e recursos para implementar transparência em infraestrutura em seu país. Junte-se ao movimento global por infraestrutura responsável.",
+    "searchPlaceholder": "Pesquisar ferramentas de transparência, guias de país, estudos de caso...",
+    "exploreResources": "Explorar Recursos",
+    "findCountry": "Encontre seu País",
+    "getStarted": "Começar"
+  },
+  "topics": {
+    "title": "Explore Tópicos Principais",
+    "subtitle": "Descubra recursos organizados por temas centrais de transparência em infraestrutura e áreas de implementação."
+  },
+  "featured": {
+    "title": "Recursos em Destaque",
+    "subtitle": "Guias e ferramentas essenciais para implementar transparência em infraestrutura",
+    "exploreAll": "Explorar Todos os Recursos"
+  },
+  "stats": {
+    "countries": "Países Membros",
+    "resources": "Recursos Disponíveis",
+    "savings": "Economias Identificadas",
+    "transparency": "Divulgação Média"
+  },
+  "newsletter": {
+    "title": "Mantenha-se Atualizado",
+    "subtitle": "Receba as últimas ferramentas de transparência, atualizações de países e guias de implementação em sua caixa de entrada.",
+    "emailPlaceholder": "Digite seu endereço de e-mail",
+    "subscribe": "Inscrever-se"
+  },
+  "footer": {
+    "description": "Construindo transparência em projetos de infraestrutura pública em todo o mundo através de iniciativas multi-stakeholder e prestação de contas baseada em dados.",
+    "resources": "Recursos",
+    "guides": "Guias de Implementação",
+    "caseStudies": "Estudos de Caso",
+    "tools": "Ferramentas e Modelos",
+    "datasets": "Conjuntos de Dados",
+    "about": "Sobre o CoST",
+    "mission": "Nossa Missão",
+    "members": "Países Membros",
+    "impact": "Histórias de Impacto",
+    "contact": "Entre em Contato",
+    "connect": "Conectar",
+    "rights": "Todos os direitos reservados."
+  },
+  "resourceTypes": {
+    "guidance": "Guia de Implementação",
+    "caseStudy": "Estudo de Caso",
+    "report": "Relatório de Pesquisa",
+    "dataset": "Conjunto de Dados",
+    "tool": "Ferramenta",
+    "infographic": "Infográfico",
+    "other": "Recurso"
+  },
+  "impact": {
+    "savings": "Economias Identificadas",
+    "projects": "Projetos Monitorados",
+    "transparency": "Pontuação de Transparência"
+  },
+  "filters": {
+    "title": "Filtrar Recursos",
+    "type": "Tipo de Recurso",
+    "topic": "Tópico",
+    "country": "País",
+    "language": "Idioma",
+    "region": "Região",
+    "clearAll": "Limpar Todos os Filtros",
+    "showingResults": "Mostrando {{count}} de {{total}} recursos",
+    "noFiltersApplied": "Nenhum filtro aplicado"
+  },
+  "resourceDetail": {
+    "downloadFile": "Baixar {{format}}",
+    "viewOnline": "Ver Online",
+    "fileSize": "Tamanho do Arquivo",
+    "language": "Idioma",
+    "publishedDate": "Publicado",
+    "lastUpdated": "Última Atualização",
+    "relatedResources": "Recursos Relacionados",
+    "shareThis": "Compartilhar este recurso",
+    "copyLink": "Copiar Link",
+    "tags": "Tags",
+    "country": "País/Região",
+    "backToResults": "Voltar aos Resultados"
+  },
+  "errors": {
+    "resourceNotFound": "Recurso não encontrado",
+    "loadingFailed": "Falha ao carregar recursos",
+    "networkError": "Erro de conexão de rede",
+    "tryAgain": "Tentar Novamente"
+  }
+}

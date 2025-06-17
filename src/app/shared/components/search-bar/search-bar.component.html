@@ -1,0 +1,56 @@
+<div class="relative w-full max-w-2xl mx-auto">
+  <div class="flex items-center bg-white border border-gray-200 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-cost-cyan focus-within:border-transparent transition-all duration-200">
+
+    <!-- Search icon -->
+    <div class="flex items-center justify-center w-12 h-12 text-gray-400">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+
+    <!-- Search input -->
+    <input
+      type="text"
+      class="flex-1 px-2 py-3 text-cost-charcoal placeholder-gray-400 bg-transparent border-none outline-none"
+      [placeholder]="getPlaceholderText()"
+      [value]="searchQuery"
+      (input)="onSearchInput($event)"
+      autocomplete="off"
+    >
+
+    <!-- Clear button -->
+    <button
+      *ngIf="searchQuery"
+      type="button"
+      class="flex items-center justify-center w-8 h-8 mr-2 text-gray-400 hover:text-cost-charcoal transition-colors duration-200"
+      (click)="onClearSearch()"
+      [attr.aria-label]="i18nService.t('common.clearSearch')"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Filter toggle button -->
+    <button
+      *ngIf="showFilters"
+      type="button"
+      class="flex items-center justify-center w-12 h-12 text-gray-400 hover:text-cost-cyan border-l border-gray-200 transition-colors duration-200"
+      (click)="onToggleFilters()"
+      [attr.aria-label]="i18nService.t('common.toggleFilters')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Search suggestions dropdown (placeholder for future enhancement) -->
+  <div class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+    <div class="p-4 text-center text-gray-500">
+      {{ i18nService.t('common.searchSuggestions') }}
+    </div>
+  </div>
+</div>

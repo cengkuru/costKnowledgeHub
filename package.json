@@ -11,7 +11,12 @@
     "tailwind:build": "tailwindcss -i src/styles.scss -o dist/styles.css",
     "dev:full": "ng serve --open",
     "theme:test": "echo 'Testing CoST theme classes...' && npx tailwindcss --help",
-    "lint:css": "stylelint 'src/**/*.scss'"
+    "lint:css": "stylelint 'src/**/*.scss'",
+    "firebase:emulators": "firebase emulators:start",
+    "seed": "ts-node tools/seed.ts",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +28,10 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "firebase": "^10.7.1",
+    "@angular/fire": "^17.0.1",
+    "ngx-markdown": "^17.2.1",
+    "marked": "^9.1.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -33,7 +42,10 @@
     "@angular/compiler-cli": "^18.2.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.10.4",
     "autoprefixer": "^10.4.21",
+    "firebase-admin": "^12.0.0",
+    "firebase-tools": "^13.0.2",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -42,6 +54,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "~5.5.2"
   }
 }

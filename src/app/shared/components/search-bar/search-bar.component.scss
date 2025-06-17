@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.search-container {
+  position: relative;
+}
+
+// Enhanced focus states
+input:focus {
+  outline: none;
+}
+
+// Hover effects for interactive elements
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+// Smooth transitions
+.search-container,
+input,
+button {
+  transition: all 200ms ease-in-out;
+}
+
+// Mobile responsive adjustments
+@media (max-width: 640px) {
+  .search-container {
+    max-width: 100%;
+  }
+
+  input {
+    font-size: 16px; // Prevents zoom on iOS
+  }
+}

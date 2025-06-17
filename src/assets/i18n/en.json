@@ -1,0 +1,116 @@
+{
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "download": "Download",
+    "share": "Share",
+    "language": "Language",
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "noResults": "No results found",
+    "featured": "Featured",
+    "global": "Global",
+    "resources": "resources",
+    "getStarted": "Get Started",
+    "viewAll": "View All",
+    "clearSearch": "Clear search",
+    "toggleFilters": "Toggle filters",
+    "searchPlaceholder": "Search resources, tools, and guides...",
+    "searchSuggestions": "Search suggestions will appear here"
+  },
+  "navigation": {
+    "home": "Home",
+    "resources": "Resources",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Transparency in Infrastructure, Delivered",
+    "subtitle": "Access tools, guides, and resources to implement infrastructure transparency in your country. Join the global movement for accountable infrastructure.",
+    "searchPlaceholder": "Search for transparency tools, country guides, case studies...",
+    "exploreResources": "Explore Resources",
+    "findCountry": "Find Your Country",
+    "getStarted": "Get Started"
+  },
+  "topics": {
+    "title": "Explore Key Topics",
+    "subtitle": "Discover resources organized by core infrastructure transparency themes and implementation areas."
+  },
+  "featured": {
+    "title": "Featured Resources",
+    "subtitle": "Essential guides and tools for implementing infrastructure transparency",
+    "exploreAll": "Explore All Resources"
+  },
+  "stats": {
+    "countries": "Member Countries",
+    "resources": "Resources Available",
+    "savings": "Identified Savings",
+    "transparency": "Average Disclosure"
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "subtitle": "Get the latest transparency tools, country updates, and implementation guides delivered to your inbox.",
+    "emailPlaceholder": "Enter your email address",
+    "subscribe": "Subscribe"
+  },
+  "footer": {
+    "description": "Building transparency in public infrastructure projects worldwide through multi-stakeholder initiatives and data-driven accountability.",
+    "resources": "Resources",
+    "guides": "Implementation Guides",
+    "caseStudies": "Case Studies",
+    "tools": "Tools & Templates",
+    "datasets": "Datasets",
+    "about": "About CoST",
+    "mission": "Our Mission",
+    "members": "Member Countries",
+    "impact": "Impact Stories",
+    "contact": "Contact Us",
+    "connect": "Connect",
+    "rights": "All rights reserved."
+  },
+  "resourceTypes": {
+    "guidance": "Implementation Guide",
+    "caseStudy": "Case Study",
+    "report": "Research Report",
+    "dataset": "Dataset",
+    "tool": "Tool",
+    "infographic": "Infographic",
+    "other": "Resource"
+  },
+  "impact": {
+    "savings": "Savings Identified",
+    "projects": "Projects Monitored",
+    "transparency": "Transparency Score"
+  },
+  "filters": {
+    "title": "Filter Resources",
+    "type": "Resource Type",
+    "topic": "Topic",
+    "country": "Country",
+    "language": "Language",
+    "region": "Region",
+    "clearAll": "Clear All Filters",
+    "showingResults": "Showing {{count}} of {{total}} resources",
+    "noFiltersApplied": "No filters applied"
+  },
+  "resourceDetail": {
+    "downloadFile": "Download {{format}}",
+    "viewOnline": "View Online",
+    "fileSize": "File Size",
+    "language": "Language",
+    "publishedDate": "Published",
+    "lastUpdated": "Last Updated",
+    "relatedResources": "Related Resources",
+    "shareThis": "Share this resource",
+    "copyLink": "Copy Link",
+    "tags": "Tags",
+    "country": "Country/Region",
+    "backToResults": "Back to Results"
+  },
+  "errors": {
+    "resourceNotFound": "Resource not found",
+    "loadingFailed": "Failed to load resources",
+    "networkError": "Network connection error",
+    "tryAgain": "Try Again"
+  }
+}

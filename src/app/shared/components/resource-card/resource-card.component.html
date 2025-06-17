@@ -1,0 +1,144 @@
+<div class="card resource-card group cursor-pointer h-full flex flex-col"
+     [routerLink]="['/resources', resource.id]">
+
+  <!-- Resource thumbnail/header -->
+  <div class="relative h-48 bg-cost-gray rounded-t-lg overflow-hidden">
+    <img
+      *ngIf="resource.thumbnailUrl; else placeholderImage"
+      [src]="resource.thumbnailUrl"
+      [alt]="getResourceTitle()"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+    >
+
+    <ng-template #placeholderImage>
+      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-cost-gray to-gray-200">
+        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+      </div>
+    </ng-template>
+
+    <!-- Resource type badge -->
+    <div class="absolute top-3 left-3">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
+            [ngClass]="getTypeColor()">
+        {{ getTypeLabel() }}
+      </span>
+    </div>
+
+    <!-- Featured badge -->
+    <div *ngIf="resource.featured" class="absolute top-3 right-3">
+      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-cost-amber text-white">
+        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+        </svg>
+        {{ i18nService.t('common.featured') }}
+      </span>
+    </div>
+
+    <!-- Action buttons overlay -->
+    <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+         *ngIf="!resource.featured">
+
+      <!-- Download button -->
+      <button
+        *ngIf="hasDownloadLink()"
+        type="button"
+        class="p-2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+        (click)="onDownload($event)"
+        [attr.aria-label]="i18nService.t('common.download')"
+      >
+        <svg class="w-4 h-4 text-cost-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+      </button>
+
+      <!-- Share button -->
+      <button
+        type="button"
+        class="p-2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+        (click)="onShare($event)"
+        [attr.aria-label]="i18nService.t('common.share')"
+      >
+        <svg class="w-4 h-4 text-cost-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Card content -->
+  <div class="flex-1 p-6 flex flex-col">
+
+    <!-- Resource title -->
+    <h3 class="text-lg font-semibold text-cost-charcoal mb-2 line-clamp-2 group-hover:text-cost-teal transition-colors duration-200">
+      {{ getResourceTitle() }}
+    </h3>
+
+    <!-- Resource description -->
+    <p *ngIf="showDescription"
+       class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+      {{ getResourceDescription() }}
+    </p>
+
+    <!-- Resource tags -->
+    <div *ngIf="showTags && resource.tags.length > 0" class="mb-4">
+      <div class="flex flex-wrap gap-1">
+        <span *ngFor="let tag of resource.tags.slice(0, 3)"
+              class="inline-block px-2 py-1 text-xs bg-cost-gray text-cost-charcoal rounded-full">
+          {{ tag }}
+        </span>
+        <span *ngIf="resource.tags.length > 3"
+              class="inline-block px-2 py-1 text-xs bg-gray-200 text-gray-600 rounded-full">
+          +{{ resource.tags.length - 3 }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Impact metrics (for case studies) -->
+    <div *ngIf="resource.impact" class="mb-4 p-3 bg-cost-gray rounded-lg">
+      <div class="grid grid-cols-2 gap-2 text-sm">
+        <div *ngIf="resource.impact.savings" class="text-center">
+          <div class="font-semibold text-cost-teal">{{ resource.impact.savings }}</div>
+          <div class="text-gray-600">{{ i18nService.t('impact.savings') }}</div>
+        </div>
+        <div *ngIf="resource.impact.projects" class="text-center">
+          <div class="font-semibold text-cost-teal">{{ resource.impact.projects }}</div>
+          <div class="text-gray-600">{{ i18nService.t('impact.projects') }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource metadata -->
+    <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+      <div class="flex items-center space-x-4">
+        <!-- Country -->
+        <span class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          {{ getCountryName() }}
+        </span>
+
+        <!-- File info -->
+        <span *ngIf="resource.fileSize" class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          {{ resource.format }} • {{ resource.fileSize }}
+        </span>
+      </div>
+
+      <!-- Publication date -->
+      <span class="text-right">
+        {{ formatDate() }}
+      </span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+:host {
+  position: relative;
+  display: inline-block;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+// Smooth animations for dropdown
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.dropdown-leave {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-leave-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}

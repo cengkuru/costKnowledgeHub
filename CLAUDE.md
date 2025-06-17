@@ -229,7 +229,65 @@ Use these pre-configured Tailwind classes for consistent theming:
 4. **USE Inter font family** consistently across the application
 5. **FOLLOW the 200-300ms transition** standard for all interactions
 
+## 📚 CoST Knowledge Hub Architecture
 
+### Component Structure
+```
+src/app/
+├── core/
+│   ├── services/
+│   │   ├── resource.service.ts       # Firestore CRUD operations
+│   │   ├── i18n.service.ts          # Internationalization wrapper
+│   │   └── search.service.ts        # Search functionality
+│   └── models/
+│       ├── resource.model.ts        # Resource data interfaces
+│       └── filter.model.ts          # Filter/search interfaces
+├── shared/
+│   └── components/
+│       ├── search-bar/              # Reusable search component
+│       ├── language-toggle/         # Language switcher
+│       └── resource-card/           # Resource display card
+├── features/
+│   ├── home/                        # Homepage with hero + search
+│   ├── resources/                   # Resource list + filters
+│   └── detail/                      # Resource detail page
+├── assets/
+│   └── i18n/                        # Translation files
+│       ├── en.json                  # English translations
+│       ├── es.json                  # Spanish translations
+│       └── pt.json                  # Portuguese translations
+└── environments/                    # Firebase config
+```
+
+### Data Schema (Firestore Collection: `resources`)
+```typescript
+interface Resource {
+  id: string;                        // Auto-generated document ID
+  title: {en: string, es: string, pt: string};
+  description: {en: string, es: string, pt: string};
+  type: 'guidance' | 'caseStudy' | 'report' | 'dataset' | 'tool' | 'infographic' | 'other';
+  tags: string[];                    // Free-form topic tags
+  country: string;                   // ISO 3166 alpha-2 or 'global'
+  language: string;                  // Primary language (en/es/pt)
+  datePublished: Timestamp;
+  fileLinks?: {en?: string, es?: string, pt?: string}; // Storage URLs
+  externalLink?: string;             // External URL if not hosted
+  thumbnailUrl?: string;             // Preview image URL
+  featured: boolean;                 // Show in featured section
+}
+```
+
+### Firebase Configuration
+- **Firestore**: Document database for resources
+- **Storage**: File hosting for PDFs, images
+- **Security Rules**: Read-only public access, admin-only writes
+- **Composite Indexes**: Optimized for filtering by type + tags + language
+
+### Multi-language Strategy
+- **One document per language variant** (simpler security rules)
+- **Cross-references** stored in `relatedLangIds` array
+- **localStorage** persistence for user language preference
+- **URL routing** supports language parameter: `/en/resources`, `/es/resources`
 
 ## 🔄 Git Workflow & GitHub Integration
 
