@@ -2,7 +2,16 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-17 16:45:00 UTC
+## [Unreleased] - 2025-01-17 16:50:00 UTC
+
+### Fixed - 2025-01-17 16:50:00 UTC
+- **🏠 Logo Navigation**: Made CoST logo clickable to navigate to home page
+  - Added router link to logo and title in header navigation
+  - Hover effects on logo for better user feedback
+  - Follows standard web convention of logo linking to homepage
+  - **Result**: Users can now click logo to return to home from any page
+
+## [Previous] - 2025-01-17 16:45:00 UTC
 
 ### Added - 2025-01-17 16:45:00 UTC
 - **🔐 Login Page Implementation**: Created dedicated login page with professional design
