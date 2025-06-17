@@ -1,80 +1,38 @@
-<!-- Main container -->
-<div class="min-h-screen bg-cost-white">
+<!-- Resources Page Content -->
+<div class="min-h-screen bg-gray-50">
 
-  <!-- Header -->
-  <header class="bg-cost-teal text-white shadow-sm">
-    <nav class="container mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-8">
-          <h1 class="text-2xl font-bold">
-            <a routerLink="/home" class="hover:text-cost-cyan transition-colors duration-200">
-              CoST Knowledge Hub
-            </a>
-          </h1>
-          <div class="hidden md:flex space-x-6">
-            <a routerLink="/home" class="hover:text-cost-cyan transition-colors duration-200">
-              {{ i18nService.t('navigation.home') }}
-            </a>
-            <a routerLink="/resources" class="text-cost-cyan font-medium">
-              {{ i18nService.t('navigation.resources') }}
-            </a>
-            <a href="#" class="hover:text-cost-cyan transition-colors duration-200">
-              {{ i18nService.t('navigation.about') }}
-            </a>
-          </div>
-        </div>
-
-        <div class="flex items-center space-x-4">
-          <app-language-toggle></app-language-toggle>
-        </div>
+  <!-- Hero Section for Resources -->
+  <section class="relative bg-gradient-to-r from-cost-teal to-cost-cyan py-16">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="relative container mx-auto px-6 text-center text-white">
+      <h1 class="text-4xl font-bold mb-4">Knowledge Resources</h1>
+      <p class="text-xl mb-8 text-gray-100 max-w-3xl mx-auto">
+        Explore our comprehensive collection of guides, case studies, and tools to help you implement infrastructure transparency and accountability.
+      </p>
+      
+      <!-- Search bar -->
+      <div class="max-w-2xl mx-auto">
+        <app-search-bar
+          [placeholder]="'Search resources...'"
+          [value]="activeFilters.searchQuery"
+          [showFilters]="true"
+          (searchChange)="onSearch($event)"
+          (filtersToggle)="onToggleMobileFilters()"
+        ></app-search-bar>
       </div>
-    </nav>
-  </header>
-
-  <!-- Breadcrumb -->
-  <div class="bg-cost-gray border-b border-gray-200">
-    <div class="container mx-auto px-6 py-3">
-      <nav class="flex items-center space-x-2 text-sm text-gray-600">
-        <a routerLink="/home" class="hover:text-cost-teal">{{ i18nService.t('navigation.home') }}</a>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-        <span class="text-cost-charcoal font-medium">{{ i18nService.t('navigation.resources') }}</span>
-      </nav>
     </div>
-  </div>
+  </section>
 
-  <!-- Page header with search -->
-  <section class="bg-white border-b border-gray-200 py-8">
+  <!-- Results Summary -->
+  <section class="bg-white border-b py-4">
     <div class="container mx-auto px-6">
-      <div class="max-w-4xl mx-auto text-center mb-8">
-        <h2 class="text-3xl font-bold text-cost-charcoal mb-4">
-          {{ i18nService.t('navigation.resources') }}
-        </h2>
-        <p class="text-lg text-gray-600 mb-6">
-          {{ i18nService.t('resourceList.subtitle') }}
-        </p>
-
-        <!-- Search bar -->
-        <div class="max-w-2xl mx-auto">
-          <app-search-bar
-            [placeholder]="i18nService.t('common.searchPlaceholder')"
-            [value]="activeFilters.searchQuery"
-            [showFilters]="true"
-            (searchChange)="onSearch($event)"
-            (filtersToggle)="onToggleMobileFilters()"
-          ></app-search-bar>
-        </div>
-      </div>
-
-      <!-- Results summary -->
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center justify-between">
         <div class="text-sm text-gray-600">
           <span *ngIf="!loading; else loadingText">
-            {{ i18nService.t('filters.showingResults', { count: searchResult.resources.length, total: searchResult.total }) }}
+            Showing {{ searchResult.resources.length }} of {{ searchResult.total }} resources
           </span>
           <ng-template #loadingText>
-            {{ i18nService.t('common.loading') }}
+            Loading resources...
           </ng-template>
         </div>
 
@@ -85,7 +43,7 @@
             class="text-sm text-cost-cyan hover:text-cost-teal font-medium"
             (click)="onClearFilters()"
           >
-            {{ i18nService.t('filters.clearAll') }}
+            Clear all
           </button>
         </div>
       </div>
@@ -98,7 +56,7 @@
 
       <!-- Filter sidebar -->
       <aside class="lg:w-80 flex-shrink-0">
-        <div class="bg-white border border-gray-200 rounded-lg sticky top-8">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm sticky top-8">
 
           <!-- Mobile filter toggle -->
           <div class="lg:hidden border-b border-gray-200 p-4">
@@ -106,7 +64,7 @@
               class="w-full flex items-center justify-between text-left"
               (click)="onToggleMobileFilters()"
             >
-              <span class="font-medium text-cost-charcoal">{{ i18nService.t('filters.title') }}</span>
+              <span class="font-semibold text-cost-charcoal">Filters</span>
               <svg class="w-5 h-5 transition-transform duration-200"
                    [class.rotate-180]="showMobileFilters"
                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,9 +75,14 @@
 
           <!-- Filters content -->
           <div class="p-6" [class.hidden]="!showMobileFilters" [class.lg:block]="true">
-            <h3 class="font-semibold text-cost-charcoal mb-4 hidden lg:block">
-              {{ i18nService.t('filters.title') }}
-            </h3>
+            <div class="flex items-center justify-between mb-6 hidden lg:flex">
+              <h3 class="font-semibold text-cost-charcoal text-lg">Filters</h3>
+              <button *ngIf="hasActiveFilters()" 
+                      class="text-sm text-cost-cyan hover:text-cost-teal font-medium"
+                      (click)="onClearFilters()">
+                Clear all
+              </button>
+            </div>
 
             <!-- Resource Type Filter -->
             <div class="mb-6">
@@ -205,14 +168,21 @@
       <main class="flex-1">
 
         <!-- Loading state -->
-        <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div *ngFor="let item of [1,2,3,4,5,6]"
-               class="card h-96 animate-pulse">
-            <div class="bg-gray-200 h-48 rounded-t-lg"></div>
-            <div class="p-6 space-y-3">
-              <div class="bg-gray-200 h-4 rounded"></div>
-              <div class="bg-gray-200 h-4 rounded w-3/4"></div>
-              <div class="bg-gray-200 h-3 rounded w-1/2"></div>
+               class="bg-white rounded-lg shadow-sm border border-gray-200 h-96 animate-pulse overflow-hidden">
+            <div class="bg-gray-200 h-48"></div>
+            <div class="p-6 space-y-4">
+              <div class="bg-gray-200 h-5 rounded w-3/4"></div>
+              <div class="space-y-2">
+                <div class="bg-gray-200 h-3 rounded"></div>
+                <div class="bg-gray-200 h-3 rounded w-5/6"></div>
+                <div class="bg-gray-200 h-3 rounded w-2/3"></div>
+              </div>
+              <div class="flex space-x-2">
+                <div class="bg-gray-200 h-6 w-16 rounded-full"></div>
+                <div class="bg-gray-200 h-6 w-20 rounded-full"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -233,7 +203,7 @@
 
         <!-- Resources grid -->
         <div *ngIf="!loading && searchResult.resources.length > 0"
-             class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+             class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <app-resource-card
             *ngFor="let resource of searchResult.resources; trackBy: trackByResourceId"
             [resource]="resource"
@@ -241,6 +211,7 @@
             [showTags]="true"
             (download)="onResourceDownload($event)"
             (share)="onResourceShare($event)"
+            class="group hover:shadow-lg transition-shadow duration-300"
           ></app-resource-card>
         </div>
 

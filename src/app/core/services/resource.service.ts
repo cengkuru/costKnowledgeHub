@@ -268,7 +268,7 @@ export class ResourceService {
         language: 'en',
         datePublished: { seconds: 1710547200, nanoseconds: 0 }, // 2024-03-15
         fileLinks: { en: '/assets/samples/cost-ids-guide-2024.pdf' },
-        thumbnailUrl: '/assets/images/ids-guide-thumb.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: true,
         fileSize: '3.2 MB',
         format: 'PDF'
@@ -293,7 +293,7 @@ export class ResourceService {
         country: 'th',
         language: 'en',
         datePublished: { seconds: 1709856000, nanoseconds: 0 }, // 2024-03-08
-        thumbnailUrl: '/assets/images/thailand-highway.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: true,
         impact: {
           savings: '$360 million',
@@ -348,7 +348,7 @@ export class ResourceService {
         language: 'en',
         datePublished: { seconds: 1709424000, nanoseconds: 0 },
         fileLinks: { en: '/assets/samples/assurance-framework.pdf' },
-        thumbnailUrl: '/assets/images/assurance-thumb.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: false,
         fileSize: '2.1 MB',
         format: 'PDF',
@@ -378,7 +378,7 @@ export class ResourceService {
         country: 'GT',
         language: 'en',
         datePublished: { seconds: 1708819200, nanoseconds: 0 },
-        thumbnailUrl: '/assets/images/guatemala-community.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: true,
         impact: {
           savings: '$28 million',
@@ -408,7 +408,7 @@ export class ResourceService {
         language: 'en',
         datePublished: { seconds: 1708214400, nanoseconds: 0 },
         downloadUrl: '/assets/downloads/digital-procurement-toolkit.zip',
-        thumbnailUrl: '/assets/images/digital-tools-thumb.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: false,
         fileSize: '15.3 MB',
         format: 'ZIP',
@@ -440,7 +440,7 @@ export class ResourceService {
         language: 'en',
         datePublished: { seconds: 1707609600, nanoseconds: 0 },
         fileLinks: { en: '/assets/samples/uk-policy-brief-2024.pdf' },
-        thumbnailUrl: '/assets/images/uk-policy-thumb.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: false,
         fileSize: '1.4 MB',
         format: 'PDF',
@@ -472,7 +472,7 @@ export class ResourceService {
         language: 'en',
         datePublished: { seconds: 1707004800, nanoseconds: 0 },
         fileLinks: { en: '/assets/samples/msp-setup-guide.pdf' },
-        thumbnailUrl: '/assets/images/msp-guide-thumb.jpg',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: true,
         fileSize: '3.8 MB',
         format: 'PDF',

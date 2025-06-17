@@ -2,7 +2,18 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-17 16:00:00 UTC
+## [Unreleased] - 2025-01-17 16:15:00 UTC
+
+### Changed - 2025-01-17 16:15:00 UTC
+- **🎨 Resources Page Redesign**: Complete overhaul of resources page with C40-style design and working Unsplash images
+  - Removed duplicate header from resource-list.component.html (shared navigation now in app.component)
+  - Updated resource-list.component.html to use proper C40-style layout without redundant navigation
+  - Fixed broken Unsplash image URLs in mock data with specific, high-quality infrastructure images
+  - Enhanced resource cards with better thumbnail display and hover effects
+  - Updated service with proper Unsplash URLs for CoST-relevant infrastructure topics
+  - **Result**: Professional resources page with working images that match C40 Knowledge Hub design
+
+## [Previous] - 2025-01-17 16:00:00 UTC
 
 ### Fixed - 2025-01-17 16:00:00 UTC
 - **🎯 Navigation Architecture**: Moved header navigation and footer to app.component.html for shared use across all routes
