@@ -184,4 +184,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   hasActiveFilters(): boolean {
     return this.getActiveFilterCount() > 0;
   }
+
+  trackByResourceId(index: number, resource: Resource): string {
+    return resource.id;
+  }
 }

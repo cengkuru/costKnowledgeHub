@@ -1,5 +1,8 @@
 import { ResourceType, Language, TopicCategory, Region } from './resource.model';
 
+// Re-export types for convenience
+export type { ResourceType, Language, TopicCategory, Region } from './resource.model';
+
 export interface FilterOption {
   value: string;
   label: string;

@@ -12,12 +12,13 @@ import { Language } from '../../../core/models/resource.model';
 })
 export class LanguageToggleComponent implements OnInit {
   currentLanguage: Language = 'en';
-  availableLanguages = this.i18nService.getAvailableLanguages();
+  availableLanguages: {code: Language, name: string, nativeName: string}[] = [];
   isDropdownOpen = false;
 
   constructor(private i18nService: I18nService) {}
 
   ngOnInit(): void {
+    this.availableLanguages = this.i18nService.getAvailableLanguages();
     this.i18nService.currentLanguage$.subscribe(lang => {
       this.currentLanguage = lang;
     });

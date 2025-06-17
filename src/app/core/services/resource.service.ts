@@ -102,6 +102,28 @@ export class ResourceService {
     );
   }
 
+  // Get related resources based on topics and tags
+  getRelatedResources(resourceId: string, topics: TopicCategory[], tags: string[] = [], limit: number = 4): Observable<Resource[]> {
+    return this.resources$.pipe(
+      map(resources => {
+        return resources
+          .filter(resource => 
+            resource.id !== resourceId && (
+              resource.topics.some(topic => topics.includes(topic)) ||
+              resource.tags.some(tag => tags.includes(tag))
+            )
+          )
+          .sort((a, b) => {
+            // Sort by relevance (matching topics count)
+            const aMatches = a.topics.filter(topic => topics.includes(topic)).length;
+            const bMatches = b.topics.filter(topic => topics.includes(topic)).length;
+            return bMatches - aMatches;
+          })
+          .slice(0, limit);
+      })
+    );
+  }
+
   // Get resource by ID
   getResourceById(id: string): Observable<Resource | undefined> {
     return this.resources$.pipe(

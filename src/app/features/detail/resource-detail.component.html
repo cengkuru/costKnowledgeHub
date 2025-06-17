@@ -1,0 +1,188 @@
+<!-- Resource Detail Page -->
+<div class="min-h-screen bg-cost-gray">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="container mx-auto px-6 py-16">
+    <div class="animate-pulse">
+      <div class="h-8 bg-neutral-200 rounded mb-4 w-3/4"></div>
+      <div class="h-4 bg-neutral-200 rounded mb-2 w-1/2"></div>
+      <div class="h-32 bg-neutral-200 rounded mb-8"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <div class="h-64 bg-neutral-200 rounded"></div>
+        </div>
+        <div class="space-y-4">
+          <div class="h-32 bg-neutral-200 rounded"></div>
+          <div class="h-32 bg-neutral-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="container mx-auto px-6 py-16 text-center">
+    <div class="max-w-md mx-auto">
+      <svg class="w-16 h-16 text-neutral-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <h2 class="text-xl font-semibold text-neutral-800 mb-2">Resource Not Found</h2>
+      <p class="text-neutral-600 mb-6">The resource you're looking for doesn't exist or has been moved.</p>
+      <a routerLink="/browse" class="btn-primary">Browse Resources</a>
+    </div>
+  </div>
+
+  <!-- Resource Content -->
+  <div *ngIf="resource && !loading" class="container mx-auto px-6 py-8">
+    <!-- Breadcrumbs -->
+    <nav class="mb-8">
+      <ol class="flex items-center space-x-2 text-sm text-neutral-600">
+        <li><a routerLink="/" class="hover:text-cost-teal transition-colors">Home</a></li>
+        <li><span class="mx-2">/</span></li>
+        <li><a routerLink="/browse" class="hover:text-cost-teal transition-colors">Resources</a></li>
+        <li><span class="mx-2">/</span></li>
+        <li class="text-neutral-800 font-medium">{{ getLocalizedTitle() }}</li>
+      </ol>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Resource Header -->
+        <div class="bg-white rounded-card p-8 mb-8 shadow-card">
+          <div class="flex items-start justify-between mb-6">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3 mb-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cost-teal/10 text-cost-teal">
+                  {{ formatResourceType(resource.type) }}
+                </span>
+                <span *ngIf="resource.metadata?.difficulty" 
+                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700': resource.metadata?.difficulty === 'beginner',
+                        'bg-yellow-100 text-yellow-700': resource.metadata?.difficulty === 'intermediate',
+                        'bg-red-100 text-red-700': resource.metadata?.difficulty === 'advanced'
+                      }">
+                  {{ resource.metadata?.difficulty | titlecase }}
+                </span>
+              </div>
+              <h1 class="text-3xl font-bold text-neutral-800 mb-3">{{ getLocalizedTitle() }}</h1>
+              <p class="text-lg text-neutral-600 leading-relaxed">{{ getLocalizedDescription() }}</p>
+            </div>
+          </div>
+
+          <!-- Resource Actions -->
+          <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-neutral-200">
+            <button *ngIf="resource.downloadUrl || resource.fileLinks" 
+                    (click)="downloadResource()" 
+                    class="btn-primary flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+              <span>Download</span>
+              <span *ngIf="resource.fileSize" class="text-xs opacity-75">({{ resource.fileSize }})</span>
+            </button>
+            
+            <button (click)="shareResource()" class="btn-secondary flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Resource Impact (if available) -->
+        <div *ngIf="resource.impact" class="bg-white rounded-card p-8 mb-8 shadow-card">
+          <h2 class="text-xl font-semibold text-neutral-800 mb-6">Impact & Results</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div *ngIf="resource.impact.savings" class="text-center p-4 bg-green-50 rounded-lg">
+              <div class="text-2xl font-bold text-green-700">{{ resource.impact.savings }}</div>
+              <div class="text-sm text-green-600">Cost Savings</div>
+            </div>
+            <div *ngIf="resource.impact.projects" class="text-center p-4 bg-blue-50 rounded-lg">
+              <div class="text-2xl font-bold text-blue-700">{{ resource.impact.projects }}</div>
+              <div class="text-sm text-blue-600">Projects</div>
+            </div>
+            <div *ngIf="resource.impact.transparency" class="text-center p-4 bg-purple-50 rounded-lg">
+              <div class="text-2xl font-bold text-purple-700">{{ resource.impact.transparency }}</div>
+              <div class="text-sm text-purple-600">Transparency</div>
+            </div>
+          </div>
+          <p *ngIf="resource.impact.description" class="mt-4 text-neutral-700">{{ resource.impact.description }}</p>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-8">
+        <!-- Resource Details -->
+        <div class="bg-white rounded-card p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-neutral-800 mb-4">Resource Details</h3>
+          <dl class="space-y-3">
+            <div class="flex justify-between">
+              <dt class="text-sm text-neutral-600">Type:</dt>
+              <dd class="text-sm font-medium text-neutral-800">{{ formatResourceType(resource.type) }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-neutral-600">Language:</dt>
+              <dd class="text-sm font-medium text-neutral-800">{{ formatLanguage(resource.language) }}</dd>
+            </div>
+            <div *ngIf="resource.country" class="flex justify-between">
+              <dt class="text-sm text-neutral-600">Country:</dt>
+              <dd class="text-sm font-medium text-neutral-800">{{ formatCountry(resource.country) }}</dd>
+            </div>
+            <div *ngIf="resource.format" class="flex justify-between">
+              <dt class="text-sm text-neutral-600">Format:</dt>
+              <dd class="text-sm font-medium text-neutral-800">{{ resource.format }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-neutral-600">Published:</dt>
+              <dd class="text-sm font-medium text-neutral-800">{{ formatDate(resource.datePublished) }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Topics & Tags -->
+        <div class="bg-white rounded-card p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-neutral-800 mb-4">Topics & Tags</h3>
+          
+          <div *ngIf="resource.topics.length > 0" class="mb-4">
+            <div class="text-sm text-neutral-600 mb-2">Topics:</div>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let topic of resource.topics" 
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cost-cyan/10 text-cost-cyan">
+                {{ formatTopic(topic) }}
+              </span>
+            </div>
+          </div>
+          
+          <div *ngIf="resource.tags.length > 0">
+            <div class="text-sm text-neutral-600 mb-2">Tags:</div>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let tag of resource.tags" 
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700">
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related Resources -->
+        <div *ngIf="relatedResources.length > 0" class="bg-white rounded-card p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-neutral-800 mb-4">Related Resources</h3>
+          <div class="space-y-4">
+            <div *ngFor="let related of relatedResources" class="border-b border-neutral-100 last:border-b-0 pb-4 last:pb-0">
+              <a [routerLink]="['/resource', related.id]" class="block hover:bg-neutral-50 -m-2 p-2 rounded-lg transition-colors">
+                <h4 class="font-medium text-neutral-800 text-sm mb-1">{{ getResourceTitle(related) }}</h4>
+                <p class="text-xs text-neutral-600 line-clamp-2">{{ getResourceDescription(related) }}</p>
+                <div class="flex items-center justify-between mt-2">
+                  <span class="text-xs text-cost-teal font-medium">{{ formatResourceType(related.type) }}</span>
+                  <span *ngIf="related.readingTime" class="text-xs text-neutral-500">{{ related.readingTime }} min read</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -57,7 +57,7 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (resource) => {
-          this.resource = resource;
+          this.resource = resource || null;
           this.loading = false;
           if (resource) {
             this.loadRelatedResources(resource);
@@ -71,19 +71,27 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadRelatedResources(resource: Resource): void {
-    this.resourceService.getRelatedResources(resource.id, resource.type, resource.tags)
+    this.resourceService.getRelatedResources(resource.id, resource.topics, resource.tags)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(related => {
+      .subscribe((related: Resource[]) => {
         this.relatedResources = related;
       });
   }
 
-  getResourceTitle(): string {
+  getLocalizedTitle(): string {
     return this.resource ? this.i18nService.getLocalizedText(this.resource.title) : '';
   }
 
-  getResourceDescription(): string {
+  getLocalizedDescription(): string {
     return this.resource ? this.i18nService.getLocalizedText(this.resource.description) : '';
+  }
+
+  getResourceTitle(resource: Resource): string {
+    return this.i18nService.getLocalizedText(resource.title);
+  }
+
+  getResourceDescription(resource: Resource): string {
+    return this.i18nService.getLocalizedText(resource.description);
   }
 
   getTypeLabel(): string {
@@ -117,14 +125,6 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
     return countryNames[this.resource.country] || this.resource.country.toUpperCase();
   }
 
-  formatDate(timestamp: any): string {
-    const date = new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString(this.i18nService.getCurrentLanguage(), {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
 
   onDownload(): void {
     if (!this.resource) return;
@@ -142,8 +142,8 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
 
     if (navigator.share) {
       navigator.share({
-        title: this.getResourceTitle(),
-        text: this.getResourceDescription(),
+        title: this.getLocalizedTitle(),
+        text: this.getLocalizedDescription(),
         url: window.location.href
       });
     } else {
@@ -186,6 +186,89 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
 
   getFileSize(): string {
     return this.resource?.fileSize || '';
+  }
+
+  formatResourceType(type: string): string {
+    const typeLabels: Record<string, string> = {
+      guide: 'Implementation Guide',
+      'case-study': 'Case Study',
+      tool: 'Tool',
+      report: 'Report',
+      policy: 'Policy Brief',
+      template: 'Template',
+      dataset: 'Dataset',
+      infographic: 'Infographic',
+      other: 'Other'
+    };
+    return typeLabels[type] || type;
+  }
+
+  formatLanguage(lang: string): string {
+    const langLabels: Record<string, string> = {
+      en: 'English',
+      es: 'Español',
+      pt: 'Português',
+      fr: 'Français',
+      ar: 'العربية'
+    };
+    return langLabels[lang] || lang;
+  }
+
+  formatCountry(country: string): string {
+    if (country === 'global') return 'Global';
+    const countryLabels: Record<string, string> = {
+      GT: 'Guatemala',
+      UG: 'Uganda',
+      TH: 'Thailand',
+      UK: 'United Kingdom',
+      PH: 'Philippines'
+    };
+    return countryLabels[country] || country;
+  }
+
+  formatTopic(topic: string): string {
+    const topicLabels: Record<string, string> = {
+      disclosure: 'Data Disclosure',
+      assurance: 'Independent Assurance',
+      procurement: 'Public Procurement',
+      monitoring: 'Project Monitoring',
+      stakeholder: 'Multi-stakeholder Working',
+      accountability: 'Social Accountability'
+    };
+    return topicLabels[topic] || topic;
+  }
+
+  formatDate(timestamp: any): string {
+    const date = new Date(timestamp.seconds * 1000);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  downloadResource(): void {
+    if (!this.resource) return;
+    const currentLang = this.i18nService.getCurrentLanguage();
+    const downloadUrl = this.resource.fileLinks?.[currentLang] || 
+                       this.resource.downloadUrl || 
+                       this.resource.externalLink;
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
+    }
+  }
+
+  shareResource(): void {
+    if (!this.resource) return;
+    if (navigator.share) {
+      navigator.share({
+        title: this.getLocalizedTitle(),
+        text: this.getLocalizedDescription(),
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+    }
   }
 
   trackByResourceId(index: number, resource: Resource): string {

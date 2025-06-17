@@ -7,8 +7,17 @@ import { ResourceCardComponent } from '../../shared/components/resource-card/res
 import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import { ResourceService } from '../../core/services/resource.service';
 import { I18nService } from '../../core/services/i18n.service';
-import { Resource } from '../../core/models/resource.model';
-import { TopicCategory } from '../../core/models/filter.model';
+import { Resource, MultiLanguageText } from '../../core/models/resource.model';
+import { Topic, COST_TOPICS } from '../../core/models/topic.model';
+
+interface HomeTopic {
+  id: string;
+  name: MultiLanguageText;
+  icon: string;
+  color: string;
+  description: MultiLanguageText;
+  resourceCount: number;
+}
 
 @Component({
   selector: 'app-home',
@@ -25,7 +34,7 @@ import { TopicCategory } from '../../core/models/filter.model';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   featuredResources: Resource[] = [];
-  topicCategories: TopicCategory[] = [
+  topicCategories: HomeTopic[] = [
     {
       id: 'disclosure',
       name: {
@@ -179,11 +188,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTopicName(topic: TopicCategory): string {
+  getTopicName(topic: HomeTopic): string {
     return this.i18nService.getLocalizedText(topic.name);
   }
 
-  getTopicDescription(topic: TopicCategory): string {
+  getTopicDescription(topic: HomeTopic): string {
     return this.i18nService.getLocalizedText(topic.description);
   }
 

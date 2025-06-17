@@ -1,0 +1,192 @@
+// Resource Detail Component Styles
+
+.resource-header {
+  @apply bg-white rounded-card p-8 mb-8 shadow-card;
+}
+
+.resource-meta {
+  @apply flex items-center space-x-3 mb-3;
+}
+
+.type-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cost-teal/10 text-cost-teal;
+}
+
+.difficulty-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  
+  &.beginner {
+    @apply bg-green-100 text-green-700;
+  }
+  
+  &.intermediate {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+  
+  &.advanced {
+    @apply bg-red-100 text-red-700;
+  }
+}
+
+.resource-actions {
+  @apply flex flex-wrap items-center gap-4 pt-6 border-t border-neutral-200;
+}
+
+.impact-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+.impact-card {
+  @apply text-center p-4 rounded-lg;
+  
+  &.savings {
+    @apply bg-green-50;
+    
+    .value {
+      @apply text-2xl font-bold text-green-700;
+    }
+    
+    .label {
+      @apply text-sm text-green-600;
+    }
+  }
+  
+  &.projects {
+    @apply bg-blue-50;
+    
+    .value {
+      @apply text-2xl font-bold text-blue-700;
+    }
+    
+    .label {
+      @apply text-sm text-blue-600;
+    }
+  }
+  
+  &.transparency {
+    @apply bg-purple-50;
+    
+    .value {
+      @apply text-2xl font-bold text-purple-700;
+    }
+    
+    .label {
+      @apply text-sm text-purple-600;
+    }
+  }
+}
+
+.detail-section {
+  @apply bg-white rounded-card p-6 shadow-card;
+}
+
+.detail-list {
+  @apply space-y-3;
+  
+  .detail-item {
+    @apply flex justify-between;
+    
+    .label {
+      @apply text-sm text-neutral-600;
+    }
+    
+    .value {
+      @apply text-sm font-medium text-neutral-800;
+    }
+  }
+}
+
+.tag-list {
+  @apply flex flex-wrap gap-2;
+}
+
+.topic-tag {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cost-cyan/10 text-cost-cyan;
+}
+
+.regular-tag {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700;
+}
+
+.related-resource {
+  @apply border-b border-neutral-100 last:border-b-0 pb-4 last:pb-0;
+  
+  .related-link {
+    @apply block hover:bg-neutral-50 -m-2 p-2 rounded-lg transition-colors;
+  }
+  
+  .related-title {
+    @apply font-medium text-neutral-800 text-sm mb-1;
+  }
+  
+  .related-description {
+    @apply text-xs text-neutral-600 line-clamp-2;
+  }
+  
+  .related-meta {
+    @apply flex items-center justify-between mt-2;
+  }
+  
+  .related-type {
+    @apply text-xs text-cost-teal font-medium;
+  }
+  
+  .related-time {
+    @apply text-xs text-neutral-500;
+  }
+}
+
+// Loading states
+.loading-skeleton {
+  @apply animate-pulse bg-neutral-200 rounded;
+}
+
+// Error states
+.error-state {
+  @apply text-center max-w-md mx-auto;
+  
+  .error-icon {
+    @apply w-16 h-16 text-neutral-400 mx-auto mb-4;
+  }
+  
+  .error-title {
+    @apply text-xl font-semibold text-neutral-800 mb-2;
+  }
+  
+  .error-message {
+    @apply text-neutral-600 mb-6;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .resource-actions {
+    @apply flex-col items-stretch;
+  }
+  
+  .impact-grid {
+    @apply grid-cols-1;
+  }
+  
+  .related-meta {
+    @apply flex-col items-start space-y-1;
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .related-link {
+    transition: none;
+  }
+}
+
+// Print styles
+@media print {
+  .resource-actions {
+    @apply hidden;
+  }
+  
+  .detail-section {
+    @apply shadow-none border border-neutral-300;
+  }
+}
