@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { LanguageToggleComponent } from './shared/components/language-toggle/language-toggle.component';
 
 @Component({
@@ -22,6 +22,8 @@ export class AppComponent {
   isKnowledgeDropdownOpen = false;
   isFeaturesDropdownOpen = false;
 
+  constructor(private router: Router) {}
+
   // Dropdown methods
   toggleKnowledgeDropdown(): void {
     this.isKnowledgeDropdownOpen = !this.isKnowledgeDropdownOpen;
@@ -36,5 +38,62 @@ export class AppComponent {
   closeDropdowns(): void {
     this.isKnowledgeDropdownOpen = false;
     this.isFeaturesDropdownOpen = false;
+  }
+
+  // Features dropdown navigation methods
+  navigateToAdvancedSearch(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/resources'], { 
+      queryParams: { advanced: 'true' } 
+    }).then(() => {
+      // Scroll to search section after navigation
+      setTimeout(() => {
+        this.scrollToElement('search-section');
+      }, 100);
+    });
+  }
+
+  showSmartFilters(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/resources']).then(() => {
+      // Scroll to filters section after navigation
+      setTimeout(() => {
+        this.scrollToElement('filters-section');
+      }, 100);
+    });
+  }
+
+  showLanguageSupport(): void {
+    this.closeDropdowns();
+    // For now, just focus on the language toggle
+    setTimeout(() => {
+      const languageToggle = document.querySelector('app-language-toggle');
+      if (languageToggle) {
+        languageToggle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Add a visual highlight
+        languageToggle.classList.add('ring-2', 'ring-cost-cyan', 'ring-opacity-50');
+        setTimeout(() => {
+          languageToggle.classList.remove('ring-2', 'ring-cost-cyan', 'ring-opacity-50');
+        }, 2000);
+      }
+    }, 100);
+  }
+
+  navigateToCollaboration(): void {
+    this.closeDropdowns();
+    // Navigate to resources and filter by collaboration tools
+    this.router.navigate(['/resources'], { 
+      queryParams: { 
+        topic: 'collaboration',
+        type: 'tool'
+      } 
+    });
+  }
+
+  private scrollToElement(elementId: string): void {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

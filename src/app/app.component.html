@@ -86,46 +86,46 @@
             <!-- Features Dropdown Menu -->
             <div *ngIf="isFeaturesDropdownOpen"
                  class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-              <a href="#search"
-                 (click)="closeDropdowns()"
-                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+              <button
+                 (click)="navigateToAdvancedSearch()"
+                 class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                   <span>Advanced Search</span>
                 </div>
-              </a>
-              <a href="#filters"
-                 (click)="closeDropdowns()"
-                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+              </button>
+              <button
+                 (click)="showSmartFilters()"
+                 class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                   </svg>
                   <span>Smart Filters</span>
                 </div>
-              </a>
-              <a href="#languages"
-                 (click)="closeDropdowns()"
-                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+              </button>
+              <button
+                 (click)="showLanguageSupport()"
+                 class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
                   </svg>
                   <span>Multi-language Support</span>
                 </div>
-              </a>
-              <a href="#collaboration"
-                 (click)="closeDropdowns()"
-                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+              </button>
+              <button
+                 (click)="navigateToCollaboration()"
+                 class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal transition-colors">
                 <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                   </svg>
                   <span>Collaboration Tools</span>
                 </div>
-              </a>
+              </button>
             </div>
           </div>
         </nav>

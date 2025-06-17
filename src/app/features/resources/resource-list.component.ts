@@ -54,8 +54,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadFilterOptions();
-    this.loadResources();
     this.handleRouteParams();
+    this.loadResources();
   }
 
   ngOnDestroy(): void {
@@ -91,8 +91,15 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         const filters: Partial<ActiveFilters> = {};
 
+        // Handle navigation from Features dropdown
         if (params['topic']) {
-          filters.topic = [params['topic']];
+          if (params['topic'] === 'collaboration') {
+            // For collaboration, we'll filter by relevant tags in the component
+            // This will be handled in the resource service filtering logic
+            filters.searchQuery = 'collaboration OR multi-stakeholder OR platform';
+          } else {
+            filters.topic = [params['topic']];
+          }
         }
         if (params['type']) {
           filters.type = [params['type']];
@@ -102,6 +109,18 @@ export class ResourceListComponent implements OnInit, OnDestroy {
         }
         if (params['q']) {
           filters.searchQuery = params['q'];
+        }
+
+        // Handle advanced search mode
+        if (params['advanced'] === 'true') {
+          // Focus on search bar when in advanced mode
+          setTimeout(() => {
+            const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+            if (searchInput) {
+              searchInput.focus();
+              searchInput.select();
+            }
+          }, 100);
         }
 
         if (Object.keys(filters).length > 0) {
