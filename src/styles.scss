@@ -32,26 +32,135 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Custom component classes using CoST palette
+// Custom component classes using CoST palette - C40 Knowledge Hub inspired
 @layer components {
+  /* Button System - Matching C40 Design */
   .btn-primary {
-    @apply bg-cost-teal hover:bg-cost-cyan text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-cost-teal hover:bg-cost-teal-600 text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card focus:outline-none focus:ring-2 focus:ring-cost-teal focus:ring-offset-2;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px) scale(1.02);
   }
 
   .btn-secondary {
-    @apply bg-cost-cyan hover:bg-cost-teal text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-white border-2 border-cost-teal text-cost-teal hover:bg-cost-teal hover:text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card;
   }
 
   .btn-accent {
-    @apply bg-cost-amber hover:bg-amber-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-cost-amber hover:bg-cost-amber-600 text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card focus:outline-none focus:ring-2 focus:ring-cost-amber focus:ring-offset-2;
   }
 
+  /* Glass Morphism Cards - Jony Ive Inspired */
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md;
+    @apply bg-white/80 backdrop-blur-glass rounded-card border border-white/20 p-6 transition-all duration-350;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
+  .card:hover {
+    @apply shadow-glass-hover border-cost-teal/30;
+    transform: translateY(-4px) scale(1.02);
+  }
+
+  /* Resource Cards - C40 Style */
+  .resource-card {
+    @apply bg-white rounded-card border border-neutral-200 overflow-hidden transition-all duration-350 cursor-pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .resource-card:hover {
+    @apply shadow-card-hover border-cost-cyan/50;
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  /* Input Fields - Clean & Modern */
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-all duration-200;
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-all duration-250;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .input-field:focus {
+    @apply bg-white shadow-sm;
+  }
+
+  /* Search Bar - Hero Style */
+  .search-hero {
+    @apply w-full px-6 py-4 text-lg border-2 border-white/30 rounded-2xl bg-white/90 backdrop-blur-glass focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-cost-cyan transition-all duration-350;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Filter Sidebar */
+  .filter-group {
+    @apply bg-white rounded-lg border border-neutral-200 p-4 mb-4;
+  }
+
+  .filter-item {
+    @apply flex items-center space-x-3 py-2 px-3 rounded-lg hover:bg-neutral-50 transition-colors duration-200 cursor-pointer;
+  }
+
+  .filter-item:hover {
+    @apply bg-cost-teal/5;
+  }
+
+  /* Topic Grid Cards */
+  .topic-card {
+    @apply bg-gradient-to-br rounded-card p-6 text-white relative overflow-hidden cursor-pointer transition-all duration-350;
+  }
+
+  .topic-card:hover {
+    transform: translateY(-4px) scale(1.05);
+  }
+
+  /* Navigation Header */
+  .nav-header {
+    @apply bg-white/95 backdrop-blur-glass border-b border-neutral-200/50 sticky top-0 z-50 transition-all duration-250;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    @apply relative bg-gradient-to-br from-cost-teal to-cost-teal-700 text-white py-20 overflow-hidden;
+  }
+
+  .hero-content {
+    @apply relative z-10 container mx-auto px-6 text-center;
+  }
+
+  /* Stats Cards */
+  .stats-card {
+    @apply bg-white/10 backdrop-blur-glass rounded-card p-6 text-center border border-white/20 transition-all duration-350;
+  }
+
+  .stats-card:hover {
+    @apply bg-white/20 shadow-glass;
+    transform: translateY(-2px);
+  }
+
+  /* Loading States */
+  .loading-shimmer {
+    @apply relative overflow-hidden bg-neutral-200 rounded;
+  }
+
+  .loading-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  /* Floating Elements */
+  .floating-element {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-cost-teal to-cost-cyan bg-clip-text text-transparent;
   }
 }
 

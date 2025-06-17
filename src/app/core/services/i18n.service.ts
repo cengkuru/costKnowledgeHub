@@ -10,7 +10,7 @@ import { Language } from '../models/resource.model';
 export class I18nService {
   private currentLanguageSubject = new BehaviorSubject<Language>('en');
   public currentLanguage$ = this.currentLanguageSubject.asObservable();
-  private translations: Record<Language, any> = { en: {}, es: {}, pt: {} };
+  private translations: Partial<Record<Language, any>> = { en: {}, es: {}, pt: {} };
   private loadedLanguages: Set<Language> = new Set();
 
   constructor(private http: HttpClient) {
@@ -69,7 +69,7 @@ export class I18nService {
   }
 
   // Get multi-language text in current language
-  getLocalizedText(multiLangText: Record<Language, string>): string {
+  getLocalizedText(multiLangText: Partial<Record<Language, string>>): string {
     const currentLang = this.currentLanguageSubject.value;
     return multiLangText[currentLang] || multiLangText['en'] || '';
   }
@@ -161,6 +161,6 @@ export class I18nService {
       }
     };
 
-    return fallback[language] || fallback.en;
+    return fallback[language as keyof typeof fallback] || fallback.en;
   }
 }

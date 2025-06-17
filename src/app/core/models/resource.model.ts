@@ -8,41 +8,72 @@ export interface MultiLanguageText {
   en: string;
   es: string;
   pt: string;
+  fr?: string;
+  ar?: string;
 }
 
-export type ResourceType = 'guidance' | 'caseStudy' | 'report' | 'dataset' | 'tool' | 'infographic' | 'other';
-export type Language = 'en' | 'es' | 'pt';
+export type ResourceType = 'guide' | 'case-study' | 'tool' | 'report' | 'policy' | 'template' | 'dataset' | 'infographic' | 'other';
+export type Language = 'en' | 'es' | 'pt' | 'fr' | 'ar';
+export type TopicCategory = 'disclosure' | 'assurance' | 'procurement' | 'monitoring' | 'stakeholder' | 'accountability';
+export type Region = 'africa' | 'asia' | 'latam' | 'europe' | 'global';
 
 export interface Resource {
   id: string;
   title: MultiLanguageText;
   description: MultiLanguageText;
   type: ResourceType;
-  tags: string[];
+  category: string; // e.g., "Data Standards", "Impact Stories"
+  topics: TopicCategory[]; // Main CoST topic areas
+  tags: string[]; // Free-form tags
   country: string; // ISO 3166 alpha-2 or 'global'
+  countries?: string[]; // Multiple countries for regional resources
+  region?: Region; // Geographic region
   language: Language; // Primary language
   datePublished: Timestamp;
   fileLinks?: Partial<Record<Language, string>>; // Storage URLs
   externalLink?: string; // External URL if not hosted
+  downloadUrl?: string; // Direct download link
   thumbnailUrl?: string; // Preview image URL
+  imageUrl?: string; // Hero/banner image
   featured: boolean; // Show in featured section
   relatedLangIds?: string[]; // Cross-references to other language versions
   fileSize?: string; // e.g., "3.2 MB"
   format?: string; // e.g., "PDF", "CSV", "XLSX"
+  readingTime?: number; // Estimated reading time in minutes
+  views?: number; // View count
+  downloads?: number; // Download count
+  lastUpdated?: Timestamp;
+  // CoST-specific impact metrics
   impact?: {
-    savings?: string;
-    projects?: number;
-    transparency?: string;
+    savings?: string; // e.g., "$360 million"
+    projects?: number; // Number of projects affected
+    transparency?: string; // e.g., "85% disclosure rate"
+    description?: string; // Impact description
+  };
+  // Metadata for C40-style categorization
+  metadata?: {
+    difficulty?: 'beginner' | 'intermediate' | 'advanced';
+    implementationTime?: string; // e.g., "3-6 months"
+    targetAudience?: string[]; // e.g., ["Government", "Civil Society"]
+    prerequisites?: string[];
   };
 }
 
 export interface ResourceFilter {
   type?: ResourceType[];
+  topics?: TopicCategory[];
   tags?: string[];
   country?: string[];
+  region?: Region[];
   language?: Language[];
   featured?: boolean;
+  difficulty?: string[];
+  format?: string[];
   searchQuery?: string;
+  dateRange?: {
+    start?: Date;
+    end?: Date;
+  };
 }
 
 export interface ResourceSearchResult {

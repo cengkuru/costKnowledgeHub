@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Resource, ResourceFilter, ResourceSearchResult, Language } from '../models/resource.model';
-import { FilterGroup, ActiveFilters } from '../models/filter.model';
+import { Resource, ResourceFilter, ResourceSearchResult, Language, ResourceType, TopicCategory, Region } from '../models/resource.model';
+import { FilterGroup, ActiveFilters, DEFAULT_FILTERS } from '../models/filter.model';
+import { COST_TOPICS } from '../models/topic.model';
+import { COST_COUNTRIES } from '../models/country.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,9 @@ export class ResourceService {
     region: [],
     language: [],
     country: [],
+    difficulty: [],
+    format: [],
+    featured: undefined,
     searchQuery: ''
   });
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -74,10 +79,10 @@ export class ResourceService {
           );
         }
 
-        // Apply tag/topic filter
+        // Apply topic filter
         if (activeFilters.topic.length > 0) {
           filteredResources = filteredResources.filter(resource =>
-            resource.tags.some(tag => activeFilters.topic.includes(tag))
+            resource.topics.some(topic => activeFilters.topic.includes(topic))
           );
         }
 
@@ -118,6 +123,9 @@ export class ResourceService {
       region: [],
       language: [],
       country: [],
+      difficulty: [],
+      format: [],
+      featured: undefined,
       searchQuery: ''
     });
   }
@@ -182,11 +190,13 @@ export class ResourceService {
 
   private formatTypeLabel(type: string): string {
     const labels: Record<string, string> = {
-      guidance: 'Implementation Guides',
-      caseStudy: 'Case Studies',
+      guide: 'Implementation Guides',
+      'case-study': 'Case Studies',
       report: 'Research Reports',
       dataset: 'Datasets',
       tool: 'Tools & Templates',
+      policy: 'Policy Briefs',
+      template: 'Templates',
       infographic: 'Infographics',
       other: 'Other Resources'
     };
@@ -228,7 +238,9 @@ export class ResourceService {
           es: 'Guía completa para implementar los 40 puntos de datos centrales del IDS de CoST en proyectos de infraestructura',
           pt: 'Guia abrangente para implementar os 40 pontos de dados principais do IDS do CoST em projetos de infraestrutura'
         },
-        type: 'guidance',
+        type: 'guide',
+        category: 'Data Standards',
+        topics: ['disclosure'],
         tags: ['Transparency', 'Data Disclosure', 'Implementation'],
         country: 'global',
         language: 'en',
@@ -251,8 +263,11 @@ export class ResourceService {
           es: 'Cómo Tailandia ahorró $360 millones a través de la implementación de CoST en proyectos de carreteras',
           pt: 'Como a Tailândia economizou $360 milhões através da implementação do CoST em projetos rodoviários'
         },
-        type: 'caseStudy',
+        type: 'case-study',
+        category: 'Impact Stories',
+        topics: ['procurement', 'monitoring'],
         tags: ['Cost Savings', 'Public Procurement', 'Southeast Asia'],
+        region: 'asia',
         country: 'th',
         language: 'en',
         datePublished: { seconds: 1709856000, nanoseconds: 0 }, // 2024-03-08
@@ -277,7 +292,10 @@ export class ResourceService {
           pt: 'Conjunto de dados abrangente com pontuações de transparência para 89 países em setores de infraestrutura'
         },
         type: 'dataset',
+        category: 'Global Analysis',
+        topics: ['disclosure', 'accountability'],
         tags: ['Transparency Index', 'Global Assessment', 'Data Analysis'],
+        region: 'global',
         country: 'global',
         language: 'en',
         datePublished: { seconds: 1709251200, nanoseconds: 0 }, // 2024-03-01
@@ -285,6 +303,163 @@ export class ResourceService {
         featured: true,
         fileSize: '1.8 MB',
         format: 'CSV'
+      },
+      // Additional CoST resources matching PLAN.md specifications
+      {
+        id: 'res-004',
+        title: {
+          en: 'Independent Assurance Framework for Infrastructure Projects',
+          es: 'Marco de Aseguramiento Independiente para Proyectos de Infraestructura',
+          pt: 'Estrutura de Garantia Independente para Projetos de Infraestrutura'
+        },
+        description: {
+          en: 'Complete framework for implementing independent assurance processes in infrastructure transparency',
+          es: 'Marco completo para implementar procesos de aseguramiento independiente en transparencia de infraestructura',
+          pt: 'Estrutura completa para implementar processos de garantia independente na transparência de infraestrutura'
+        },
+        type: 'guide',
+        category: 'Assurance',
+        topics: ['assurance'],
+        tags: ['Independent Assurance', 'Verification', 'Quality Control'],
+        region: 'global',
+        country: 'global',
+        language: 'en',
+        datePublished: { seconds: 1709424000, nanoseconds: 0 },
+        fileLinks: { en: '/assets/samples/assurance-framework.pdf' },
+        thumbnailUrl: '/assets/images/assurance-thumb.jpg',
+        featured: false,
+        fileSize: '2.1 MB',
+        format: 'PDF',
+        metadata: {
+          difficulty: 'intermediate',
+          implementationTime: '6-12 months',
+          targetAudience: ['Government', 'Civil Society', 'International Organizations']
+        }
+      },
+      {
+        id: 'res-005',
+        title: {
+          en: 'Guatemala Social Accountability Success: Community Oversight',
+          es: 'Éxito de Rendición de Cuentas Social de Guatemala: Supervisión Comunitaria',
+          pt: 'Sucesso de Responsabilidade Social da Guatemala: Supervisão Comunitária'
+        },
+        description: {
+          en: 'How community-led monitoring in Guatemala improved infrastructure project quality and saved $28 million',
+          es: 'Cómo el monitoreo liderado por la comunidad en Guatemala mejoró la calidad de los proyectos de infraestructura y ahorró $28 millones',
+          pt: 'Como o monitoramento liderado pela comunidade na Guatemala melhorou a qualidade dos projetos de infraestrutura e economizou $28 milhões'
+        },
+        type: 'case-study',
+        category: 'Impact Stories',
+        topics: ['accountability', 'stakeholder'],
+        tags: ['Community Monitoring', 'Social Accountability', 'Guatemala'],
+        region: 'latam',
+        country: 'GT',
+        language: 'en',
+        datePublished: { seconds: 1708819200, nanoseconds: 0 },
+        thumbnailUrl: '/assets/images/guatemala-community.jpg',
+        featured: true,
+        impact: {
+          savings: '$28 million',
+          projects: 23,
+          transparency: '89% community satisfaction',
+          description: 'Community oversight prevented cost overruns and improved project quality'
+        }
+      },
+      {
+        id: 'res-006',
+        title: {
+          en: 'Digital Procurement Tools for Infrastructure Transparency',
+          es: 'Herramientas de Contratación Digital para Transparencia en Infraestructura',
+          pt: 'Ferramentas de Contratação Digital para Transparência de Infraestrutura'
+        },
+        description: {
+          en: 'Comprehensive toolkit for implementing digital procurement systems that enhance transparency',
+          es: 'Kit de herramientas completo para implementar sistemas de contratación digital que mejoran la transparencia',
+          pt: 'Kit de ferramentas abrangente para implementar sistemas de contratação digital que aumentam a transparência'
+        },
+        type: 'tool',
+        category: 'Digital Tools',
+        topics: ['procurement'],
+        tags: ['Digital Procurement', 'E-procurement', 'Technology'],
+        region: 'global',
+        country: 'global',
+        language: 'en',
+        datePublished: { seconds: 1708214400, nanoseconds: 0 },
+        downloadUrl: '/assets/downloads/digital-procurement-toolkit.zip',
+        thumbnailUrl: '/assets/images/digital-tools-thumb.jpg',
+        featured: false,
+        fileSize: '15.3 MB',
+        format: 'ZIP',
+        metadata: {
+          difficulty: 'advanced',
+          implementationTime: '12-18 months',
+          targetAudience: ['Government IT', 'Procurement Officers'],
+          prerequisites: ['Digital Infrastructure', 'Legal Framework']
+        }
+      },
+      {
+        id: 'res-007',
+        title: {
+          en: 'UK Infrastructure Transparency Policy Brief 2024',
+          es: 'Informe de Política de Transparencia en Infraestructura del Reino Unido 2024',
+          pt: 'Relatório de Política de Transparência de Infraestrutura do Reino Unido 2024'
+        },
+        description: {
+          en: 'Analysis of UK infrastructure transparency reforms and their impact on project delivery',
+          es: 'Análisis de las reformas de transparencia en infraestructura del Reino Unido y su impacto en la entrega de proyectos',
+          pt: 'Análise das reformas de transparência de infraestrutura do Reino Unido e seu impacto na entrega de projetos'
+        },
+        type: 'policy',
+        category: 'Policy Analysis',
+        topics: ['disclosure', 'monitoring'],
+        tags: ['Policy Reform', 'United Kingdom', 'Regulatory Framework'],
+        region: 'europe',
+        country: 'UK',
+        language: 'en',
+        datePublished: { seconds: 1707609600, nanoseconds: 0 },
+        fileLinks: { en: '/assets/samples/uk-policy-brief-2024.pdf' },
+        thumbnailUrl: '/assets/images/uk-policy-thumb.jpg',
+        featured: false,
+        fileSize: '1.4 MB',
+        format: 'PDF',
+        readingTime: 8,
+        metadata: {
+          difficulty: 'intermediate',
+          implementationTime: '3-6 months',
+          targetAudience: ['Policy Makers', 'Government Officials']
+        }
+      },
+      {
+        id: 'res-008',
+        title: {
+          en: 'Multi-stakeholder Platform Setup Guide',
+          es: 'Guía de Configuración de Plataforma Multi-actor',
+          pt: 'Guia de Configuração de Plataforma Multi-partes Interessadas'
+        },
+        description: {
+          en: 'Step-by-step guide for establishing effective multi-stakeholder working groups in CoST implementation',
+          es: 'Guía paso a paso para establecer grupos de trabajo multi-actor efectivos en la implementación de CoST',
+          pt: 'Guia passo a passo para estabelecer grupos de trabalho multi-partes interessadas eficazes na implementação do CoST'
+        },
+        type: 'guide',
+        category: 'Implementation',
+        topics: ['stakeholder'],
+        tags: ['Multi-stakeholder', 'Governance', 'Collaboration'],
+        region: 'global',
+        country: 'global',
+        language: 'en',
+        datePublished: { seconds: 1707004800, nanoseconds: 0 },
+        fileLinks: { en: '/assets/samples/msp-setup-guide.pdf' },
+        thumbnailUrl: '/assets/images/msp-guide-thumb.jpg',
+        featured: true,
+        fileSize: '3.8 MB',
+        format: 'PDF',
+        readingTime: 15,
+        metadata: {
+          difficulty: 'beginner',
+          implementationTime: '3-6 months',
+          targetAudience: ['Government', 'Civil Society', 'Private Sector']
+        }
       }
     ];
 

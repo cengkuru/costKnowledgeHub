@@ -1,0 +1,163 @@
+// Header Component Styles - C40 Knowledge Hub inspired
+
+.nav-header {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.5);
+  
+  @apply sticky top-0 z-50 transition-all duration-250;
+  
+  &.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.nav-link {
+  @apply relative font-medium text-sm;
+  
+  &:hover {
+    &::after {
+      content: '';
+      @apply absolute bottom-0 left-0 w-full h-0.5 bg-cost-cyan;
+      transform: scaleX(0);
+      animation: scaleX 0.2s ease-out forwards;
+    }
+  }
+}
+
+// Mobile menu animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Mega menu styles
+.mega-menu {
+  @apply absolute top-full left-0 mt-2 bg-white rounded-lg shadow-glass border border-neutral-200 z-50;
+  min-width: 400px;
+  animation: fadeInScale 0.2s ease-out;
+}
+
+// Topic grid in mega menu
+.topic-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.topic-item {
+  @apply flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 cursor-pointer;
+  
+  &:hover {
+    background: rgba(53, 94, 105, 0.05);
+    transform: translateY(-1px);
+  }
+}
+
+.topic-icon {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200;
+  
+  &.disclosure {
+    background: rgba(53, 94, 105, 0.1);
+    color: #355E69;
+    
+    &:hover {
+      background: rgba(53, 94, 105, 0.2);
+    }
+  }
+  
+  &.procurement {
+    background: rgba(240, 173, 78, 0.1);
+    color: #F0AD4E;
+    
+    &:hover {
+      background: rgba(240, 173, 78, 0.2);
+    }
+  }
+  
+  &.assurance {
+    background: rgba(10, 174, 160, 0.1);
+    color: #0AAEA0;
+    
+    &:hover {
+      background: rgba(10, 174, 160, 0.2);
+    }
+  }
+}
+
+// Quick search results
+.quick-search-results {
+  @apply absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-glass border border-neutral-200 py-2 z-50;
+  max-height: 300px;
+  overflow-y: auto;
+  
+  .search-result-item {
+    @apply px-4 py-2 hover:bg-neutral-50 cursor-pointer flex items-center space-x-3 transition-colors duration-200;
+    
+    &:hover {
+      background: rgba(53, 94, 105, 0.05);
+    }
+    
+    .result-icon {
+      @apply w-4 h-4 text-neutral-400;
+    }
+    
+    .result-text {
+      @apply text-sm text-neutral-700 flex-1;
+    }
+    
+    .result-count {
+      @apply text-xs text-neutral-400;
+    }
+  }
+}
+
+// Mobile specific styles
+@media (max-width: 1023px) {
+  .mobile-menu {
+    @apply border-t border-neutral-200 pt-4;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .mobile-search {
+    @apply pb-4;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .mobile-topics {
+    @apply pl-4 space-y-2 mt-2;
+    animation: slideIn 0.2s ease-out;
+  }
+}
+
+// Loading states
+.loading-skeleton {
+  @apply animate-pulse bg-neutral-200 rounded;
+}
+
+// Focus states for accessibility
+.nav-link:focus,
+button:focus,
+input:focus {
+  @apply outline-none ring-2 ring-cost-cyan ring-offset-2;
+}
+
+// Smooth transitions
+* {
+  transition-property: color, background-color, border-color, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+// Backdrop blur support check
+@supports not (backdrop-filter: blur(16px)) {
+  .nav-header {
+    background: rgba(255, 255, 255, 0.98);
+  }
+}
