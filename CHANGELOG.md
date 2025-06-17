@@ -5,6 +5,12 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 ## [Unreleased] - 2025-01-17 15:30:00 UTC
 
 ### Fixed
+- **🎨 Homepage Display**: Fixed app.component.html to use router-outlet instead of demo content
+  - Removed demo content from app.component.html that was blocking the home component
+  - Now properly displays the C40-style home component at /home route
+  - Home component features exact C40 Knowledge Hub layout with hero, featured content, trending, and topic grid
+  - **Result**: Homepage now correctly mirrors the C40 Knowledge Hub design as specified
+
 - **🔧 Build Errors**: Resolved all TypeScript compilation issues
   - Fixed type export compatibility with isolatedModules
   - Added missing resource detail component template and styles
