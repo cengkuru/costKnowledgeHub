@@ -35,9 +35,6 @@ interface HomeTopic {
 export class HomeComponent implements OnInit, OnDestroy {
   featuredResources: Resource[] = [];
 
-  // Dropdown states
-  isKnowledgeDropdownOpen = false;
-  isFeaturesDropdownOpen = false;
 
   topicCategories: HomeTopic[] = [
     {
@@ -213,19 +210,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     return icons[iconName] || icons['database'];
   }
 
-  // Dropdown methods
-  toggleKnowledgeDropdown(): void {
-    this.isKnowledgeDropdownOpen = !this.isKnowledgeDropdownOpen;
-    this.isFeaturesDropdownOpen = false; // Close other dropdowns
-  }
-
-  toggleFeaturesDropdown(): void {
-    this.isFeaturesDropdownOpen = !this.isFeaturesDropdownOpen;
-    this.isKnowledgeDropdownOpen = false; // Close other dropdowns
-  }
-
-  closeDropdowns(): void {
-    this.isKnowledgeDropdownOpen = false;
-    this.isFeaturesDropdownOpen = false;
-  }
 }

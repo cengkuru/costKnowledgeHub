@@ -2,7 +2,19 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-17 15:30:00 UTC
+## [Unreleased] - 2025-01-17 16:00:00 UTC
+
+### Fixed - 2025-01-17 16:00:00 UTC
+- **🎯 Navigation Architecture**: Moved header navigation and footer to app.component.html for shared use across all routes
+  - Extracted header section (lines 4-155) from home.component.html to app.component.html
+  - Extracted footer section (lines 461-509) from home.component.html to app.component.html  
+  - Wrapped router-outlet with shared navigation components for consistent experience
+  - Updated home.component.html to only contain page-specific content (hero, knowledge sections)
+  - Updated home.component.ts to remove dropdown functionality (moved to app component)
+  - **Routes affected**: All routes now share consistent navigation header and footer
+  - **Result**: Navigation consistency across /home, /resources, and detail pages
+
+## [Previous] - 2025-01-17 15:30:00 UTC
 
 ### Added
 - **🎨 CoST Logo Integration**: Added official CoST logo to header navigation
@@ -26,6 +38,11 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
   - **Result**: More streamlined navigation experience
 
 ### Fixed
+- **🔧 Angular Assets Configuration**: Fixed angular.json to properly serve assets from src/assets
+  - Added "src/favicon.ico" and "src/assets" to assets configuration in both build and test
+  - Updated logo path from relative path to standard Angular assets path (assets/logo.png)
+  - **Result**: Logo and other assets now load correctly from standard Angular assets folder
+
 - **🎨 Homepage Display**: Fixed app.component.html to use router-outlet instead of demo content
   - Removed demo content from app.component.html that was blocking the home component
   - Now properly displays the C40-style home component at /home route

@@ -1,2 +1,210 @@
-<!-- Application Shell -->
-<router-outlet />
+<!-- C40 Knowledge Hub Style Layout -->
+<div class="min-h-screen bg-white" (click)="closeDropdowns()">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <img src="assets/logo.png" alt="CoST Logo" class="h-10 w-auto">
+          <h1 class="text-2xl font-bold text-cost-teal">CoST Knowledge Hub</h1>
+        </div>
+
+                <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+                    <!-- Knowledge Dropdown -->
+          <div class="relative" (click)="$event.stopPropagation()">
+            <button
+              (click)="toggleKnowledgeDropdown()"
+              class="flex items-center space-x-1 text-gray-700 hover:text-cost-teal transition-colors"
+              [class.text-cost-teal]="isKnowledgeDropdownOpen">
+              <span>Knowledge</span>
+              <svg class="w-4 h-4 transition-transform duration-200"
+                   [class.rotate-180]="isKnowledgeDropdownOpen"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <!-- Knowledge Dropdown Menu -->
+            <div *ngIf="isKnowledgeDropdownOpen"
+                 class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <a routerLink="/resources"
+                 [queryParams]="{type: 'guide'}"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                Implementation Guides
+              </a>
+              <a routerLink="/resources"
+                 [queryParams]="{type: 'case-study'}"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                Case Studies
+              </a>
+              <a routerLink="/resources"
+                 [queryParams]="{type: 'report'}"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                Research Reports
+              </a>
+              <a routerLink="/resources"
+                 [queryParams]="{type: 'policy'}"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                Policy Briefs
+              </a>
+              <a routerLink="/resources"
+                 [queryParams]="{type: 'tool'}"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                Tools & Templates
+              </a>
+              <hr class="my-2">
+              <a routerLink="/resources"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm font-medium text-cost-teal hover:bg-gray-50">
+                Browse All Knowledge →
+              </a>
+            </div>
+          </div>
+
+                    <!-- Features Dropdown -->
+          <div class="relative" (click)="$event.stopPropagation()">
+            <button
+              (click)="toggleFeaturesDropdown()"
+              class="flex items-center space-x-1 text-gray-700 hover:text-cost-teal transition-colors"
+              [class.text-cost-teal]="isFeaturesDropdownOpen">
+              <span>Features</span>
+              <svg class="w-4 h-4 transition-transform duration-200"
+                   [class.rotate-180]="isFeaturesDropdownOpen"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <!-- Features Dropdown Menu -->
+            <div *ngIf="isFeaturesDropdownOpen"
+                 class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <a href="#search"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                  <span>Advanced Search</span>
+                </div>
+              </a>
+              <a href="#filters"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                  </svg>
+                  <span>Smart Filters</span>
+                </div>
+              </a>
+              <a href="#languages"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                  </svg>
+                  <span>Multi-language Support</span>
+                </div>
+              </a>
+              <a href="#collaboration"
+                 (click)="closeDropdowns()"
+                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  <span>Collaboration Tools</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Right side -->
+        <div class="flex items-center space-x-4">
+          <!-- Search Icon -->
+          <button class="p-2 text-gray-600 hover:text-cost-teal transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </button>
+
+          <!-- Language Toggle -->
+          <app-language-toggle></app-language-toggle>
+
+          <!-- Auth Buttons -->
+          <div class="flex items-center space-x-2">
+            <button class="text-gray-700 hover:text-cost-teal transition-colors font-medium">LOGIN</button>
+            <span class="text-gray-300">|</span>
+            <button class="text-gray-700 hover:text-cost-teal transition-colors font-medium">REGISTER</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <router-outlet />
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-8">
+
+        <div>
+          <h4 class="font-semibold mb-4">CoST Knowledge Hub</h4>
+          <p class="text-gray-400 text-sm">
+            Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Knowledge</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Implementation Guides</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Research Reports</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Policy Briefs</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Topics</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Data Disclosure</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Independent Assurance</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Public Procurement</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Project Monitoring</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Connect</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">About CoST</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Newsletter</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Social Media</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2025 CoST Knowledge Hub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
