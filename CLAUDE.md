@@ -488,6 +488,167 @@ npm run logs
 - Use TranslateService in components
 - Keep translations synchronized between files
 
+## 🌐 MANDATORY TRANSLATION REQUIREMENTS
+
+**⚠️ CRITICAL RULE**: ALL user-facing text MUST be translatable. NEVER use hardcoded strings in templates.
+
+### ✅ REQUIRED FOR ALL NEW COMPONENTS:
+
+#### 1. **Translation Keys in i18n Files**
+Every new component MUST add translation keys to ALL three i18n files:
+```bash
+# Required files to update
+src/assets/i18n/en.json    # English (primary)
+src/assets/i18n/es.json    # Spanish
+src/assets/i18n/pt.json    # Portuguese
+```
+
+#### 2. **Component Translation Integration**
+```typescript
+// MANDATORY: Import and inject i18n service
+import { I18nService } from '../../core/services/i18n.service';
+
+constructor(public i18nService: I18nService) {}
+
+// Use in templates
+{{ i18nService.t('component.textKey') }}
+```
+
+#### 3. **Translation Key Naming Convention**
+```json
+{
+  "componentName": {
+    "title": "Component Title",
+    "subtitle": "Component subtitle",
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "labels": {
+      "email": "Email Address",
+      "password": "Password"
+    },
+    "messages": {
+      "success": "Operation successful",
+      "error": "Error occurred"
+    }
+  }
+}
+```
+
+#### 4. **FORBIDDEN Practices**
+```html
+<!-- ❌ NEVER DO THIS -->
+<h1>Knowledge Resources</h1>
+<button>Login</button>
+<p>Loading...</p>
+
+<!-- ✅ ALWAYS DO THIS -->
+<h1>{{ i18nService.t('resourceList.title') }}</h1>
+<button>{{ i18nService.t('header.login') }}</button>
+<p>{{ i18nService.t('common.loading') }}</p>
+```
+
+### 📋 NEW COMPONENT TRANSLATION CHECKLIST
+
+Before creating ANY new component, verify:
+
+- [ ] ✅ **Translation keys added to en.json**
+- [ ] ✅ **Translation keys added to es.json** 
+- [ ] ✅ **Translation keys added to pt.json**
+- [ ] ✅ **I18nService imported and injected**
+- [ ] ✅ **All text uses i18nService.t() calls**
+- [ ] ✅ **NO hardcoded strings in template**
+- [ ] ✅ **Error messages translated**
+- [ ] ✅ **Button text translated**
+- [ ] ✅ **Form labels translated**
+- [ ] ✅ **Placeholders translated**
+
+### 🔄 TRANSLATION MAINTENANCE
+
+#### When Adding New Text:
+1. **Add to English first** (en.json)
+2. **Translate to Spanish** (es.json) 
+3. **Translate to Portuguese** (pt.json)
+4. **Update component** to use i18n service
+5. **Test all languages** work correctly
+
+#### Translation Quality Standards:
+- **Contextual Accuracy**: Translations fit the infrastructure/CoST domain
+- **Professional Tone**: Maintain formal, professional language
+- **Consistency**: Use same terms across the application
+- **Cultural Adaptation**: Consider regional differences
+
+### 🚨 ENFORCEMENT RULES
+
+#### Build-Time Checks:
+- **Linting Rule**: Components with hardcoded strings should fail lint
+- **Code Review**: All PRs must verify translation completeness
+- **Testing**: Language switching must be tested
+
+#### Development Workflow:
+```bash
+# 1. Create component with translations
+ng generate component features/my-component
+
+# 2. Add translation keys to ALL i18n files
+# 3. Use i18nService in component
+# 4. Test language switching
+
+npm run build  # Must pass with no hardcoded strings
+```
+
+### 📚 EXAMPLES
+
+#### Component Structure:
+```typescript
+// my-component.component.ts
+export class MyComponent {
+  constructor(public i18nService: I18nService) {}
+}
+```
+
+```html
+<!-- my-component.component.html -->
+<div class="component">
+  <h2>{{ i18nService.t('myComponent.title') }}</h2>
+  <p>{{ i18nService.t('myComponent.description') }}</p>
+  <button>{{ i18nService.t('myComponent.actionButton') }}</button>
+</div>
+```
+
+#### Translation Files:
+```json
+// en.json
+{
+  "myComponent": {
+    "title": "My Component Title",
+    "description": "Component description text",
+    "actionButton": "Take Action"
+  }
+}
+
+// es.json  
+{
+  "myComponent": {
+    "title": "Título de Mi Componente",
+    "description": "Texto de descripción del componente", 
+    "actionButton": "Tomar Acción"
+  }
+}
+
+// pt.json
+{
+  "myComponent": {
+    "title": "Título do Meu Componente",
+    "description": "Texto de descrição do componente",
+    "actionButton": "Tomar Ação"
+  }
+}
+```
+
+**REMEMBER**: No exceptions - ALL user-facing text must support translation from day one!
+
 
 ### Update Process:
 1. Make your code changes
