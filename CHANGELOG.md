@@ -6,11 +6,11 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ### Fixed - 2025-01-17 19:45:00 UTC
 - **🔗 Footer Connect Links**: Made footer "Connect" section links functional with proper navigation
-  - "About CoST" now links to external CoST official website
+  - "About CoST" now links to correct CoST official website (https://infrastructuretransparency.org/about-us/)
   - "Contact Us" opens email client for direct contact
   - "Newsletter" navigates to resources with newsletter filter
-  - "Social Media" links to external CoST social media profiles
-  - **Result**: Footer links now provide functional navigation instead of dead links
+  - "Social Media" links to correct CoST LinkedIn page (https://www.linkedin.com/company/costransparency/posts/)
+  - **Result**: Footer links now provide functional navigation with accurate URLs instead of dead links
 
 ## [Previous] - 2025-01-17 19:30:00 UTC
 
@@ -230,9 +230,12 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 **Translation System**: Fixed critical translation issues affecting entire application
 - Fixed app.component.ts missing I18nService injection
+- Fixed auth/login.component.ts missing I18nService injection
 - Replaced all hardcoded text strings in app.component.html with proper translation IDs
+- Replaced all hardcoded text strings in login.component.html with proper translation IDs
 - Enabled proper language transmission to route outlets and child components
 - Header navigation, dropdown menus, and footer now respond to language changes
+- Login page now fully translatable (form labels, placeholders, messages)
 - Complete multilingual support now working across all main layout elements
 
 **Impact**: Language selection now properly updates all text throughout the application including:
@@ -240,7 +243,8 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 - Navigation menus (Knowledge, Features)
 - Dropdown menu items (Implementation Guides, Case Studies, etc.)
 - Footer sections and links
-- All main layout components
+- Login form (labels, placeholders, demo mode notice)
+- All main layout and authentication components
 
 ## Previous Changes
 

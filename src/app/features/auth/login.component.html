@@ -98,7 +98,7 @@
               </svg>
             </span>
 
-            {{ loading ? 'Signing in...' : 'Sign in' }}
+            {{ loading ? i18nService.t('auth.signingIn') : i18nService.t('auth.signIn') }}
           </button>
         </div>
       </form>
@@ -111,7 +111,7 @@
           </svg>
           <div class="ml-3">
             <p class="text-sm text-gray-600">
-              <strong class="text-cost-teal">Demo Mode:</strong> Use any email and password to sign in and explore the platform.
+              <strong class="text-cost-teal">{{ i18nService.t('auth.demoMode') }}</strong> {{ i18nService.t('auth.demoDescription') }}
             </p>
           </div>
         </div>
@@ -122,7 +122,7 @@
         <button
           (click)="navigateBack()"
           class="text-sm text-cost-teal hover:text-cost-cyan font-medium">
-          ← Back to Knowledge Hub
+          {{ i18nService.t('auth.backToHub') }}
         </button>
       </div>
 
@@ -132,7 +132,7 @@
   <!-- Footer -->
   <div class="mt-8 text-center">
     <p class="text-xs text-gray-500">
-      &copy; 2025 CoST Knowledge Hub. Leading insight for infrastructure transparency.
+      {{ i18nService.t('auth.copyrightFooter') }}
     </p>
   </div>
 

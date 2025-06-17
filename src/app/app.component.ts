@@ -126,7 +126,7 @@ export class AppComponent {
   // Footer navigation methods
   navigateToAboutCoST(): void {
     // Link to official CoST website
-    window.open('https://www.infrastructuretransparency.org/about-cost/', '_blank');
+    window.open('https://infrastructuretransparency.org/about-us/', '_blank');
   }
 
   navigateToContact(): void {
@@ -142,7 +142,7 @@ export class AppComponent {
 
   navigateToSocialMedia(): void {
     // Link to CoST social media - LinkedIn
-    window.open('https://www.linkedin.com/company/cost-infrastructure-transparency/', '_blank');
+    window.open('https://www.linkedin.com/company/costransparency/posts/?feedView=all', '_blank');
   }
 
   // Footer knowledge section navigation
