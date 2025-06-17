@@ -90,6 +90,28 @@ export class AppComponent {
     });
   }
 
+  // Top navigation methods
+  navigateToSearch(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/resources'], { 
+      queryParams: { search: 'true' } 
+    }).then(() => {
+      // Focus on search input after navigation
+      setTimeout(() => {
+        const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }, 100);
+    });
+  }
+
+  navigateToLogin(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/login']);
+  }
+
   private scrollToElement(elementId: string): void {
     const element = document.getElementById(elementId);
     if (element) {

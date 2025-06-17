@@ -111,9 +111,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           filters.searchQuery = params['q'];
         }
 
-        // Handle advanced search mode
-        if (params['advanced'] === 'true') {
-          // Focus on search bar when in advanced mode
+        // Handle advanced search mode or top nav search
+        if (params['advanced'] === 'true' || params['search'] === 'true') {
+          // Focus on search bar when in advanced mode or from top nav
           setTimeout(() => {
             const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
             if (searchInput) {

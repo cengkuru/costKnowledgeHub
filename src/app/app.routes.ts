@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/detail/resource-detail.component').then(m => m.ResourceDetailComponent)
   },
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent)
+  },
+  {
     path: '**',
     redirectTo: '/home'
   }
