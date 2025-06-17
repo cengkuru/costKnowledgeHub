@@ -34,6 +34,11 @@ interface HomeTopic {
 })
 export class HomeComponent implements OnInit, OnDestroy {
   featuredResources: Resource[] = [];
+
+  // Dropdown states
+  isKnowledgeDropdownOpen = false;
+  isFeaturesDropdownOpen = false;
+
   topicCategories: HomeTopic[] = [
     {
       id: 'disclosure',
@@ -206,5 +211,21 @@ export class HomeComponent implements OnInit, OnDestroy {
       'megaphone': 'M7 4V2a1 1 0 011-1h1a1 1 0 011 1v2h3a1 1 0 011 1v2a1 1 0 01-1 1h-3v2a1 1 0 01-1 1H8a1 1 0 01-1-1V8H4a1 1 0 01-1-1V5a1 1 0 011-1h3z'
     };
     return icons[iconName] || icons['database'];
+  }
+
+  // Dropdown methods
+  toggleKnowledgeDropdown(): void {
+    this.isKnowledgeDropdownOpen = !this.isKnowledgeDropdownOpen;
+    this.isFeaturesDropdownOpen = false; // Close other dropdowns
+  }
+
+  toggleFeaturesDropdown(): void {
+    this.isFeaturesDropdownOpen = !this.isFeaturesDropdownOpen;
+    this.isKnowledgeDropdownOpen = false; // Close other dropdowns
+  }
+
+  closeDropdowns(): void {
+    this.isKnowledgeDropdownOpen = false;
+    this.isFeaturesDropdownOpen = false;
   }
 }
