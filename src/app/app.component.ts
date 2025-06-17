@@ -122,4 +122,76 @@ export class AppComponent {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+
+  // Footer navigation methods
+  navigateToAboutCoST(): void {
+    // Link to official CoST website
+    window.open('https://www.infrastructuretransparency.org/about-cost/', '_blank');
+  }
+
+  navigateToContact(): void {
+    // Open email client for contact
+    window.location.href = 'mailto:info@infrastructuretransparency.org?subject=Knowledge Hub Inquiry';
+  }
+
+  navigateToNewsletter(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'newsletter' }
+    });
+  }
+
+  navigateToSocialMedia(): void {
+    // Link to CoST social media - LinkedIn
+    window.open('https://www.linkedin.com/company/cost-infrastructure-transparency/', '_blank');
+  }
+
+  // Footer knowledge section navigation
+  navigateToImplementationGuides(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'guide' }
+    });
+  }
+
+  navigateToCaseStudies(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'case-study' }
+    });
+  }
+
+  navigateToResearchReports(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'report' }
+    });
+  }
+
+  navigateToPolicyBriefs(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'policy' }
+    });
+  }
+
+  // Footer topics section navigation
+  navigateToDataDisclosure(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { topic: 'disclosure' }
+    });
+  }
+
+  navigateToIndependentAssurance(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { topic: 'assurance' }
+    });
+  }
+
+  navigateToPublicProcurement(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { topic: 'procurement' }
+    });
+  }
+
+  navigateToProjectMonitoring(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { topic: 'monitoring' }
+    });
+  }
 }

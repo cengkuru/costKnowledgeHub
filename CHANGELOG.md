@@ -2,7 +2,17 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-17 19:30:00 UTC
+## [Unreleased] - 2025-01-17 19:45:00 UTC
+
+### Fixed - 2025-01-17 19:45:00 UTC
+- **🔗 Footer Connect Links**: Made footer "Connect" section links functional with proper navigation
+  - "About CoST" now links to external CoST official website
+  - "Contact Us" opens email client for direct contact
+  - "Newsletter" navigates to resources with newsletter filter
+  - "Social Media" links to external CoST social media profiles
+  - **Result**: Footer links now provide functional navigation instead of dead links
+
+## [Previous] - 2025-01-17 19:30:00 UTC
 
 ### Added - 2025-01-17 19:30:00 UTC
 - **🔗 Clickable Home Page Items**: Made all home page items clickable to navigate to resource detail pages

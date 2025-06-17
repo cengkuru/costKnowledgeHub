@@ -177,30 +177,30 @@
         <div>
           <h4 class="font-semibold mb-4">{{ i18nService.t('footer.knowledge') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.implementationGuides') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.caseStudies') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.researchReports') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.policyBriefs') }}</a></li>
+            <li><button (click)="navigateToImplementationGuides()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.implementationGuides') }}</button></li>
+            <li><button (click)="navigateToCaseStudies()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.caseStudies') }}</button></li>
+            <li><button (click)="navigateToResearchReports()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.researchReports') }}</button></li>
+            <li><button (click)="navigateToPolicyBriefs()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.policyBriefs') }}</button></li>
           </ul>
         </div>
 
         <div>
           <h4 class="font-semibold mb-4">{{ i18nService.t('footer.topics') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.dataDisclosure') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.independentAssurance') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.publicProcurement') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.projectMonitoring') }}</a></li>
+            <li><button (click)="navigateToDataDisclosure()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.dataDisclosure') }}</button></li>
+            <li><button (click)="navigateToIndependentAssurance()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.independentAssurance') }}</button></li>
+            <li><button (click)="navigateToPublicProcurement()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.publicProcurement') }}</button></li>
+            <li><button (click)="navigateToProjectMonitoring()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.projectMonitoring') }}</button></li>
           </ul>
         </div>
 
         <div>
           <h4 class="font-semibold mb-4">{{ i18nService.t('footer.connect') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.aboutCost') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.contactUs') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.newsletter') }}</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.socialMedia') }}</a></li>
+            <li><button (click)="navigateToAboutCoST()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.aboutCost') }}</button></li>
+            <li><button (click)="navigateToContact()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.contactUs') }}</button></li>
+            <li><button (click)="navigateToNewsletter()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.newsletter') }}</button></li>
+            <li><button (click)="navigateToSocialMedia()" class="hover:text-white transition-colors text-left">{{ i18nService.t('footer.socialMedia') }}</button></li>
           </ul>
         </div>
 
