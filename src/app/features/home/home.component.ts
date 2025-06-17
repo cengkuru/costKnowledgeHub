@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { ResourceCardComponent } from '../../shared/components/resource-card/resource-card.component';
@@ -139,7 +139,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private resourceService: ResourceService,
-    public i18nService: I18nService
+    public i18nService: I18nService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -208,6 +209,35 @@ export class HomeComponent implements OnInit, OnDestroy {
       'megaphone': 'M7 4V2a1 1 0 011-1h1a1 1 0 011 1v2h3a1 1 0 011 1v2a1 1 0 01-1 1h-3v2a1 1 0 01-1 1H8a1 1 0 01-1-1V8H4a1 1 0 01-1-1V5a1 1 0 011-1h3z'
     };
     return icons[iconName] || icons['database'];
+  }
+
+  // Navigation methods for clickable items
+  navigateToFeaturedResource(resourceId: string): void {
+    this.router.navigate(['/resources', resourceId]);
+  }
+
+  navigateToTopicResources(topicId: string): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { topic: topicId }
+    });
+  }
+
+  navigateToGuideResources(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'guide' }
+    });
+  }
+
+  navigateToReportResources(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'report' }
+    });
+  }
+
+  navigateToPolicyResources(): void {
+    this.router.navigate(['/resources'], {
+      queryParams: { type: 'policy' }
+    });
   }
 
 }

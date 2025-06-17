@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { I18nService } from '../../core/services/i18n.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,10 @@ export class LoginComponent {
   loading = false;
   errorMessage = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    public i18nService: I18nService
+  ) {}
 
   onSubmit(): void {
     if (!this.email || !this.password) {
@@ -31,7 +35,7 @@ export class LoginComponent {
     // Simulate login process
     setTimeout(() => {
       this.loading = false;
-      
+
       // For demo purposes, accept any email/password combination
       if (this.email && this.password) {
         // Simulate successful login

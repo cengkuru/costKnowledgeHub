@@ -10,7 +10,7 @@
         <div class="flex items-center space-x-3">
           <a routerLink="/home" class="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer">
             <img src="assets/logo.png" alt="CoST Logo" class="h-32 w-auto">
-            <h1 class="text-2xl font-bold text-cost-teal">CoST Knowledge Hub</h1>
+            <h1 class="text-2xl font-bold text-cost-teal">{{ i18nService.t('home.title') }}</h1>
           </a>
         </div>
 
@@ -22,7 +22,7 @@
               (click)="toggleKnowledgeDropdown()"
               class="flex items-center space-x-1 text-gray-700 hover:text-cost-teal transition-colors"
               [class.text-cost-teal]="isKnowledgeDropdownOpen">
-              <span>Knowledge</span>
+              <span>{{ i18nService.t('header.knowledge') }}</span>
               <svg class="w-4 h-4 transition-transform duration-200"
                    [class.rotate-180]="isKnowledgeDropdownOpen"
                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,37 +37,37 @@
                  [queryParams]="{type: 'guide'}"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
-                Implementation Guides
+                {{ i18nService.t('header.implementationGuides') }}
               </a>
               <a routerLink="/resources"
                  [queryParams]="{type: 'case-study'}"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
-                Case Studies
+                {{ i18nService.t('header.caseStudies') }}
               </a>
               <a routerLink="/resources"
                  [queryParams]="{type: 'report'}"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
-                Research Reports
+                {{ i18nService.t('header.researchReports') }}
               </a>
               <a routerLink="/resources"
                  [queryParams]="{type: 'policy'}"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
-                Policy Briefs
+                {{ i18nService.t('header.policyBriefs') }}
               </a>
               <a routerLink="/resources"
                  [queryParams]="{type: 'tool'}"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-cost-teal">
-                Tools & Templates
+                {{ i18nService.t('header.toolsTemplates') }}
               </a>
               <hr class="my-2">
               <a routerLink="/resources"
                  (click)="closeDropdowns()"
                  class="block px-4 py-2 text-sm font-medium text-cost-teal hover:bg-gray-50">
-                Browse All Knowledge →
+                {{ i18nService.t('header.browseAll') }}
               </a>
             </div>
           </div>
@@ -78,7 +78,7 @@
               (click)="toggleFeaturesDropdown()"
               class="flex items-center space-x-1 text-gray-700 hover:text-cost-teal transition-colors"
               [class.text-cost-teal]="isFeaturesDropdownOpen">
-              <span>Features</span>
+              <span>{{ i18nService.t('header.features') }}</span>
               <svg class="w-4 h-4 transition-transform duration-200"
                    [class.rotate-180]="isFeaturesDropdownOpen"
                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
-                  <span>Advanced Search</span>
+                  <span>{{ i18nService.t('header.advancedSearch') }}</span>
                 </div>
               </button>
               <button
@@ -106,7 +106,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                   </svg>
-                  <span>Smart Filters</span>
+                  <span>{{ i18nService.t('header.smartFilters') }}</span>
                 </div>
               </button>
               <button
@@ -116,7 +116,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
                   </svg>
-                  <span>Multi-language Support</span>
+                  <span>{{ i18nService.t('header.multiLanguageSupport') }}</span>
                 </div>
               </button>
               <button
@@ -126,7 +126,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                   </svg>
-                  <span>Collaboration Tools</span>
+                  <span>{{ i18nService.t('header.collaborationTools') }}</span>
                 </div>
               </button>
             </div>
@@ -139,7 +139,7 @@
           <button
             (click)="navigateToSearch()"
             class="p-2 text-gray-600 hover:text-cost-teal transition-colors"
-            title="Search resources">
+            [title]="i18nService.t('header.searchTitle')">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
@@ -152,7 +152,7 @@
           <button
             (click)="navigateToLogin()"
             class="bg-cost-teal hover:bg-cost-teal/90 text-white px-4 py-2 rounded font-medium transition-colors">
-            LOGIN
+            {{ i18nService.t('header.login') }}
           </button>
         </div>
       </div>
@@ -168,46 +168,46 @@
       <div class="grid md:grid-cols-4 gap-8">
 
         <div>
-          <h4 class="font-semibold mb-4">CoST Knowledge Hub</h4>
+          <h4 class="font-semibold mb-4">{{ i18nService.t('footer.title') }}</h4>
           <p class="text-gray-400 text-sm">
-            Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability.
+            {{ i18nService.t('footer.description') }}
           </p>
         </div>
 
         <div>
-          <h4 class="font-semibold mb-4">Knowledge</h4>
+          <h4 class="font-semibold mb-4">{{ i18nService.t('footer.knowledge') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">Implementation Guides</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Research Reports</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Policy Briefs</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.implementationGuides') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.caseStudies') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.researchReports') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.policyBriefs') }}</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 class="font-semibold mb-4">Topics</h4>
+          <h4 class="font-semibold mb-4">{{ i18nService.t('footer.topics') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">Data Disclosure</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Independent Assurance</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Public Procurement</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Project Monitoring</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.dataDisclosure') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.independentAssurance') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.publicProcurement') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.projectMonitoring') }}</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 class="font-semibold mb-4">Connect</h4>
+          <h4 class="font-semibold mb-4">{{ i18nService.t('footer.connect') }}</h4>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#" class="hover:text-white transition-colors">About CoST</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Newsletter</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Social Media</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.aboutCost') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.contactUs') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.newsletter') }}</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">{{ i18nService.t('footer.socialMedia') }}</a></li>
           </ul>
         </div>
 
       </div>
 
       <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-        <p>&copy; 2025 CoST Knowledge Hub. All rights reserved.</p>
+        <p>{{ i18nService.t('footer.copyright') }}</p>
       </div>
     </div>
   </footer>

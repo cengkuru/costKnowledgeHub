@@ -274,4 +274,21 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
   trackByResourceId(index: number, resource: Resource): string {
     return resource.id;
   }
+
+  getDifficultyLevel(): string {
+    if (!this.resource?.metadata?.difficulty) return 'Intermediate';
+    return this.resource.metadata.difficulty.charAt(0).toUpperCase() + this.resource.metadata.difficulty.slice(1);
+  }
+
+  getImplementationTime(): string {
+    return this.resource?.metadata?.implementationTime || '6-12 months';
+  }
+
+  getTargetAudience(): string[] {
+    return this.resource?.metadata?.targetAudience || ['Government', 'Civil Society'];
+  }
+
+  getPrerequisites(): string[] {
+    return this.resource?.metadata?.prerequisites || ['Digital Infrastructure', 'Legal Framework'];
+  }
 }

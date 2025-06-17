@@ -2,7 +2,25 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-17 17:00:00 UTC
+## [Unreleased] - 2025-01-17 19:30:00 UTC
+
+### Added - 2025-01-17 19:30:00 UTC
+- **🔗 Clickable Home Page Items**: Made all home page items clickable to navigate to resource detail pages
+  - Featured articles and cards now link to specific resource detail pages (src/app/features/home/home.component.html:41-298)
+  - Added click handlers for topic cards to navigate with proper filters (src/app/features/home/home.component.ts:162-185)
+  - Enhanced navigation with resource-specific routing for better user experience
+  - **Routes**: Featured items → /resources/[id], Topic cards → /resources?topic=[topic]
+  - **Result**: Users can now click any home page item to access relevant detailed content
+
+- **🎨 Resource Type-Specific Detail Layouts**: Enhanced resource detail component with distinct designs for different resource types
+  - Case studies display impact metrics, savings data, and visual storytelling layout
+  - Datasets show data structure, download formats, and technical specifications
+  - Implementation guides feature step-by-step layouts with progress indicators
+  - Policy briefs emphasize key findings and recommendation sections
+  - Tools include installation guides and usage instructions
+  - **Result**: Each resource type now has an optimized layout that matches its content structure and user needs
+
+## [Previous] - 2025-01-17 17:00:00 UTC
 
 ### Added - 2025-01-17 17:00:00 UTC
 - **🌐 Comprehensive Translation Coverage**: Complete i18n implementation across all app sections
@@ -195,3 +213,25 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 - Mock data patterns established for easy migration to Firebase Firestore
 - Complete translation coverage across all user-facing text
 - Responsive design tested across mobile, tablet, and desktop viewports 
+
+## [Unreleased] - 2025-01-27
+
+### 🐛 Bug Fixes
+
+**Translation System**: Fixed critical translation issues affecting entire application
+- Fixed app.component.ts missing I18nService injection
+- Replaced all hardcoded text strings in app.component.html with proper translation IDs
+- Enabled proper language transmission to route outlets and child components
+- Header navigation, dropdown menus, and footer now respond to language changes
+- Complete multilingual support now working across all main layout elements
+
+**Impact**: Language selection now properly updates all text throughout the application including:
+- Site title and branding
+- Navigation menus (Knowledge, Features)
+- Dropdown menu items (Implementation Guides, Case Studies, etc.)
+- Footer sections and links
+- All main layout components
+
+## Previous Changes
+
+All previous changelog entries preserved as they were... 

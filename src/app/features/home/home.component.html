@@ -38,7 +38,8 @@
       <div class="grid lg:grid-cols-2 gap-8">
 
         <!-- Main Featured Article -->
-        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+             (click)="navigateToFeaturedResource('res-001')">
           <div class="aspect-video bg-gradient-to-br from-cost-teal to-cost-cyan relative">
             <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                  alt="Infrastructure Guide"
@@ -54,7 +55,7 @@
             <p class="text-gray-600 mb-4">
               Transparency and accountability are the clearest ways to get around a city, benefiting all users. Community engagement and infrastructure disclosure are the keys to make it happen.
             </p>
-            <a href="#" class="text-cost-teal hover:text-cost-cyan font-medium">Learn more →</a>
+            <button class="text-cost-teal hover:text-cost-cyan font-medium">Learn more →</button>
           </div>
         </div>
 
@@ -62,7 +63,8 @@
         <div class="space-y-6">
 
           <!-- Implementation Guides Card -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+               (click)="navigateToFeaturedResource('res-004')">
             <div class="flex">
               <div class="w-32 h-24 bg-gradient-to-br from-cost-amber to-orange-400 flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
@@ -79,7 +81,8 @@
           </div>
 
           <!-- Project Monitoring Card -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+               (click)="navigateToReportResources()">
             <div class="aspect-video bg-gradient-to-br from-cost-cyan to-blue-400 relative">
               <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
                    alt="Project Monitoring"
@@ -110,7 +113,8 @@
       <!-- Trending Grid -->
       <div class="grid md:grid-cols-2 gap-6">
 
-        <div class="flex space-x-4">
+        <div class="flex space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+             (click)="navigateToPolicyResources()">
           <div class="w-24 h-18 bg-gradient-to-br from-cost-teal to-cost-cyan rounded flex-shrink-0">
             <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                  alt="Policy Brief"
@@ -124,7 +128,8 @@
           </div>
         </div>
 
-        <div class="flex space-x-4">
+        <div class="flex space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+             (click)="navigateToGuideResources()">
           <div class="w-24 h-18 bg-gradient-to-br from-cost-amber to-orange-400 rounded flex-shrink-0">
             <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                  alt="Implementation Guide"
@@ -202,7 +207,8 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- Data Disclosure -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('disclosure')">
           <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Data Disclosure"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -213,7 +219,8 @@
         </div>
 
         <!-- Independent Assurance -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('assurance')">
           <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
                alt="Independent Assurance"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -224,7 +231,8 @@
         </div>
 
         <!-- Public Procurement -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('procurement')">
           <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Public Procurement"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -235,7 +243,8 @@
         </div>
 
         <!-- Project Monitoring -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('monitoring')">
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Project Monitoring"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -246,7 +255,8 @@
         </div>
 
         <!-- Multi-stakeholder Working -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('stakeholder')">
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Multi-stakeholder Working"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -257,7 +267,8 @@
         </div>
 
         <!-- Social Accountability -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('accountability')">
           <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Social Accountability"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -268,7 +279,8 @@
         </div>
 
         <!-- Governance Frameworks -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('governance')">
           <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Governance Frameworks"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -279,7 +291,8 @@
         </div>
 
         <!-- Capacity Building -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToTopicResources('capacity')">
           <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                alt="Capacity Building"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -290,7 +303,8 @@
         </div>
 
         <!-- Digital Tools -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video">
+        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+             (click)="navigateToFeaturedResource('res-006')">
           <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
                alt="Digital Tools"
                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">

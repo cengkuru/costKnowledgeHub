@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { LanguageToggleComponent } from './shared/components/language-toggle/language-toggle.component';
+import { I18nService } from './core/services/i18n.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,10 @@ export class AppComponent {
   isKnowledgeDropdownOpen = false;
   isFeaturesDropdownOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    public i18nService: I18nService
+  ) {}
 
   // Dropdown methods
   toggleKnowledgeDropdown(): void {
@@ -43,8 +47,8 @@ export class AppComponent {
   // Features dropdown navigation methods
   navigateToAdvancedSearch(): void {
     this.closeDropdowns();
-    this.router.navigate(['/resources'], { 
-      queryParams: { advanced: 'true' } 
+    this.router.navigate(['/resources'], {
+      queryParams: { advanced: 'true' }
     }).then(() => {
       // Scroll to search section after navigation
       setTimeout(() => {
@@ -82,19 +86,19 @@ export class AppComponent {
   navigateToCollaboration(): void {
     this.closeDropdowns();
     // Navigate to resources and filter by collaboration tools
-    this.router.navigate(['/resources'], { 
-      queryParams: { 
+    this.router.navigate(['/resources'], {
+      queryParams: {
         topic: 'collaboration',
         type: 'tool'
-      } 
+      }
     });
   }
 
   // Top navigation methods
   navigateToSearch(): void {
     this.closeDropdowns();
-    this.router.navigate(['/resources'], { 
-      queryParams: { search: 'true' } 
+    this.router.navigate(['/resources'], {
+      queryParams: { search: 'true' }
     }).then(() => {
       // Focus on search input after navigation
       setTimeout(() => {
