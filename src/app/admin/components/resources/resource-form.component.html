@@ -96,13 +96,12 @@
             </button>
           </div>
           
-          <div class="language-content">
+          <div class="language-content" formGroupName="title">
             <div *ngFor="let lang of languages" [hidden]="activeLanguage !== lang.value">
               <div class="input-wrapper">
                 <input
                   type="text"
                   [formControlName]="lang.value"
-                  formGroupName="title"
                   class="form-input"
                   [class.valid]="isFieldValid('title.' + lang.value)"
                   [class.invalid]="resourceForm.get('title.' + lang.value)?.invalid && resourceForm.get('title.' + lang.value)?.touched"
@@ -208,12 +207,11 @@
             </button>
           </div>
           
-          <div class="language-content">
+          <div class="language-content" formGroupName="description">
             <div *ngFor="let lang of languages" [hidden]="activeLanguage !== lang.value">
               <div class="textarea-wrapper">
                 <textarea
                   [formControlName]="lang.value"
-                  formGroupName="description"
                   class="form-textarea"
                   [class.valid]="isFieldValid('description.' + lang.value)"
                   [class.invalid]="resourceForm.get('description.' + lang.value)?.invalid && resourceForm.get('description.' + lang.value)?.touched"
@@ -342,7 +340,7 @@
           </div>
           
           <!-- File Upload Area for Each Language -->
-          <div class="language-content">
+          <div class="language-content" formGroupName="fileLinks">
             <div *ngFor="let lang of languages" [hidden]="activeFileLanguage !== lang.value">
               <app-file-upload
                 [showTitle]="false"
@@ -372,7 +370,6 @@
                 <input
                   type="url"
                   [formControlName]="lang.value"
-                  formGroupName="fileLinks"
                   class="form-input"
                   placeholder="File URL will appear here after upload"
                   readonly>
