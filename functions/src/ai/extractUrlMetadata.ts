@@ -1,30 +1,35 @@
 import * as functions from 'firebase-functions/v2';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { defineSecret } from 'firebase-functions/params';
-import * as corsModule from 'cors';
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-
-const cors = corsModule as any;
-const corsHandler = cors({ origin: true });
 const geminiApiKey = defineSecret('GEMINI_API_KEY');
 
 export const extractUrlMetadata = functions.https.onRequest(
   {
     secrets: [geminiApiKey],
     timeoutSeconds: 60,
-    memory: '512MiB'
+    memory: '512MiB',
+    cors: true
   },
   async (req, res) => {
-    corsHandler(req, res, async () => {
-      // Only allow POST requests
-      if (req.method !== 'POST') {
-        res.status(405).json({ success: false, error: 'Method not allowed' });
-        return;
-      }
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+      res.set('Access-Control-Allow-Methods', 'POST');
+      res.set('Access-Control-Allow-Headers', 'Content-Type');
+      res.set('Access-Control-Max-Age', '3600');
+      res.status(204).send('');
+      return;
+    }
 
-      try {
-        const { url } = req.body;
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      res.status(405).json({ success: false, error: 'Method not allowed' });
+      return;
+    }
+
+    try {
+      const { url } = req.body;
 
         if (!url) {
           res.status(400).json({ success: false, error: 'URL is required' });
@@ -149,13 +154,12 @@ export const extractUrlMetadata = functions.https.onRequest(
           metadata
         });
 
-      } catch (error: any) {
-        console.error('URL metadata extraction error:', error);
-        res.status(500).json({
-          success: false,
-          error: error.message || 'Failed to extract metadata from URL'
-        });
-      }
-    });
+    } catch (error: any) {
+      console.error('URL metadata extraction error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to extract metadata from URL'
+      });
+    }
   }
 );

@@ -1,4 +1,4 @@
-import { Timestamp } from '@angular/fire/firestore';
+// Timestamp type - Firebase Timestamp or Date
 
 export type ActivityType = 
   | 'resource_view'
@@ -17,7 +17,7 @@ export type ActivityType =
 export interface Activity {
   id: string;
   type: ActivityType;
-  timestamp: Timestamp | Date;
+  timestamp: any; // Firebase Timestamp or Date
   userId?: string; // Optional - only for authenticated users
   userEmail?: string; // Optional - only for authenticated users
   userRole?: string; // Optional - admin, editor, viewer
