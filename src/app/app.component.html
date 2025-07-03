@@ -150,9 +150,18 @@
 
           <!-- Auth Button -->
           <button
+            *ngIf="!(authService.isAuthenticated$ | async)"
             (click)="navigateToLogin()"
             class="bg-cost-teal hover:bg-cost-teal/90 text-white px-4 py-2 rounded font-medium transition-colors">
             {{ i18nService.t('header.login') }}
+          </button>
+          
+          <!-- Admin Link -->
+          <button
+            *ngIf="authService.isAuthenticated$ | async"
+            (click)="navigateToAdmin()"
+            class="bg-cost-teal hover:bg-cost-teal/90 text-white px-4 py-2 rounded font-medium transition-colors">
+            {{ i18nService.t('header.adminDashboard') }}
           </button>
         </div>
       </div>

@@ -1,13 +1,10 @@
 import * as functions from 'firebase-functions/v2';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { defineSecret } from 'firebase-functions/params';
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
 
 export const extractUrlMetadata = functions.https.onRequest(
   {
-    secrets: [geminiApiKey],
     timeoutSeconds: 60,
     memory: '512MiB',
     cors: true
@@ -80,7 +77,7 @@ export const extractUrlMetadata = functions.https.onRequest(
         let enhancedMetadata: any = basicMetadata;
         
         try {
-          const apiKey = geminiApiKey.value();
+          const apiKey = process.env.GEMINI_API_KEY;
           if (apiKey) {
             const genAI = new GoogleGenerativeAI(apiKey);
             const model = genAI.getGenerativeModel({ model: 'gemini-pro' });

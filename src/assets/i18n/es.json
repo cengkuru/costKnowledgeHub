@@ -127,7 +127,8 @@
     "multiLanguageSupport": "Soporte Multiidioma",
     "collaborationTools": "Herramientas de Colaboración",
     "searchTitle": "Buscar recursos",
-    "login": "INGRESAR"
+    "login": "INGRESAR",
+    "adminDashboard": "Panel de Administración"
   },
   "auth": {
     "signInTitle": "Iniciar sesión en CoST Knowledge Hub",

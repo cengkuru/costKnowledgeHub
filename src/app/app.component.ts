@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { LanguageToggleComponent } from './shared/components/language-toggle/language-toggle.component';
 import { I18nService } from './core/services/i18n.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    public i18nService: I18nService
+    public i18nService: I18nService,
+    public authService: AuthService
   ) {}
 
   // Dropdown methods
@@ -114,6 +116,11 @@ export class AppComponent {
   navigateToLogin(): void {
     this.closeDropdowns();
     this.router.navigate(['/login']);
+  }
+
+  navigateToAdmin(): void {
+    this.closeDropdowns();
+    this.router.navigate(['/admin']);
   }
 
   private scrollToElement(elementId: string): void {

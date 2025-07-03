@@ -4,6 +4,18 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Changed - 2025-01-03 23:15:00 UTC
+- **🔐 Navigation Bar Auth State: Show admin link instead of login when authenticated**
+  - Updated app.component.ts to inject AuthService for authentication state (src/app/app.component.ts:6,32)
+  - Added navigateToAdmin() method for routing to admin dashboard (src/app/app.component.ts:118-121)
+  - Modified navigation template to conditionally show login button or admin link (src/app/app.component.html:152-165)
+  - Added "adminDashboard" translation key in all languages:
+    - English: "Admin Dashboard" (src/assets/i18n/en.json:131)
+    - Spanish: "Panel de Administración" (src/assets/i18n/es.json:131)
+    - Portuguese: "Painel de Administração" (src/assets/i18n/pt.json:131)
+  - Uses async pipe with authService.isAuthenticated$ observable for reactive UI updates
+  - Maintains consistent button styling for both authenticated and unauthenticated states
+
 ### Added - 2025-01-03 22:30:00 UTC
 - **📄 Independent Review Report Resource Type: Streamlined integration for CoST review reports**
   - Added 'independent-review' as a new resource type (src/app/core/models/resource.model.ts:15)
