@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onRequest } from 'firebase-functions/v2/https';
+import { beforeUserCreated } from 'firebase-functions/v2/identity';
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
@@ -230,7 +231,7 @@ export const syncAuthUserToFirestore = onCall(async (request) => {
   } catch (error) {
     logger.error('Error syncing user to Firestore:', error);
     
-    if (error instanceof admin.auth.AuthError && error.code === 'auth/user-not-found') {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'auth/user-not-found') {
       throw new HttpsError(
         'not-found',
         'User not found in Firebase Auth.'
@@ -422,5 +423,78 @@ export const getMigrationStatus = onCall(async (request) => {
       'internal',
       'Unable to get migration status.'
     );
+  }
+});
+
+/**
+ * Firebase Auth trigger: Automatically create Firestore user profile when new user signs up
+ * This ensures immediate sync between Firebase Auth and Firestore without manual intervention
+ */
+export const onUserCreate = beforeUserCreated(async (event) => {
+  const { uid, email, displayName, photoURL, emailVerified } = event.data;
+  
+  try {
+    logger.info('Auto-creating user profile for new signup', { 
+      uid, 
+      email: email || 'no-email',
+      displayName: displayName || 'no-display-name'
+    });
+
+    const firestore = admin.firestore();
+    const userDocRef = firestore.collection('users').doc(uid);
+
+    // Create default user profile in Firestore
+    const defaultUserData: FirestoreUser = {
+      uid,
+      email: email || '',
+      displayName: displayName || '',
+      photoURL: photoURL || '',
+      role: 'viewer', // Default role for new users
+      status: 'active', // New users start as active
+      createdAt: Timestamp.now(),
+      lastLoginAt: Timestamp.now(),
+      syncedAt: Timestamp.now(),
+      metadata: {
+        // Initialize empty metadata - can be filled later
+        department: '',
+        position: '',
+        phone: '',
+        location: ''
+      }
+    };
+
+    // Create the user document
+    await userDocRef.set(defaultUserData);
+
+    logger.info('User profile created successfully', { 
+      uid,
+      email: email || 'no-email',
+      role: 'viewer',
+      status: 'active'
+    });
+
+    // Log activity for the new user creation
+    const activityRef = firestore.collection('user_activity').doc();
+    await activityRef.set({
+      userId: uid,
+      action: 'user_signup',
+      timestamp: Timestamp.now(),
+      metadata: {
+        email: email || '',
+        displayName: displayName || '',
+        autoCreated: true
+      }
+    });
+
+    logger.info('User signup activity logged', { uid });
+
+  } catch (error) {
+    logger.error('Error auto-creating user profile:', error, {
+      uid,
+      email: email || 'no-email'
+    });
+    
+    // Don't throw error - we don't want to block user signup
+    // The user can still be synced manually later via the admin panel
   }
 });

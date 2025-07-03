@@ -37,5 +37,6 @@ export {
   listAllAuthUsers,
   syncAuthUserToFirestore,
   migrateAllUsers,
-  getMigrationStatus
+  getMigrationStatus,
+  onUserCreate
 } from './userSync';
