@@ -4,6 +4,13 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 23:55:00 UTC
+- **📝 Form Controls: Fixed nested FormGroup binding structure in resource form**
+  - Moved formGroupName directives to proper container elements (src/app/admin/components/resources/resource-form.component.html:99,210,343)
+  - Fixed "Cannot find control with name: 'en'" error when adding resources
+  - Corrected reactive form binding hierarchy for title, description, and fileLinks form groups
+  - **Result**: Resource creation and editing forms now work properly without form control errors
+
 ### Fixed - 2025-01-03 23:45:00 UTC
 - **🛠️ Firebase Functions Provider: Added missing Functions provider configuration**
   - Added provideFunctions and getFunctions imports to app.config.ts (src/app/app.config.ts:9,23)
