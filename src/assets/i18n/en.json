@@ -254,6 +254,24 @@
       "editResource": "Edit Resource",
       "fileUpload": "File Upload"
     },
+    "languageMenu": {
+      "selectLanguage": "Select Language",
+      "english": "English",
+      "spanish": "Español",
+      "portuguese": "Português"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "clearAll": "Clear all",
+      "noNotifications": "No notifications",
+      "markAsRead": "Mark as read",
+      "close": "Close",
+      "types": {
+        "info": "Information",
+        "success": "Success",
+        "warning": "Warning"
+      }
+    },
     "footer": {
       "copyright": "© 2025 CoST Knowledge Hub Admin",
       "documentation": "Documentation",

@@ -4,6 +4,34 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-07-04 07:10:00 UTC
+- **🔔 Admin Layout Enhancements: Added functional language toggle and notification system**
+  - Implemented language selector dropdown with support for English, Spanish, and Portuguese (src/app/admin/admin-layout.component.html:33-60)
+  - Added notification bell with unread count badge and dropdown panel (src/app/admin/admin-layout.component.html:64-149)
+  - Created mock notification system with different types (info, success, warning) (src/app/admin/admin-layout.component.ts:26-51)
+  - Added methods for toggling menus, marking notifications as read, and clearing notifications (src/app/admin/admin-layout.component.ts:81-151)
+  - Implemented outside click detection to close dropdowns automatically (src/app/admin/admin-layout.component.ts:154-169)
+  - Added comprehensive translations for language menu and notifications in all three languages (src/assets/i18n/en.json:257-274, es.json:257-274, pt.json:257-274)
+  - **Features**: Real-time language switching, notification management, unread count tracking
+  - **Problem Solved**: Language toggle and notification bell were non-functional placeholder elements
+  - **Result**: Fully functional language switching and notification system for admin users
+
+### Added - 2025-07-04 07:00:00 UTC
+- **🎯 Resource Type-First Workflow: Reorganized form to select type first with tailored workflows**
+  - Added initial resource type selection screen before tabs (src/app/admin/components/resources/resource-form.component.ts)
+  - Implemented dynamic tab ordering based on selected resource type
+  - Created WorkflowConfig interface for type-specific configurations
+  - Added smart defaults and auto-fill for different resource types
+  - Removed impact metrics from metadata tab (savings, projects, transparency score)
+  - **Type-Specific Flows**:
+    - Independent Review: Files → Basic → Content → Metadata
+    - Dataset: Files → Metadata → Basic → Content  
+    - Infographic: Files → Basic → Content → Metadata
+    - Case Study: Basic → Content → Files → Metadata
+    - Tools: Basic → Metadata → Content → Files
+  - **Problem Solved**: Fixed order didn't match mental models for different resource types
+  - **Result**: More intuitive workflow that adapts to what users are creating
+
 ### Fixed - 2025-07-04 06:55:00 UTC
 - **📦 URL Content Extraction: Fixed garbled text from compressed HTML responses**
   - Added proper handling for gzip/deflate compressed responses (functions/src/ai/extractUrlMetadata.ts)

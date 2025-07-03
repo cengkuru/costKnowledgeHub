@@ -19,6 +19,110 @@ interface FormTab {
   complete: boolean;
 }
 
+interface WorkflowConfig {
+  tabOrder: string[];
+  requiredFields: string[];
+  autoFillFields: Record<string, any>;
+  skipTabs?: string[];
+  hints?: Record<string, string>;
+}
+
+// Workflow configurations for each resource type
+const WORKFLOW_CONFIGS: Record<ResourceType, WorkflowConfig> = {
+  'independent-review': {
+    tabOrder: ['files', 'basic', 'content', 'metadata'],
+    requiredFields: ['reportUrl', 'reportPeriod', 'title.en'],
+    autoFillFields: {
+      topics: ['assurance'],
+      targetAudience: ['government', 'cso', 'oversight']
+    },
+    hints: {
+      files: 'Upload the Independent Review Report PDF first to auto-extract metadata',
+      metadata: 'Report period and oversight details are critical for tracking'
+    }
+  },
+  'dataset': {
+    tabOrder: ['files', 'metadata', 'basic', 'content'],
+    requiredFields: ['fileLinks.en', 'format', 'country'],
+    autoFillFields: {
+      format: 'csv',
+      difficulty: 'intermediate'
+    },
+    hints: {
+      files: 'Upload your dataset files (CSV, Excel, or JSON)',
+      metadata: 'Specify data format and coverage details'
+    }
+  },
+  'infographic': {
+    tabOrder: ['files', 'basic', 'content', 'metadata'],
+    requiredFields: ['thumbnailUrl', 'title.en'],
+    autoFillFields: {
+      format: 'image',
+      difficulty: 'beginner'
+    },
+    skipTabs: ['content'],
+    hints: {
+      files: 'Upload your infographic image first'
+    }
+  },
+  'case-study': {
+    tabOrder: ['basic', 'content', 'files', 'metadata'],
+    requiredFields: ['title.en', 'description.en', 'country'],
+    autoFillFields: {
+      targetAudience: ['academic', 'practitioner']
+    },
+    hints: {
+      content: 'Provide detailed context and lessons learned'
+    }
+  },
+  'tool': {
+    tabOrder: ['basic', 'metadata', 'content', 'files'],
+    requiredFields: ['title.en', 'externalLink', 'format'],
+    autoFillFields: {
+      format: 'tool',
+      difficulty: 'intermediate'
+    },
+    hints: {
+      metadata: 'Include system requirements and compatibility'
+    }
+  },
+  'guide': {
+    tabOrder: ['basic', 'content', 'files', 'metadata'],
+    requiredFields: ['title.en', 'description.en'],
+    autoFillFields: {
+      difficulty: 'beginner',
+      targetAudience: ['practitioner']
+    }
+  },
+  'report': {
+    tabOrder: ['basic', 'content', 'files', 'metadata'],
+    requiredFields: ['title.en', 'description.en', 'fileLinks.en'],
+    autoFillFields: {
+      targetAudience: ['government', 'oversight']
+    }
+  },
+  'policy': {
+    tabOrder: ['basic', 'content', 'metadata', 'files'],
+    requiredFields: ['title.en', 'description.en', 'country'],
+    autoFillFields: {
+      targetAudience: ['government', 'policy-maker']
+    }
+  },
+  'template': {
+    tabOrder: ['basic', 'files', 'content', 'metadata'],
+    requiredFields: ['title.en', 'fileLinks.en'],
+    autoFillFields: {
+      format: 'document',
+      difficulty: 'beginner'
+    }
+  },
+  'other': {
+    tabOrder: ['basic', 'content', 'files', 'metadata'],
+    requiredFields: ['title.en', 'description.en'],
+    autoFillFields: {}
+  }
+};
+
 @Component({
   selector: 'app-resource-form',
   standalone: true,
@@ -54,6 +158,8 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   validationMessages: Record<string, string> = {};
   importingUrl = false;
   selectedUploadMethod: 'file' | 'link' | 'import' | null = null;
+  selectedResourceType: ResourceType | null = null;
+  showTypeSelection = true;
   
   // Form completion tracking
   formCompletion = 0;
@@ -197,14 +303,6 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       difficulty: ['beginner'],
       targetAudience: [[]],
       format: [''],
-      
-      // Impact metrics
-      impact: this.fb.group({
-        savings: [''],
-        projects: [''],
-        transparency: [''],
-        description: ['']
-      }),
       
       // Independent Review Report fields
       independentReviewData: this.fb.group({

@@ -254,6 +254,24 @@
       "editResource": "Editar Recurso",
       "fileUpload": "Subir Archivo"
     },
+    "languageMenu": {
+      "selectLanguage": "Seleccionar Idioma",
+      "english": "English",
+      "spanish": "Español",
+      "portuguese": "Português"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "clearAll": "Limpiar todo",
+      "noNotifications": "Sin notificaciones",
+      "markAsRead": "Marcar como leído",
+      "close": "Cerrar",
+      "types": {
+        "info": "Información",
+        "success": "Éxito",
+        "warning": "Advertencia"
+      }
+    },
     "settings": {
       "title": "Configuración",
       "subtitle": "Configurar ajustes del sistema y preferencias",
