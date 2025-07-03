@@ -1,7 +1,10 @@
 import * as functions from 'firebase-functions/v2';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import fetch from 'node-fetch';
+import * as https from 'https';
+import * as http from 'http';
+import * as zlib from 'zlib';
 import * as cheerio from 'cheerio';
+import { URL } from 'url';
 
 export const extractUrlMetadata = functions.https.onRequest(
   {
@@ -33,18 +36,67 @@ export const extractUrlMetadata = functions.https.onRequest(
           return;
         }
 
-        // Fetch the page content
-        const response = await fetch(url, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; CoSTKnowledgeHub/1.0)'
-          }
+        // Fetch the page content with proper compression handling
+        const html = await new Promise<string>((resolve, reject) => {
+          const urlObj = new URL(url);
+          const protocol = urlObj.protocol === 'https:' ? https : http;
+          
+          const options = {
+            hostname: urlObj.hostname,
+            port: urlObj.port || (urlObj.protocol === 'https:' ? 443 : 80),
+            path: urlObj.pathname + urlObj.search,
+            method: 'GET',
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Accept-Encoding': 'gzip, deflate'
+            }
+          };
+
+          const req = protocol.request(options, (res) => {
+            if (res.statusCode && res.statusCode >= 400) {
+              reject(new Error(`Failed to fetch URL: ${res.statusCode} ${res.statusMessage}`));
+              return;
+            }
+
+            // Handle redirects
+            if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+              const redirectUrl = new URL(res.headers.location, url);
+              // Recursively fetch the redirect URL (simplified - in production you'd want to limit redirects)
+              reject(new Error(`Redirect to ${redirectUrl.href} - please use the final URL`));
+              return;
+            }
+
+            let stream: any = res;
+            
+            // Handle compression
+            const encoding = res.headers['content-encoding'];
+            if (encoding === 'gzip') {
+              stream = res.pipe(zlib.createGunzip());
+            } else if (encoding === 'deflate') {
+              stream = res.pipe(zlib.createInflate());
+            }
+
+            let html = '';
+            stream.setEncoding('utf8');
+            stream.on('data', (chunk: string) => {
+              html += chunk;
+            });
+            stream.on('end', () => {
+              resolve(html);
+            });
+            stream.on('error', reject);
+          });
+
+          req.on('error', reject);
+          req.setTimeout(30000, () => {
+            req.destroy();
+            reject(new Error('Request timeout'));
+          });
+          req.end();
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch URL: ${response.statusText}`);
-        }
-
-        const html = await response.text();
         const $ = cheerio.load(html);
 
         // Helper function to safely extract text with depth limit

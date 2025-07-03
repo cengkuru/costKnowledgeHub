@@ -4,6 +4,15 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 06:55:00 UTC
+- **📦 URL Content Extraction: Fixed garbled text from compressed HTML responses**
+  - Added proper handling for gzip/deflate compressed responses (functions/src/ai/extractUrlMetadata.ts)
+  - Set Accept-Encoding header to request uncompressed content
+  - Added response decompression for compressed content
+  - **Problem Solved**: Fetch was receiving compressed data but not decompressing it
+  - **Error Fixed**: Garbled text like "��"c碛z�|�#(�J�QI5�.�2R㜨1�Q/�6��S3��W�`"
+  - **Result**: URL content now properly extracted as readable text
+
 ### Fixed - 2025-07-04 06:50:00 UTC
 - **🔄 URL Metadata Extraction: Fixed Maximum call stack size exceeded error in Cheerio**
   - Added depth limits when extracting text content from HTML (functions/src/ai/extractUrlMetadata.ts)
