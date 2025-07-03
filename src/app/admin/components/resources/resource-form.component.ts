@@ -9,6 +9,7 @@ import { StorageService } from '../../../core/services/storage.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Resource, ResourceType, Language, TopicCategory } from '../../../core/models/resource.model';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { AIService, TagSuggestion } from '../../../core/services/ai.service';
 
 interface FormTab {
   id: string;
@@ -31,6 +32,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   private resourceService = inject(ResourceService);
   private storageService = inject(StorageService);
   private authService = inject(AuthService);
+  private aiService = inject(AIService);
   
   resourceForm!: FormGroup;
   isEditMode = false;
@@ -97,12 +99,19 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   
   // Uploaded files
   uploadedFiles: { url: string; name: string; size: number }[] = [];
-  languageFiles: Record<Language, { url: string; name: string; size: number }[]> = {
+  languageFiles: Record<string, { url: string; name: string; size: number }[]> = {
     en: [],
     es: [],
     pt: []
   };
   thumbnailUrl: string | null = null;
+  
+  // AI Features
+  aiAvailable = false;
+  generatingSummaries = false;
+  suggestingTags = false;
+  suggestedTags: TagSuggestion[] = [];
+  summariesGenerated = false;
   
   // Friendly validation messages
   friendlyMessages = {
@@ -131,6 +140,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     
     // Track form completion
     this.trackFormCompletion();
+    
+    // Check AI availability
+    this.checkAIAvailability();
   }
   
   initializeForm(): void {
@@ -377,16 +389,18 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       
       const result = await this.storageService.uploadFileWithUrl(file, 'resources', metadata);
       
-      this.uploadedFiles.push({
-        url: result.downloadUrl,
-        name: file.name,
-        size: file.size
-      });
-      
-      // If it's an image and no thumbnail is set, use it as thumbnail
-      if (file.type.startsWith('image/') && !this.thumbnailUrl) {
-        this.thumbnailUrl = result.downloadUrl;
-        this.resourceForm.patchValue({ thumbnailUrl: result.downloadUrl });
+      if (result.downloadUrl) {
+        this.uploadedFiles.push({
+          url: result.downloadUrl,
+          name: file.name,
+          size: file.size
+        });
+        
+        // If it's an image and no thumbnail is set, use it as thumbnail
+        if (file.type.startsWith('image/') && !this.thumbnailUrl) {
+          this.thumbnailUrl = result.downloadUrl;
+          this.resourceForm.patchValue({ thumbnailUrl: result.downloadUrl });
+        }
       }
     } catch (error) {
       console.error('Upload error:', error);
@@ -567,28 +581,10 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     this.resourceForm.markAsDirty();
   }
   
-  // Legacy method for compatibility - to be removed
-  handleFileUpload(event: any): void {
-    // This method is no longer used since we're using FileUploadComponent
-    console.warn('handleFileUpload is deprecated. Use FileUploadComponent instead.');
-  }
-  
-  removeFile(index: number): void {
-    const file = this.uploadedFiles[index];
-    if (file) {
-      this.onFileRemoved(file.url);
-    }
-  }
-  
-  setAsThumbnail(file: {url: string, name: string, size: number}): void {
-    this.thumbnailUrl = file.url;
-    this.resourceForm.patchValue({ thumbnailUrl: file.url });
-    this.resourceForm.markAsDirty();
-  }
   
   onLanguageFilesUploaded(files: {url: string, name: string, size: number}[], language: Language): void {
     // Store the file for this language (replace existing since we only allow one per language)
-    this.languageFiles[language] = files;
+    this.languageFiles[language as string] = files;
     
     // Update the file link in the form
     const fileLinksGroup = this.resourceForm.get('fileLinks') as FormGroup;
@@ -605,7 +601,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   
   onLanguageFileRemoved(fileUrl: string, language: Language): void {
     // Clear the file for this language
-    this.languageFiles[language] = [];
+    this.languageFiles[language as string] = [];
     
     // Clear the file link in the form
     const fileLinksGroup = this.resourceForm.get('fileLinks') as FormGroup;
@@ -620,6 +616,102 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     this.resourceForm.markAsDirty();
   }
   
+  checkAIAvailability(): void {
+    this.aiService.checkAIAvailability().subscribe({
+      next: (available) => {
+        this.aiAvailable = available;
+      },
+      error: (error) => {
+        console.error('Failed to check AI availability:', error);
+        this.aiAvailable = false;
+      }
+    });
+  }
+
+  generateSummaries(): void {
+    const titleEn = this.resourceForm.get('title.en')?.value;
+    const content = this.resourceForm.get('description.en')?.value || '';
+    const resourceType = this.resourceForm.get('type')?.value;
+
+    if (!titleEn && !content) {
+      alert('Please provide a title or some content in English first.');
+      return;
+    }
+
+    this.generatingSummaries = true;
+
+    this.aiService.generateSummaries({
+      content: content || titleEn,
+      title: titleEn,
+      resourceType
+    }).subscribe({
+      next: (summaries) => {
+        // Update form with generated summaries
+        this.resourceForm.patchValue({
+          description: summaries
+        });
+        this.summariesGenerated = true;
+        this.generatingSummaries = false;
+        
+        // Show success message
+        this.showSuccess('Summaries generated successfully! Feel free to edit them.');
+      },
+      error: (error) => {
+        console.error('Failed to generate summaries:', error);
+        this.generatingSummaries = false;
+        this.showError('Failed to generate summaries. Please try again.');
+      }
+    });
+  }
+
+  suggestTags(): void {
+    const title = this.resourceForm.get('title')?.value;
+    const description = this.resourceForm.get('description')?.value;
+    const type = this.resourceForm.get('type')?.value;
+    const existingTags = this.resourceForm.get('tags')?.value || [];
+
+    if (!title?.en) {
+      alert('Please provide at least an English title first.');
+      return;
+    }
+
+    this.suggestingTags = true;
+    this.suggestedTags = [];
+
+    this.aiService.suggestTags({
+      title,
+      description,
+      resourceType: type,
+      existingTags
+    }).subscribe({
+      next: (suggestions) => {
+        this.suggestedTags = suggestions;
+        this.suggestingTags = false;
+        
+        if (suggestions.length === 0) {
+          this.showSuccess('No additional tags suggested.');
+        }
+      },
+      error: (error) => {
+        console.error('Failed to suggest tags:', error);
+        this.suggestingTags = false;
+        this.showError('Failed to suggest tags. Please try again.');
+      }
+    });
+  }
+
+  addSuggestedTag(tag: string): void {
+    const currentTags = this.resourceForm.get('tags')?.value || [];
+    if (!currentTags.includes(tag)) {
+      this.resourceForm.patchValue({
+        tags: [...currentTags, tag]
+      });
+      
+      // Remove from suggestions
+      this.suggestedTags = this.suggestedTags.filter(s => s.tag !== tag);
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.autoSaveTimer) {
       clearInterval(this.autoSaveTimer);

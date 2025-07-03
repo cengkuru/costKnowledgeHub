@@ -215,15 +215,17 @@ export class FileUploadComponent implements OnInit {
       );
 
       uploadFile.status = 'complete';
-      uploadFile.url = result.downloadUrl;
+      uploadFile.url = result.downloadUrl || '';
       uploadFile.id = result.storagePath;
 
-      // Emit file uploaded event
-      this.filesUploaded.emit([{
-        url: result.downloadUrl,
-        name: uploadFile.name,
-        size: uploadFile.size
-      }]);
+      // Emit file uploaded event if we have a URL
+      if (result.downloadUrl) {
+        this.filesUploaded.emit([{
+          url: result.downloadUrl,
+          name: uploadFile.name,
+          size: uploadFile.size
+        }]);
+      }
 
       // Remove from queue after a delay
       setTimeout(() => {

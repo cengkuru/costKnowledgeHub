@@ -61,7 +61,7 @@ export class ResourceManagementComponent implements OnInit {
     try {
       // Subscribe to resources from ResourceService
       this.resourceService.resources$.subscribe(resources => {
-        this.resources = resources;
+        this.resources = resources as AnimatedResource[];
         this.applyFilters();
       });
     } catch (error) {
@@ -109,7 +109,7 @@ export class ResourceManagementComponent implements OnInit {
     }, 300);
   }
 
-  get paginatedResources(): Resource[] {
+  get paginatedResources(): AnimatedResource[] {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     return this.filteredResources.slice(start, end);
