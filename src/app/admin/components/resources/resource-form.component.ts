@@ -118,14 +118,21 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   suggestedTags: TagSuggestion[] = [];
   summariesGenerated = false;
   
-  // Friendly validation messages
+  // Enhanced validation messages with specific, actionable guidance
   friendlyMessages = {
-    required: "This field would really help us! 🙏",
-    minlength: "Just a bit more detail would be perfect! ✨",
-    maxlength: "That's a bit too long, let's keep it concise 📏",
-    email: "That doesn't look quite right. Try: example@email.com",
-    url: "URLs should start with http:// or https://",
-    pattern: "Hmm, that doesn't match the expected format 🤔"
+    required: "This field is required to help users find and understand your resource",
+    minlength: "Please add a bit more detail - aim for at least {{requiredLength}} characters",
+    maxlength: "Let's keep this concise - please reduce to {{requiredLength}} characters or less",
+    email: "Please enter a valid email address (e.g., user@example.com)",
+    url: "Please enter a complete URL starting with https:// or http://",
+    pattern: "This format doesn't match what's expected - please check the example format",
+    titleTooShort: "Titles work best with 10-80 characters for clear understanding",
+    titleTooLong: "Shorter titles (under 80 characters) are more effective",
+    descriptionTooShort: "Descriptions should be at least 50 characters to be helpful",
+    descriptionTooLong: "Consider breaking this into shorter, clearer sections",
+    invalidUrl: "Please check this URL - it should start with https:// and be complete",
+    noTopicsSelected: "Please select at least one topic to help categorize this resource",
+    noTypeSelected: "Please choose a resource type to help users understand what this is"
   };
   
   constructor(public i18nService: I18nService) {}
