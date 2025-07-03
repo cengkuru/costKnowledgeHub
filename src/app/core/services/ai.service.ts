@@ -66,7 +66,7 @@ export class AIService {
   // Base URL for Cloud Functions
   private readonly functionsUrl = environment.production 
     ? 'https://us-central1-knowledgehub-2ed2f.cloudfunctions.net'
-    : 'http://localhost:5001/knowledgehub-2ed2f/us-central1';
+    : 'http://127.0.0.1:5001/knowledgehub-2ed2f/us-central1';
 
   private readonly httpOptions = {
     headers: new HttpHeaders({

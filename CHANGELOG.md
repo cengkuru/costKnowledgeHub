@@ -4,6 +4,25 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 05:55:00 UTC
+- **🔧 AI Service Connection: Fixed Cloud Functions emulator connection issue**
+  - Changed AI service URL from localhost to 127.0.0.1 for emulator connectivity (src/app/core/services/ai.service.ts:69)
+  - Resolved ERR_CONNECTION_REFUSED error when calling extractUrlMetadata function
+  - Ensures proper connection to Firebase Functions emulator during development
+  - **Problem Solved**: URL metadata extraction now works properly in development environment
+  - **Result**: Independent Review import functionality restored for local development
+
+### Added - 2025-07-04 05:50:00 UTC
+- **🔄 User Migration Execution: Performed bulk migration of Firebase Auth users to Firestore**
+  - Executed migrateAllUsers Cloud Function to sync existing authenticated users
+  - Migrated all Firebase Auth users to Firestore with proper role assignment and metadata
+  - Verified migration status and sync rates via admin panel
+  - Updated user counts to reflect actual Firebase Auth users (not just Firestore users)
+  - Ensured all existing users now have complete Firestore profiles
+  - Applied default roles and active status to migrated users
+  - **Problem Solved**: User management page now shows accurate user counts from Firebase Auth
+  - **Result**: Complete synchronization between Firebase Auth and Firestore user databases
+
 ### Fixed - 2025-07-04 05:45:00 UTC
 - **📝 Topic Naming: Updated "Independent Assurance" to "Independent Review" across all components**
   - Updated topic model in src/app/core/models/topic.model.ts (line 44)
