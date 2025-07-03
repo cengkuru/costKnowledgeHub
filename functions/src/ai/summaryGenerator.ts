@@ -22,7 +22,7 @@ function getGenAI(): GoogleGenerativeAI {
 
 export const generateMultiLanguageSummary = onRequest({
   cors: true,
-  memory: '512MiB',
+  memory: '1GiB',
   timeoutSeconds: 180,
   maxInstances: 10
 }, async (req, res) => {

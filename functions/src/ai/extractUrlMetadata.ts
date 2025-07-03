@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio';
 export const extractUrlMetadata = functions.https.onRequest(
   {
     timeoutSeconds: 60,
-    memory: '512MiB',
+    memory: '1GiB',
     cors: true
   },
   async (req, res) => {

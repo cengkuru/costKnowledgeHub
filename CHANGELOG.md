@@ -4,6 +4,13 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 06:45:00 UTC
+- **💾 Cloud Function Memory: Increased extractUrlMetadata memory limit to prevent out-of-memory errors**
+  - Increased memory from 512MiB to 1GiB (functions/src/ai/extractUrlMetadata.ts:9)
+  - **Problem Solved**: Function was exceeding 512MiB limit when processing large web pages
+  - **Error Fixed**: "Memory limit of 512 MiB exceeded with 522 MiB used"
+  - **Result**: URL metadata extraction now handles larger pages without crashing
+
 ### Fixed - 2025-07-04 06:40:00 UTC
 - **🔧 Cloud Functions URL: Fixed AI service to use production endpoints consistently**
   - Removed conditional URL logic that was causing connection refused errors (src/app/core/services/ai.service.ts:67-69)
