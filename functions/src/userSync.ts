@@ -1,9 +1,15 @@
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { onRequest } from 'firebase-functions/v2/https';
+import { onRequest, Request } from 'firebase-functions/v2/https';
+import { Response } from 'express';
 import { beforeUserCreated } from 'firebase-functions/v2/identity';
 import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
+import { 
+  withCors, 
+  extractIdToken, 
+  sendErrorResponse, 
+  sendSuccessResponse 
+} from './utils/cors';
 
 /**
  * Interface for user data synchronization
@@ -46,34 +52,65 @@ interface FirestoreUser {
 }
 
 /**
+ * Verify Firebase ID token and check admin permissions
+ */
+async function verifyAdminAuth(req: Request, res: Response): Promise<admin.auth.DecodedIdToken | null> {
+  const idToken = extractIdToken(req);
+  
+  if (!idToken) {
+    sendErrorResponse(res, 401, 'Authentication required. Please provide a valid Firebase ID token.');
+    return null;
+  }
+  
+  try {
+    // Verify the ID token
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    
+    // Check admin permissions
+    if (!decodedToken.admin) {
+      sendErrorResponse(res, 403, 'Permission denied. Only admin users can access this function.');
+      return null;
+    }
+    
+    return decodedToken;
+  } catch (error) {
+    logger.error('Token verification failed:', error);
+    sendErrorResponse(res, 401, 'Invalid or expired authentication token.');
+    return null;
+  }
+}
+
+/**
  * Get all Firebase Auth users with pagination
  * Only accessible by admin users
  */
-export const listAllAuthUsers = onCall(async (request) => {
-  // Check authentication
-  if (!request.auth) {
-    throw new HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
-    );
-  }
+export const listAllAuthUsers = onRequest(
+  {
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    cors: true
+  },
+  withCors(async (req: Request, res: Response) => {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
+      return;
+    }
 
-  // Check admin permissions
-  if (!request.auth.token.admin) {
-    throw new HttpsError(
-      'permission-denied',
-      'Only admins can list all users.'
-    );
-  }
+    // Verify admin authentication
+    const decodedToken = await verifyAdminAuth(req, res);
+    if (!decodedToken) {
+      return; // Error response already sent
+    }
 
-  const { pageToken, maxResults = 1000 } = request.data;
+    const { pageToken, maxResults = 1000 } = req.body || {};
 
-  try {
-    logger.info('Listing Auth users', { 
-      requestedBy: request.auth.uid, 
-      maxResults,
-      pageToken: pageToken ? 'provided' : 'none'
-    });
+    try {
+      logger.info('Listing Auth users', { 
+        requestedBy: decodedToken.uid, 
+        maxResults,
+        pageToken: pageToken ? 'provided' : 'none'
+      });
 
     const listUsersResult = await admin.auth().listUsers(maxResults, pageToken);
     
@@ -123,60 +160,58 @@ export const listAllAuthUsers = onCall(async (request) => {
       };
     });
 
-    logger.info('Successfully listed Auth users', { 
-      count: users.length,
-      nextPageToken: listUsersResult.pageToken || null
-    });
+      logger.info('Successfully listed Auth users', { 
+        count: users.length,
+        nextPageToken: listUsersResult.pageToken || null
+      });
 
-    return {
-      users: usersWithSyncStatus,
-      pageToken: listUsersResult.pageToken || null,
-      totalCount: users.length
-    };
-  } catch (error) {
-    logger.error('Error listing Auth users:', error);
-    throw new HttpsError(
-      'internal',
-      'Unable to list users.'
-    );
-  }
-});
+      sendSuccessResponse(res, {
+        users: usersWithSyncStatus,
+        pageToken: listUsersResult.pageToken || null,
+        totalCount: users.length
+      });
+    } catch (error) {
+      logger.error('Error listing Auth users:', error);
+      sendErrorResponse(res, 500, 'Unable to list users.', error);
+    }
+  })
+);
 
 /**
  * Sync a single Firebase Auth user to Firestore
  * Creates or updates the user document with Auth data
  */
-export const syncAuthUserToFirestore = onCall(async (request) => {
-  // Check authentication
-  if (!request.auth) {
-    throw new HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
-    );
-  }
+export const syncAuthUserToFirestore = onRequest(
+  {
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    cors: true
+  },
+  withCors(async (req: Request, res: Response) => {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
+      return;
+    }
 
-  // Check admin permissions
-  if (!request.auth.token.admin) {
-    throw new HttpsError(
-      'permission-denied',
-      'Only admins can sync users.'
-    );
-  }
+    // Verify admin authentication
+    const decodedToken = await verifyAdminAuth(req, res);
+    if (!decodedToken) {
+      return; // Error response already sent
+    }
 
-  const { uid } = request.data;
+    const { uid } = req.body || {};
 
-  if (!uid) {
-    throw new HttpsError(
-      'invalid-argument',
-      'User UID is required.'
-    );
-  }
+    if (!uid) {
+      sendErrorResponse(res, 400, 'User UID is required.');
+      return;
+    }
 
-  try {
-    logger.info('Syncing user to Firestore', { 
-      targetUid: uid,
-      requestedBy: request.auth.uid 
-    });
+    try {
+      logger.info('Syncing user to Firestore', { 
+        targetUid: uid,
+        requestedBy: decodedToken.uid 
+      });
 
     // Get user from Firebase Auth
     const userRecord = await admin.auth().getUser(uid);
@@ -215,65 +250,62 @@ export const syncAuthUserToFirestore = onCall(async (request) => {
     // Update or create the document
     await userDocRef.set(firestoreUserData, { merge: true });
 
-    logger.info('User synced successfully', { 
-      uid,
-      email: userRecord.email,
-      wasExisting: existingDoc.exists
-    });
+      logger.info('User synced successfully', { 
+        uid,
+        email: userRecord.email,
+        wasExisting: existingDoc.exists
+      });
 
-    return {
-      success: true,
-      uid,
-      email: userRecord.email,
-      wasExisting: existingDoc.exists,
-      syncedAt: firestoreUserData.syncedAt
-    };
-  } catch (error) {
-    logger.error('Error syncing user to Firestore:', error);
-    
-    if (error && typeof error === 'object' && 'code' in error && error.code === 'auth/user-not-found') {
-      throw new HttpsError(
-        'not-found',
-        'User not found in Firebase Auth.'
-      );
+      sendSuccessResponse(res, {
+        uid,
+        email: userRecord.email,
+        wasExisting: existingDoc.exists,
+        syncedAt: firestoreUserData.syncedAt
+      });
+    } catch (error) {
+      logger.error('Error syncing user to Firestore:', error);
+      
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'auth/user-not-found') {
+        sendErrorResponse(res, 404, 'User not found in Firebase Auth.');
+        return;
+      }
+      
+      sendErrorResponse(res, 500, 'Unable to sync user.', error);
     }
-    
-    throw new HttpsError(
-      'internal',
-      'Unable to sync user.'
-    );
-  }
-});
+  })
+);
 
 /**
  * Migrate all Firebase Auth users to Firestore in batches
  * This is a heavy operation and should be used carefully
  */
-export const migrateAllUsers = onCall(async (request) => {
-  // Check authentication
-  if (!request.auth) {
-    throw new HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
-    );
-  }
+export const migrateAllUsers = onRequest(
+  {
+    timeoutSeconds: 540, // 9 minutes - max for HTTP functions
+    memory: '512MiB',
+    cors: true
+  },
+  withCors(async (req: Request, res: Response) => {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
+      return;
+    }
 
-  // Check admin permissions
-  if (!request.auth.token.admin) {
-    throw new HttpsError(
-      'permission-denied',
-      'Only admins can migrate all users.'
-    );
-  }
+    // Verify admin authentication
+    const decodedToken = await verifyAdminAuth(req, res);
+    if (!decodedToken) {
+      return; // Error response already sent
+    }
 
-  const { batchSize = 100, startAfterUid } = request.data;
+    const { batchSize = 100, startAfterUid } = req.body || {};
 
-  try {
-    logger.info('Starting bulk user migration', { 
-      requestedBy: request.auth.uid,
-      batchSize,
-      startAfterUid: startAfterUid || 'none'
-    });
+    try {
+      logger.info('Starting bulk user migration', { 
+        requestedBy: decodedToken.uid,
+        batchSize,
+        startAfterUid: startAfterUid || 'none'
+      });
 
     let pageToken = startAfterUid;
     let totalProcessed = 0;
@@ -344,49 +376,48 @@ export const migrateAllUsers = onCall(async (request) => {
       totalProcessed++;
     }
 
-    const result = {
-      success: true,
-      totalProcessed,
-      totalSuccessful,
-      totalErrors,
-      errors: errors.slice(0, 10), // Return max 10 errors for debugging
-      hasMoreUsers: !!listUsersResult.pageToken,
-      nextPageToken: listUsersResult.pageToken || null
-    };
+      const result = {
+        totalProcessed,
+        totalSuccessful,
+        totalErrors,
+        errors: errors.slice(0, 10), // Return max 10 errors for debugging
+        hasMoreUsers: !!listUsersResult.pageToken,
+        nextPageToken: listUsersResult.pageToken || null
+      };
 
-    logger.info('Bulk migration completed', result);
-    return result;
-  } catch (error) {
-    logger.error('Error during bulk migration:', error);
-    throw new HttpsError(
-      'internal',
-      'Unable to complete bulk migration.'
-    );
-  }
-});
+      logger.info('Bulk migration completed', result);
+      sendSuccessResponse(res, result);
+    } catch (error) {
+      logger.error('Error during bulk migration:', error);
+      sendErrorResponse(res, 500, 'Unable to complete bulk migration.', error);
+    }
+  })
+);
 
 /**
  * Get migration status - shows counts of Auth users vs Firestore users
  */
-export const getMigrationStatus = onCall(async (request) => {
-  // Check authentication
-  if (!request.auth) {
-    throw new HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
-    );
-  }
+export const getMigrationStatus = onRequest(
+  {
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    cors: true
+  },
+  withCors(async (req: Request, res: Response) => {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
+      return;
+    }
 
-  // Check admin permissions
-  if (!request.auth.token.admin) {
-    throw new HttpsError(
-      'permission-denied',
-      'Only admins can check migration status.'
-    );
-  }
+    // Verify admin authentication
+    const decodedToken = await verifyAdminAuth(req, res);
+    if (!decodedToken) {
+      return; // Error response already sent
+    }
 
-  try {
-    logger.info('Getting migration status', { requestedBy: request.auth.uid });
+    try {
+      logger.info('Getting migration status', { requestedBy: decodedToken.uid });
 
     // Count Firebase Auth users
     let authUserCount = 0;
@@ -406,25 +437,23 @@ export const getMigrationStatus = onCall(async (request) => {
     // Calculate sync rate
     const syncRate = authUserCount > 0 ? (firestoreUserCount / authUserCount) * 100 : 0;
 
-    const status = {
-      authUserCount,
-      firestoreUserCount,
-      syncedCount: firestoreUserCount,
-      unsyncedCount: authUserCount - firestoreUserCount,
-      syncRate: Math.round(syncRate * 100) / 100,
-      needsMigration: authUserCount > firestoreUserCount
-    };
+      const status = {
+        authUserCount,
+        firestoreUserCount,
+        syncedCount: firestoreUserCount,
+        unsyncedCount: authUserCount - firestoreUserCount,
+        syncRate: Math.round(syncRate * 100) / 100,
+        needsMigration: authUserCount > firestoreUserCount
+      };
 
-    logger.info('Migration status calculated', status);
-    return status;
-  } catch (error) {
-    logger.error('Error getting migration status:', error);
-    throw new HttpsError(
-      'internal',
-      'Unable to get migration status.'
-    );
-  }
-});
+      logger.info('Migration status calculated', status);
+      sendSuccessResponse(res, status);
+    } catch (error) {
+      logger.error('Error getting migration status:', error);
+      sendErrorResponse(res, 500, 'Unable to get migration status.', error);
+    }
+  })
+);
 
 /**
  * Firebase Auth trigger: Automatically create Firestore user profile when new user signs up

@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Firestore,
   collection,
@@ -23,7 +24,7 @@ import {
 } from '@angular/fire/auth';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { AuthService } from './auth.service';
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { Observable, from, BehaviorSubject, firstValueFrom } from 'rxjs';
 
 export interface User {
   uid: string;
@@ -89,12 +90,55 @@ export class UserService {
   private auth = inject(Auth);
   private functions = inject(Functions);
   private authService = inject(AuthService);
+  private http = inject(HttpClient);
+
+  // Firebase Functions base URL
+  private readonly functionsBaseUrl = 'https://us-central1-knowledgehub-2ed2f.cloudfunctions.net';
 
   // Cache for user data to avoid excessive Cloud Function calls
   private userCache = new BehaviorSubject<ExtendedUser[]>([]);
   private migrationStatusCache = new BehaviorSubject<MigrationStatus | null>(null);
   private lastCacheUpdate = 0;
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+  /**
+   * Create HTTP headers with Firebase ID token for authentication
+   */
+  private async createAuthHeaders(): Promise<HttpHeaders> {
+    const currentUser = this.auth.currentUser;
+    if (!currentUser) {
+      throw new Error('User must be authenticated to call this function');
+    }
+
+    const idToken = await currentUser.getIdToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    });
+  }
+
+  /**
+   * Make authenticated HTTP request to Cloud Function
+   */
+  private async callCloudFunction<T>(functionName: string, data?: any): Promise<T> {
+    const headers = await this.createAuthHeaders();
+    const url = `${this.functionsBaseUrl}/${functionName}`;
+    
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{success: boolean, data: T, error?: string}>(url, data, { headers })
+      );
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.error || 'Cloud function call failed');
+      }
+    } catch (error: any) {
+      console.error(`Error calling ${functionName}:`, error);
+      throw error;
+    }
+  }
 
   /**
    * Get all users (Firestore only - legacy method)
@@ -133,10 +177,12 @@ export class UserService {
       }
 
       // Call Cloud Function to get Auth users
-      const listAuthUsers = httpsCallable(this.functions, 'listAllAuthUsers');
-      const result = await listAuthUsers({ maxResults: 1000 });
+      const result = await this.callCloudFunction<{ users: any[], pageToken?: string, totalCount: number }>(
+        'listAllAuthUsers',
+        { maxResults: 1000 }
+      );
       
-      const { users } = result.data as { users: any[], pageToken?: string, totalCount: number };
+      const { users } = result;
       
       // Transform to ExtendedUser format
       const extendedUsers: ExtendedUser[] = users.map(user => ({
@@ -185,10 +231,7 @@ export class UserService {
         }
       }
 
-      const getMigrationStatusFn = httpsCallable(this.functions, 'getMigrationStatus');
-      const result = await getMigrationStatusFn();
-      
-      const status = result.data as MigrationStatus;
+      const status = await this.callCloudFunction<MigrationStatus>('getMigrationStatus');
       
       // Update cache
       this.migrationStatusCache.next(status);
@@ -215,8 +258,12 @@ export class UserService {
    */
   async syncUserToFirestore(uid: string): Promise<{ success: boolean; message: string }> {
     try {
-      const syncUserFn = httpsCallable(this.functions, 'syncAuthUserToFirestore');
-      const result = await syncUserFn({ uid });
+      const result = await this.callCloudFunction<{
+        uid: string;
+        email: string;
+        wasExisting: boolean;
+        syncedAt: any;
+      }>('syncAuthUserToFirestore', { uid });
       
       // Clear cache to force refresh on next request
       this.clearCache();
@@ -245,13 +292,25 @@ export class UserService {
     hasMoreUsers: boolean;
   }> {
     try {
-      const migrateAllFn = httpsCallable(this.functions, 'migrateAllUsers');
-      const result = await migrateAllFn({ batchSize });
+      const result = await this.callCloudFunction<{
+        totalProcessed: number;
+        totalSuccessful: number;
+        totalErrors: number;
+        errors: any[];
+        hasMoreUsers: boolean;
+        nextPageToken?: string;
+      }>('migrateAllUsers', { batchSize });
       
       // Clear cache to force refresh on next request
       this.clearCache();
       
-      return result.data as any;
+      return {
+        success: true,
+        totalProcessed: result.totalProcessed,
+        totalSuccessful: result.totalSuccessful,
+        totalErrors: result.totalErrors,
+        hasMoreUsers: result.hasMoreUsers
+      };
     } catch (error) {
       console.error('Error migrating users:', error);
       return {
