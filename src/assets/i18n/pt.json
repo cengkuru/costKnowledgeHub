@@ -253,6 +253,97 @@
       "newResource": "Novo Recurso",
       "editResource": "Editar Recurso",
       "fileUpload": "Enviar Arquivo"
+    },
+    "settings": {
+      "title": "Configurações",
+      "subtitle": "Configurar ajustes do sistema e preferências",
+      "tabs": {
+        "application": "Aplicação",
+        "userSecurity": "Usuário e Segurança",
+        "contentManagement": "Gestão de Conteúdo",
+        "systemAdministration": "Administração do Sistema"
+      },
+      "application": {
+        "title": "Configurações da Aplicação",
+        "siteTitle": "Título do Site",
+        "siteDescription": "Descrição do Site",
+        "defaultLanguage": "Idioma Padrão",
+        "timezone": "Fuso Horário",
+        "emailNotifications": "Notificações por Email",
+        "analyticsEnabled": "Habilitar Analíticas",
+        "analyticsTrackingId": "ID de Rastreamento de Analíticas",
+        "maintenanceMode": "Modo de Manutenção",
+        "maintenanceMessage": "Mensagem de Manutenção"
+      },
+      "userSecurity": {
+        "title": "Configurações de Usuário e Segurança",
+        "allowUserRegistration": "Permitir Registro de Usuários",
+        "requireEmailVerification": "Exigir Verificação de Email",
+        "passwordMinLength": "Comprimento Mínimo da Senha",
+        "passwordRequireUppercase": "Exigir Letras Maiúsculas",
+        "passwordRequireNumbers": "Exigir Números",
+        "passwordRequireSpecialChars": "Exigir Caracteres Especiais",
+        "sessionTimeoutMinutes": "Tempo Limite da Sessão (minutos)",
+        "maxLoginAttempts": "Máximo de Tentativas de Login",
+        "lockoutDurationMinutes": "Duração do Bloqueio (minutos)",
+        "twoFactorAuthEnabled": "Habilitar Autenticação de Dois Fatores",
+        "adminApprovalRequired": "Exigir Aprovação de Admin para Novos Usuários"
+      },
+      "contentManagement": {
+        "title": "Configurações de Gestão de Conteúdo",
+        "autoPublishResources": "Auto-publicar Recursos",
+        "requireApprovalForPublishing": "Exigir Aprovação para Publicação",
+        "maxFileUploadSizeMB": "Tamanho Máximo do Arquivo (MB)",
+        "allowedFileTypes": "Tipos de Arquivo Permitidos",
+        "autoGenerateThumbnails": "Auto-gerar Miniaturas",
+        "enableContentVersioning": "Habilitar Versionamento de Conteúdo",
+        "searchIndexingEnabled": "Habilitar Indexação de Busca",
+        "autoTaggingEnabled": "Habilitar Marcação Automática",
+        "duplicateContentCheck": "Habilitar Verificação de Conteúdo Duplicado"
+      },
+      "systemAdministration": {
+        "title": "Configurações de Administração do Sistema",
+        "enableSystemLogs": "Habilitar Logs do Sistema",
+        "logLevel": "Nível de Log",
+        "logRetentionDays": "Retenção de Logs (dias)",
+        "enablePerformanceMonitoring": "Habilitar Monitoramento de Performance",
+        "enableAutoBackup": "Habilitar Backup Automático",
+        "backupFrequency": "Frequência de Backup",
+        "backupRetentionDays": "Retenção de Backups (dias)",
+        "enableCacheOptimization": "Habilitar Otimização de Cache",
+        "cacheExpirationMinutes": "Expiração do Cache (minutos)",
+        "enableRateLimiting": "Habilitar Limite de Taxa",
+        "apiRateLimitPerMinute": "Limite de API (por minuto)"
+      },
+      "actions": {
+        "save": "Salvar Configurações",
+        "cancel": "Cancelar",
+        "reset": "Redefinir para Padrões",
+        "export": "Exportar Configurações",
+        "import": "Importar Configurações",
+        "confirmReset": "Tem certeza de que deseja redefinir todas as configurações para os valores padrão?",
+        "confirmSave": "Salvar alterações nas configurações?",
+        "settingsSaved": "Configurações salvas com sucesso",
+        "settingsReset": "Configurações redefinidas para valores padrão",
+        "settingsExported": "Configurações exportadas com sucesso",
+        "settingsImported": "Configurações importadas com sucesso",
+        "savingSettings": "Salvando configurações...",
+        "loadingSettings": "Carregando configurações...",
+        "errorSaving": "Erro ao salvar configurações",
+        "errorLoading": "Erro ao carregar configurações",
+        "validationError": "Por favor, corrija os erros de validação antes de salvar",
+        "unsavedChanges": "Você tem alterações não salvas. Tem certeza de que deseja sair?"
+      },
+      "validation": {
+        "required": "Este campo é obrigatório",
+        "minLength": "O comprimento mínimo é {{min}} caracteres",
+        "maxLength": "O comprimento máximo é {{max}} caracteres",
+        "email": "Por favor, insira um endereço de email válido",
+        "url": "Por favor, insira uma URL válida",
+        "number": "Por favor, insira um número válido",
+        "min": "O valor deve ser pelo menos {{min}}",
+        "max": "O valor deve ser no máximo {{max}}"
+      }
     }
   }
 }

@@ -1033,6 +1033,169 @@
   }
 }
 
+// Upload Method Selector - Progressive Disclosure Pattern
+.upload-method-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-method-card {
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  text-align: center;
+  cursor: pointer;
+  transition: all 250ms ease-out;
+  position: relative;
+  
+  &:hover {
+    border-color: #355E69;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(53, 94, 105, 0.15);
+  }
+  
+  &.selected {
+    border-color: #355E69;
+    background: linear-gradient(135deg, #355E69 0%, #0AAEA0 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(53, 94, 105, 0.25);
+  }
+  
+  .method-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 1rem;
+    background: #f3f4f6;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: all 250ms ease-out;
+  }
+  
+  &.selected .method-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+  
+  .method-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: inherit;
+  }
+  
+  .method-description {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    color: inherit;
+  }
+}
+
+// Files & Media Preview Card
+.files-preview-card {
+  padding: 1.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    
+    .preview-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    
+    .clear-button {
+      color: #6b7280;
+      font-size: 0.875rem;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 150ms ease-out;
+      
+      &:hover {
+        color: #ef4444;
+      }
+    }
+  }
+  
+  .preview-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .preview-icon {
+      width: 40px;
+      height: 40px;
+      background: #355E69;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .preview-info {
+      flex: 1;
+      
+      .preview-name {
+        font-weight: 500;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+      }
+      
+      .preview-type {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+    }
+  }
+}
+
+// Progressive Disclosure Container
+.progressive-section {
+  margin-bottom: 2rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: #355E69;
+      color: white;
+      border-radius: 50%;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+  }
+}
+
 // Utility Classes
 .capitalize {
   text-transform: capitalize;

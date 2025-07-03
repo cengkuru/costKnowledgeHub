@@ -316,6 +316,97 @@
       "fileTooLarge": "File too large. Maximum size is 50MB.",
       "dragAreaActive": "Drop files here to upload"
     },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Configure system settings and preferences",
+      "tabs": {
+        "application": "Application",
+        "userSecurity": "User & Security",
+        "contentManagement": "Content Management",
+        "systemAdministration": "System Administration"
+      },
+      "application": {
+        "title": "Application Settings",
+        "siteTitle": "Site Title",
+        "siteDescription": "Site Description",
+        "defaultLanguage": "Default Language",
+        "timezone": "Timezone",
+        "emailNotifications": "Email Notifications",
+        "analyticsEnabled": "Enable Analytics",
+        "analyticsTrackingId": "Analytics Tracking ID",
+        "maintenanceMode": "Maintenance Mode",
+        "maintenanceMessage": "Maintenance Message"
+      },
+      "userSecurity": {
+        "title": "User & Security Settings",
+        "allowUserRegistration": "Allow User Registration",
+        "requireEmailVerification": "Require Email Verification",
+        "passwordMinLength": "Minimum Password Length",
+        "passwordRequireUppercase": "Require Uppercase Letters",
+        "passwordRequireNumbers": "Require Numbers",
+        "passwordRequireSpecialChars": "Require Special Characters",
+        "sessionTimeoutMinutes": "Session Timeout (minutes)",
+        "maxLoginAttempts": "Maximum Login Attempts",
+        "lockoutDurationMinutes": "Lockout Duration (minutes)",
+        "twoFactorAuthEnabled": "Enable Two-Factor Authentication",
+        "adminApprovalRequired": "Require Admin Approval for New Users"
+      },
+      "contentManagement": {
+        "title": "Content Management Settings",
+        "autoPublishResources": "Auto-publish Resources",
+        "requireApprovalForPublishing": "Require Approval for Publishing",
+        "maxFileUploadSizeMB": "Maximum File Upload Size (MB)",
+        "allowedFileTypes": "Allowed File Types",
+        "autoGenerateThumbnails": "Auto-generate Thumbnails",
+        "enableContentVersioning": "Enable Content Versioning",
+        "searchIndexingEnabled": "Enable Search Indexing",
+        "autoTaggingEnabled": "Enable Auto-tagging",
+        "duplicateContentCheck": "Enable Duplicate Content Check"
+      },
+      "systemAdministration": {
+        "title": "System Administration Settings",
+        "enableSystemLogs": "Enable System Logs",
+        "logLevel": "Log Level",
+        "logRetentionDays": "Log Retention (days)",
+        "enablePerformanceMonitoring": "Enable Performance Monitoring",
+        "enableAutoBackup": "Enable Auto Backup",
+        "backupFrequency": "Backup Frequency",
+        "backupRetentionDays": "Backup Retention (days)",
+        "enableCacheOptimization": "Enable Cache Optimization",
+        "cacheExpirationMinutes": "Cache Expiration (minutes)",
+        "enableRateLimiting": "Enable Rate Limiting",
+        "apiRateLimitPerMinute": "API Rate Limit (per minute)"
+      },
+      "actions": {
+        "save": "Save Settings",
+        "cancel": "Cancel",
+        "reset": "Reset to Defaults",
+        "export": "Export Settings",
+        "import": "Import Settings",
+        "confirmReset": "Are you sure you want to reset all settings to defaults?",
+        "confirmSave": "Save changes to settings?",
+        "settingsSaved": "Settings saved successfully",
+        "settingsReset": "Settings reset to defaults",
+        "settingsExported": "Settings exported successfully",
+        "settingsImported": "Settings imported successfully",
+        "savingSettings": "Saving settings...",
+        "loadingSettings": "Loading settings...",
+        "errorSaving": "Error saving settings",
+        "errorLoading": "Error loading settings",
+        "validationError": "Please fix validation errors before saving",
+        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+      },
+      "validation": {
+        "required": "This field is required",
+        "minLength": "Minimum length is {{min}} characters",
+        "maxLength": "Maximum length is {{max}} characters",
+        "email": "Please enter a valid email address",
+        "url": "Please enter a valid URL",
+        "number": "Please enter a valid number",
+        "min": "Value must be at least {{min}}",
+        "max": "Value must be at most {{max}}"
+      }
+    },
     "dashboard": {
       "title": "Dashboard Overview",
       "subtitle": "Monitor your content performance and activity",

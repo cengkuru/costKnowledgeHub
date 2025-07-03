@@ -53,6 +53,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   uploadProgress = 0;
   validationMessages: Record<string, string> = {};
   importingUrl = false;
+  selectedUploadMethod: 'file' | 'link' | 'import' | null = null;
   
   // Form completion tracking
   formCompletion = 0;
@@ -754,15 +755,6 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     return !!(field && field.valid && field.touched);
   }
   
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
   
   onFilesUploaded(files: {url: string, name: string, size: number}[]): void {
     // Add uploaded files to the list
@@ -1010,6 +1002,90 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     } finally {
       this.importingUrl = false;
     }
+  }
+
+  // Files & Media Tab Methods for Progressive Disclosure
+  onPrimaryFileUploaded(file: any): void {
+    if (file && file.url) {
+      this.uploadedFiles = [{ url: file.url, name: file.name || 'Uploaded file', size: file.size || 0 }];
+      this.updateFormCompletion();
+    }
+  }
+
+  onPrimaryFileRemoved(): void {
+    this.uploadedFiles = [];
+    this.thumbnailUrl = null;
+    this.updateFormCompletion();
+  }
+
+  hasFileOrLink(): boolean {
+    const hasUploadedFiles = this.uploadedFiles.length > 0;
+    const hasExternalLink = !!this.resourceForm.get('externalLink')?.value;
+    const hasLanguageFiles = Object.values(this.languageFiles).some(files => files.length > 0);
+    return hasUploadedFiles || hasExternalLink || hasLanguageFiles;
+  }
+
+  getResourcePreviewName(): string {
+    if (this.uploadedFiles.length > 0) {
+      return this.uploadedFiles[0].name;
+    }
+    
+    const externalLink = this.resourceForm.get('externalLink')?.value;
+    if (externalLink) {
+      try {
+        const url = new URL(externalLink);
+        return url.hostname.replace('www.', '');
+      } catch {
+        return 'External Resource';
+      }
+    }
+    
+    const languageFilesCount = Object.values(this.languageFiles)
+      .reduce((total, files) => total + files.length, 0);
+    if (languageFilesCount > 0) {
+      return `${languageFilesCount} language file${languageFilesCount > 1 ? 's' : ''}`;
+    }
+    
+    return 'No files selected';
+  }
+
+  getResourcePreviewType(): string {
+    if (this.uploadedFiles.length > 0) {
+      return 'Uploaded File';
+    }
+    
+    if (this.resourceForm.get('externalLink')?.value) {
+      return 'External Link';
+    }
+    
+    const languageFilesCount = Object.values(this.languageFiles)
+      .reduce((total, files) => total + files.length, 0);
+    if (languageFilesCount > 0) {
+      return 'Language Files';
+    }
+    
+    return 'None';
+  }
+
+  clearFileSelection(): void {
+    this.selectedUploadMethod = null;
+    this.uploadedFiles = [];
+    this.languageFiles = { en: [], es: [], pt: [] };
+    this.thumbnailUrl = null;
+    this.resourceForm.patchValue({
+      externalLink: '',
+      thumbnailUrl: '',
+      fileLinks: { en: '', es: '', pt: '' }
+    });
+    this.updateFormCompletion();
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   ngOnDestroy(): void {

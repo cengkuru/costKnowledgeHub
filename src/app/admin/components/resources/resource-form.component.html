@@ -365,210 +365,159 @@
       <div *ngIf="activeTab === 'files'" class="tab-panel animate-fadeIn">
         <div class="section-header">
           <h2 class="text-base font-medium text-gray-900">Files & Media</h2>
+          <p class="text-sm text-gray-600 mt-1">Attach files or link to external resources</p>
         </div>
 
-        <!-- Independent Review Report URL Import Section -->
-        <div *ngIf="resourceForm.get('type')?.value === 'independent-review'" class="form-section bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
-          <div class="flex items-center mb-4">
-            <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
-            <h3 class="text-lg font-semibold text-blue-900">Import from CoST Website (Recommended) ⭐</h3>
-          </div>
-          <p class="text-blue-800 mb-4">Save time by importing directly from the CoST website! We'll extract the report details for you.</p>
-          
-          <div formGroupName="independentReviewData">
-            <!-- Report URL Input -->
-            <div class="mb-4">
-              <label class="form-label">Report URL</label>
-              <div class="flex gap-2">
-                <input
-                  type="url"
-                  formControlName="reportUrl"
-                  class="form-input flex-1"
-                  placeholder="https://infrastructuretransparency.org/resource/..."
-                  [class.valid]="isFieldValid('independentReviewData.reportUrl')"
-                  [class.invalid]="resourceForm.get('independentReviewData.reportUrl')?.invalid && resourceForm.get('independentReviewData.reportUrl')?.touched">
-                <button
-                  type="button"
-                  (click)="importFromUrl()"
-                  [disabled]="!resourceForm.get('independentReviewData.reportUrl')?.value || importingUrl"
-                  class="btn-primary px-6 flex items-center"
-                  [class.opacity-50]="!resourceForm.get('independentReviewData.reportUrl')?.value || importingUrl">
-                  <svg *ngIf="!importingUrl" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                  </svg>
-                  <svg *ngIf="importingUrl" class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  {{ importingUrl ? 'Importing...' : 'Import Report' }}
-                </button>
-              </div>
-              <p *ngIf="resourceForm.get('independentReviewData.reportUrl')?.invalid && resourceForm.get('independentReviewData.reportUrl')?.touched" class="field-error">
-                Please enter a valid URL
-              </p>
-            </div>
+        <!-- Step 1: Choose Upload Method (Progressive Disclosure) -->
+        <div class="form-section">
+          <label class="form-label">How would you like to add your resource?</label>
+          <div class="upload-method-selector">
+            <button
+              type="button"
+              (click)="selectedUploadMethod = 'file'"
+              class="upload-method-card"
+              [class.selected]="selectedUploadMethod === 'file'">
+              <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <h3 class="font-medium">Upload File</h3>
+              <p class="text-sm">Upload a PDF, document, or image</p>
+            </button>
             
-            <!-- Report Period -->
-            <div>
+            <button
+              type="button"
+              (click)="selectedUploadMethod = 'link'"
+              class="upload-method-card"
+              [class.selected]="selectedUploadMethod === 'link'">
+              <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <h3 class="font-medium">External Link</h3>
+              <p class="text-sm">Link to resource hosted elsewhere</p>
+            </button>
+
+            <button
+              *ngIf="resourceForm.get('type')?.value === 'independent-review'"
+              type="button"
+              (click)="selectedUploadMethod = 'import'"
+              class="upload-method-card"
+              [class.selected]="selectedUploadMethod === 'import'">
+              <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h3 class="font-medium">Import from CoST</h3>
+              <p class="text-sm">Auto-import from CoST website</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Upload Interface (Progressive Disclosure) -->
+        <div *ngIf="selectedUploadMethod" class="form-section">
+          
+          <!-- File Upload Method -->
+          <div *ngIf="selectedUploadMethod === 'file'">
+            <label class="form-label">Upload Your File</label>
+            <app-file-upload
+              [showTitle]="false"
+              [uploadFolder]="'resources/' + (resourceId || 'new')"
+              [allowMultiple]="false"
+              [maxFiles]="1"
+              (filesUploaded)="onPrimaryFileUploaded($event)"
+              (fileRemoved)="onPrimaryFileRemoved()">
+            </app-file-upload>
+            
+            <!-- Show uploaded file -->
+            <div *ngIf="uploadedFiles.length > 0" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <div class="flex items-center">
+                <svg class="w-8 h-8 text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div>
+                  <p class="font-medium">{{ uploadedFiles[0].name }}</p>
+                  <p class="text-sm text-gray-500">{{ formatFileSize(uploadedFiles[0].size) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- External Link Method -->
+          <div *ngIf="selectedUploadMethod === 'link'">
+            <label class="form-label">External Link URL</label>
+            <div class="input-wrapper">
+              <input
+                type="url"
+                formControlName="externalLink"
+                class="form-input"
+                placeholder="https://example.com/resource"
+                [class.valid]="isFieldValid('externalLink')"
+                [class.invalid]="resourceForm.get('externalLink')?.invalid && resourceForm.get('externalLink')?.touched">
+              <div class="field-feedback">
+                <svg *ngIf="resourceForm.get('externalLink')?.valid && resourceForm.get('externalLink')?.value" 
+                     class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            <p class="field-hint">Link to a resource hosted on an external website</p>
+          </div>
+
+          <!-- Import from CoST Method -->
+          <div *ngIf="selectedUploadMethod === 'import'" formGroupName="independentReviewData">
+            <label class="form-label">CoST Website URL</label>
+            <div class="flex gap-2">
+              <input
+                type="url"
+                formControlName="reportUrl"
+                class="form-input flex-1"
+                placeholder="https://infrastructuretransparency.org/resource/..."
+                [class.valid]="isFieldValid('independentReviewData.reportUrl')"
+                [class.invalid]="resourceForm.get('independentReviewData.reportUrl')?.invalid && resourceForm.get('independentReviewData.reportUrl')?.touched">
+              <button
+                type="button"
+                (click)="importFromUrl()"
+                [disabled]="!resourceForm.get('independentReviewData.reportUrl')?.value || importingUrl"
+                class="btn-primary px-6"
+                [class.opacity-50]="!resourceForm.get('independentReviewData.reportUrl')?.value || importingUrl">
+                {{ importingUrl ? 'Importing...' : 'Import' }}
+              </button>
+            </div>
+            <p class="field-hint">We'll automatically extract the report details for you</p>
+            
+            <!-- Report Period (only show after successful import or if manually filled) -->
+            <div *ngIf="resourceForm.get('independentReviewData.reportUrl')?.value" class="mt-4">
               <label class="form-label">Report Period</label>
               <input
                 type="text"
                 formControlName="reportPeriod"
                 class="form-input"
-                placeholder="e.g., 2023 Annual Review, Q1 2024">
-              <p class="field-hint">Specify the time period covered by this review</p>
+                placeholder="e.g., 2023 Annual Review">
             </div>
-          </div>
-          
-          <div class="mt-4 pt-4 border-t border-blue-200">
-            <p class="text-sm text-blue-700">
-              <strong>Alternative:</strong> You can also upload the report file directly below if you prefer.
-            </p>
           </div>
         </div>
 
-        <!-- Multi-language File Upload -->
-        <div class="form-section">
-          <label class="form-label">Upload Files by Language</label>
-          <p class="field-hint">Upload different versions for each language</p>
-          
-          <!-- Language Tabs for Files -->
-          <div class="language-tabs">
-            <button
-              *ngFor="let lang of languages"
-              type="button"
-              (click)="activeFileLanguage = lang.value"
-              class="lang-tab"
-              [class.active]="activeFileLanguage === lang.value">
-              <span class="flag">{{ lang.flag }}</span>
-              <span>{{ lang.label }}</span>
-              <svg *ngIf="languageFiles[lang.value] && languageFiles[lang.value].length > 0" 
-                   class="w-4 h-4 text-green-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-              </svg>
-            </button>
-          </div>
-          
-          <!-- File Upload Area for Each Language -->
-          <div class="language-content" formGroupName="fileLinks">
-            <div *ngFor="let lang of languages" [hidden]="activeFileLanguage !== lang.value">
-              <app-file-upload
-                [showTitle]="false"
-                [uploadFolder]="'resources/' + (resourceId || 'new') + '/' + lang.value"
-                [allowMultiple]="false"
-                [maxFiles]="1"
-                (filesUploaded)="onLanguageFilesUploaded($event, lang.value)"
-                (fileRemoved)="onLanguageFileRemoved($event, lang.value)">
-              </app-file-upload>
-              
-              <!-- Show uploaded file for this language -->
-              <div *ngIf="languageFiles[lang.value] && languageFiles[lang.value].length > 0" class="mt-4">
-                <div class="uploaded-file-card">
-                  <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <div class="file-info">
-                    <p class="font-medium">{{ languageFiles[lang.value][0].name }}</p>
-                    <p class="text-sm text-gray-500">{{ formatFileSize(languageFiles[lang.value][0].size) }}</p>
-                  </div>
+        <!-- Step 3: Preview (only shown when file/link is added) -->
+        <div *ngIf="hasFileOrLink()" class="form-section">
+          <label class="form-label">Preview</label>
+          <div class="preview-card">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div>
+                  <p class="font-medium">{{ getResourcePreviewName() }}</p>
+                  <p class="text-sm text-gray-500">{{ getResourcePreviewType() }}</p>
                 </div>
               </div>
-              
-              <!-- File link field (read-only, populated by upload) -->
-              <div class="mt-4">
-                <label class="form-label">File URL</label>
-                <input
-                  type="url"
-                  [formControlName]="lang.value"
-                  class="form-input"
-                  placeholder="File URL will appear here after upload"
-                  readonly>
-                <p class="field-error" *ngIf="resourceForm.get('fileLinks.' + lang.value)?.invalid && resourceForm.get('fileLinks.' + lang.value)?.touched">
-                  {{ getFieldError('fileLinks.' + lang.value) }}
-                </p>
-              </div>
+              <button
+                type="button"
+                (click)="clearFileSelection()"
+                class="text-gray-400 hover:text-red-500 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          </div>
-        </div>
-        
-        <!-- General File Upload (for additional files) -->
-        <div class="form-section mt-6">
-          <label class="form-label">Additional Files</label>
-          <p class="field-hint">Upload supplementary materials</p>
-          <app-file-upload
-            [showTitle]="false"
-            [uploadFolder]="'resources/' + (resourceId || 'new') + '/additional'"
-            [allowMultiple]="true"
-            [maxFiles]="10"
-            (filesUploaded)="onFilesUploaded($event)"
-            (fileRemoved)="onFileRemoved($event)">
-          </app-file-upload>
-
-          <!-- Uploaded Files -->
-          <div *ngIf="uploadedFiles.length > 0" class="uploaded-files">
-            <h4 class="font-medium text-gray-700 mb-3">Uploaded Files</h4>
-            <div class="file-list">
-              <div *ngFor="let file of uploadedFiles; let i = index" class="file-item">
-                <div class="file-info">
-                  <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <div class="file-details">
-                    <p class="font-medium">{{ file.name }}</p>
-                    <p class="text-sm text-gray-500">{{ formatFileSize(file.size) }}</p>
-                  </div>
-                </div>
-                <div class="file-actions">
-                  <button
-                    *ngIf="file.url.includes('image')"
-                    type="button"
-                    (click)="setAsThumbnail(file)"
-                    class="btn-icon"
-                    [class.active]="thumbnailUrl === file.url"
-                    title="Set as thumbnail">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    (click)="removeFile(i)"
-                    class="btn-icon text-red-600 hover:text-red-800">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- External Link -->
-        <div class="form-section">
-          <label class="form-label">External Link</label>
-          <p class="field-hint">Link to resource hosted elsewhere</p>
-          <div class="input-wrapper">
-            <input
-              type="url"
-              formControlName="externalLink"
-              class="form-input"
-              placeholder="https://example.com/resource">
-            <div class="field-feedback">
-              <svg *ngIf="resourceForm.get('externalLink')?.value" class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Thumbnail Preview -->
-        <div *ngIf="thumbnailUrl" class="form-section">
-          <label class="form-label">Thumbnail Preview</label>
-          <div class="thumbnail-preview">
-            <img [src]="thumbnailUrl" alt="Thumbnail preview" class="thumbnail-image">
           </div>
         </div>
 

@@ -253,6 +253,97 @@
       "newResource": "Nuevo Recurso",
       "editResource": "Editar Recurso",
       "fileUpload": "Subir Archivo"
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Configurar ajustes del sistema y preferencias",
+      "tabs": {
+        "application": "Aplicación",
+        "userSecurity": "Usuario y Seguridad",
+        "contentManagement": "Gestión de Contenido",
+        "systemAdministration": "Administración del Sistema"
+      },
+      "application": {
+        "title": "Configuración de la Aplicación",
+        "siteTitle": "Título del Sitio",
+        "siteDescription": "Descripción del Sitio",
+        "defaultLanguage": "Idioma Predeterminado",
+        "timezone": "Zona Horaria",
+        "emailNotifications": "Notificaciones por Correo",
+        "analyticsEnabled": "Habilitar Analíticas",
+        "analyticsTrackingId": "ID de Seguimiento de Analíticas",
+        "maintenanceMode": "Modo de Mantenimiento",
+        "maintenanceMessage": "Mensaje de Mantenimiento"
+      },
+      "userSecurity": {
+        "title": "Configuración de Usuario y Seguridad",
+        "allowUserRegistration": "Permitir Registro de Usuarios",
+        "requireEmailVerification": "Requerir Verificación de Correo",
+        "passwordMinLength": "Longitud Mínima de Contraseña",
+        "passwordRequireUppercase": "Requerir Letras Mayúsculas",
+        "passwordRequireNumbers": "Requerir Números",
+        "passwordRequireSpecialChars": "Requerir Caracteres Especiales",
+        "sessionTimeoutMinutes": "Tiempo de Sesión (minutos)",
+        "maxLoginAttempts": "Máximo Intentos de Inicio de Sesión",
+        "lockoutDurationMinutes": "Duración de Bloqueo (minutos)",
+        "twoFactorAuthEnabled": "Habilitar Autenticación de Dos Factores",
+        "adminApprovalRequired": "Requerir Aprobación de Admin para Nuevos Usuarios"
+      },
+      "contentManagement": {
+        "title": "Configuración de Gestión de Contenido",
+        "autoPublishResources": "Auto-publicar Recursos",
+        "requireApprovalForPublishing": "Requerir Aprobación para Publicación",
+        "maxFileUploadSizeMB": "Tamaño Máximo de Archivo (MB)",
+        "allowedFileTypes": "Tipos de Archivo Permitidos",
+        "autoGenerateThumbnails": "Auto-generar Miniaturas",
+        "enableContentVersioning": "Habilitar Versionado de Contenido",
+        "searchIndexingEnabled": "Habilitar Indexación de Búsqueda",
+        "autoTaggingEnabled": "Habilitar Etiquetado Automático",
+        "duplicateContentCheck": "Habilitar Verificación de Contenido Duplicado"
+      },
+      "systemAdministration": {
+        "title": "Configuración de Administración del Sistema",
+        "enableSystemLogs": "Habilitar Registros del Sistema",
+        "logLevel": "Nivel de Registro",
+        "logRetentionDays": "Retención de Registros (días)",
+        "enablePerformanceMonitoring": "Habilitar Monitoreo de Rendimiento",
+        "enableAutoBackup": "Habilitar Respaldo Automático",
+        "backupFrequency": "Frecuencia de Respaldo",
+        "backupRetentionDays": "Retención de Respaldos (días)",
+        "enableCacheOptimization": "Habilitar Optimización de Caché",
+        "cacheExpirationMinutes": "Expiración de Caché (minutos)",
+        "enableRateLimiting": "Habilitar Límite de Velocidad",
+        "apiRateLimitPerMinute": "Límite de API (por minuto)"
+      },
+      "actions": {
+        "save": "Guardar Configuración",
+        "cancel": "Cancelar",
+        "reset": "Restablecer a Predeterminados",
+        "export": "Exportar Configuración",
+        "import": "Importar Configuración",
+        "confirmReset": "¿Está seguro de que desea restablecer toda la configuración a valores predeterminados?",
+        "confirmSave": "¿Guardar cambios en la configuración?",
+        "settingsSaved": "Configuración guardada exitosamente",
+        "settingsReset": "Configuración restablecida a valores predeterminados",
+        "settingsExported": "Configuración exportada exitosamente",
+        "settingsImported": "Configuración importada exitosamente",
+        "savingSettings": "Guardando configuración...",
+        "loadingSettings": "Cargando configuración...",
+        "errorSaving": "Error al guardar configuración",
+        "errorLoading": "Error al cargar configuración",
+        "validationError": "Por favor corrija los errores de validación antes de guardar",
+        "unsavedChanges": "Tiene cambios sin guardar. ¿Está seguro de que desea salir?"
+      },
+      "validation": {
+        "required": "Este campo es requerido",
+        "minLength": "La longitud mínima es {{min}} caracteres",
+        "maxLength": "La longitud máxima es {{max}} caracteres",
+        "email": "Por favor ingrese una dirección de correo válida",
+        "url": "Por favor ingrese una URL válida",
+        "number": "Por favor ingrese un número válido",
+        "min": "El valor debe ser al menos {{min}}",
+        "max": "El valor debe ser máximo {{max}}"
+      }
     }
   }
 }
