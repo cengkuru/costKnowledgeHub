@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 06:50:00 UTC
+- **🔄 URL Metadata Extraction: Fixed Maximum call stack size exceeded error in Cheerio**
+  - Added depth limits when extracting text content from HTML (functions/src/ai/extractUrlMetadata.ts)
+  - Implemented safer text extraction methods to handle deeply nested HTML
+  - **Problem Solved**: Cheerio's .text() method was causing infinite recursion on complex HTML
+  - **Error Fixed**: "Maximum call stack size exceeded" in domutils/lib/stringify.js
+  - **Result**: URL metadata extraction now handles complex HTML structures safely
+
 ### Fixed - 2025-07-04 06:45:00 UTC
 - **💾 Cloud Function Memory: Increased extractUrlMetadata memory limit to prevent out-of-memory errors**
   - Increased memory from 512MiB to 1GiB (functions/src/ai/extractUrlMetadata.ts:9)

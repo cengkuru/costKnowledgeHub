@@ -47,14 +47,39 @@ export const extractUrlMetadata = functions.https.onRequest(
         const html = await response.text();
         const $ = cheerio.load(html);
 
+        // Helper function to safely extract text with depth limit
+        const safeText = (selector: string, maxLength: number = 200): string => {
+          try {
+            const element = $(selector).first();
+            if (!element.length) return '';
+            
+            // Get text content without deep recursion
+            const textNodes = element.contents().filter(function() {
+              return this.type === 'text';
+            });
+            
+            let text = '';
+            textNodes.each((i, el) => {
+              if (text.length < maxLength) {
+                text += $(el).text();
+              }
+            });
+            
+            return text.substring(0, maxLength);
+          } catch (e) {
+            console.warn(`Failed to extract text from ${selector}:`, e);
+            return '';
+          }
+        };
+
         // Extract basic metadata from HTML
         const basicMetadata = {
           title: $('meta[property="og:title"]').attr('content') || 
-                 $('title').text() || 
-                 $('h1').first().text(),
+                 safeText('title', 100) || 
+                 safeText('h1', 100),
           description: $('meta[property="og:description"]').attr('content') || 
                       $('meta[name="description"]').attr('content') || 
-                      $('p').first().text().substring(0, 200),
+                      safeText('p', 200),
           thumbnailUrl: $('meta[property="og:image"]').attr('content') || 
                        $('img').first().attr('src'),
           publishedDate: $('meta[property="article:published_time"]').attr('content') || 
@@ -82,9 +107,30 @@ export const extractUrlMetadata = functions.https.onRequest(
             const genAI = new GoogleGenerativeAI(apiKey);
             const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-            // Extract main content text for AI analysis
-            const mainContent = $('main').text() || $('article').text() || $('body').text();
-            const contentSample = cleanText(mainContent).substring(0, 3000); // First 3000 chars
+            // Extract main content text for AI analysis safely
+            let contentSample = '';
+            
+            // Try to get content from specific content areas first
+            const contentSelectors = ['main', 'article', '[role="main"]', '.content', '#content'];
+            for (const selector of contentSelectors) {
+              contentSample = safeText(selector, 3000);
+              if (contentSample.length > 100) break; // Found meaningful content
+            }
+            
+            // If no content found, get body text more carefully
+            if (contentSample.length < 100) {
+              // Get all paragraph text
+              const paragraphs: string[] = [];
+              $('p').slice(0, 20).each((i, el) => {
+                const text = $(el).text().trim();
+                if (text.length > 20) {
+                  paragraphs.push(text);
+                }
+              });
+              contentSample = paragraphs.join(' ').substring(0, 3000);
+            }
+            
+            contentSample = cleanText(contentSample);
 
             const prompt = `
               Analyze this Independent Review Report content from the CoST website and provide metadata in JSON format.
