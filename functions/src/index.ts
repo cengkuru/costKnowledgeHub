@@ -31,3 +31,11 @@ export {
   sendMonthlyReport,
   sendPasswordResetConfirmation
 } from './emailNotifications';
+
+// Export user synchronization functions
+export {
+  listAllAuthUsers,
+  syncAuthUserToFirestore,
+  migrateAllUsers,
+  getMigrationStatus
+} from './userSync';

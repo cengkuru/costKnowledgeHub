@@ -23,7 +23,7 @@ import {
 } from '@angular/fire/auth';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { AuthService } from './auth.service';
-import { Observable, from } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 
 export interface User {
   uid: string;
@@ -43,6 +43,36 @@ export interface User {
   };
 }
 
+/**
+ * Extended user interface that includes Firebase Auth data and sync status
+ */
+export interface ExtendedUser extends User {
+  emailVerified?: boolean;
+  disabled?: boolean;
+  authMetadata?: {
+    creationTime: string;
+    lastSignInTime?: string;
+    lastRefreshTime?: string;
+  };
+  customClaims?: any;
+  syncStatus?: {
+    syncedToFirestore: boolean;
+    lastSyncedAt?: Date;
+  };
+}
+
+/**
+ * Migration status interface
+ */
+export interface MigrationStatus {
+  authUserCount: number;
+  firestoreUserCount: number;
+  syncedCount: number;
+  unsyncedCount: number;
+  syncRate: number;
+  needsMigration: boolean;
+}
+
 export interface UserActivity {
   userId: string;
   action: string;
@@ -59,6 +89,12 @@ export class UserService {
   private auth = inject(Auth);
   private functions = inject(Functions);
   private authService = inject(AuthService);
+
+  // Cache for user data to avoid excessive Cloud Function calls
+  private userCache = new BehaviorSubject<ExtendedUser[]>([]);
+  private migrationStatusCache = new BehaviorSubject<MigrationStatus | null>(null);
+  private lastCacheUpdate = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   /**
    * Get all users

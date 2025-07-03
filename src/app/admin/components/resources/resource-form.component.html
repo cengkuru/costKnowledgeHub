@@ -1,40 +1,35 @@
 <div class="resource-form-container">
-  <!-- Header with Progress -->
-  <div class="form-header">
-    <div class="header-content">
-      <div class="header-text">
-        <h1 class="text-3xl font-bold text-gray-900">
-          {{ isEditMode ? 'Edit Resource' : 'Create New Resource' }}
-        </h1>
-        <p class="text-gray-600 mt-2">
-          {{ isEditMode ? 'Update your knowledge resource' : 'Share valuable knowledge with the CoST community' }}
-        </p>
-      </div>
+  <!-- Compact Header -->
+  <div class="compact-header">
+    <div class="flex items-center justify-between">
+      <h1 class="text-lg font-semibold text-gray-900">
+        {{ isEditMode ? 'Edit Resource' : 'Create Resource' }}
+      </h1>
       
-      <!-- Auto-save indicator -->
-      <div *ngIf="isEditMode" class="auto-save-indicator">
-        <div class="save-status">
-          <svg *ngIf="lastSaved" class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+      <!-- Compact indicators -->
+      <div class="flex items-center space-x-4">
+        <!-- Auto-save indicator -->
+        <div *ngIf="isEditMode" class="save-indicator">
+          <svg *ngIf="lastSaved" class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
           </svg>
-          <span class="text-sm text-gray-500">
-            {{ lastSaved ? 'Saved ' + (lastSaved | date:'shortTime') : 'Not saved' }}
+          <span class="text-xs text-gray-500">
+            {{ lastSaved ? 'Saved' : 'Unsaved' }}
           </span>
+        </div>
+        
+        <!-- Minimal progress -->
+        <div class="text-xs text-gray-500">
+          {{ formCompletion }}% complete
         </div>
       </div>
     </div>
     
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="formCompletion">
-          <span class="progress-sparkle"></span>
-        </div>
+    <!-- Minimal progress bar -->
+    <div class="minimal-progress">
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="formCompletion"></div>
       </div>
-      <p class="text-sm text-gray-600 mt-2">
-        {{ formCompletion }}% Complete
-        <span *ngIf="formCompletion === 100" class="ml-2">🎉</span>
-      </p>
     </div>
   </div>
 
@@ -73,8 +68,7 @@
       <!-- Basic Information Tab -->
       <div *ngIf="activeTab === 'basic'" class="tab-panel animate-fadeIn">
         <div class="section-header">
-          <h2 class="text-xl font-semibold text-gray-900">Basic Information</h2>
-          <p class="text-gray-600">Essential details about your resource</p>
+          <h2 class="text-base font-medium text-gray-900">Basic Information</h2>
         </div>
 
         <!-- Title with Language Tabs -->
@@ -248,8 +242,7 @@
       <!-- Content Tab -->
       <div *ngIf="activeTab === 'content'" class="tab-panel animate-fadeIn">
         <div class="section-header">
-          <h2 class="text-xl font-semibold text-gray-900">Content Details</h2>
-          <p class="text-gray-600">Describe your resource in detail</p>
+          <h2 class="text-base font-medium text-gray-900">Content Details</h2>
         </div>
 
         <!-- Description with Language Tabs -->
@@ -371,8 +364,7 @@
       <!-- Files & Media Tab -->
       <div *ngIf="activeTab === 'files'" class="tab-panel animate-fadeIn">
         <div class="section-header">
-          <h2 class="text-xl font-semibold text-gray-900">Files & Media</h2>
-          <p class="text-gray-600">Upload files or link to external resources</p>
+          <h2 class="text-base font-medium text-gray-900">Files & Media</h2>
         </div>
 
         <!-- Independent Review Report URL Import Section -->
@@ -609,8 +601,7 @@
       <!-- Metadata Tab -->
       <div *ngIf="activeTab === 'metadata'" class="tab-panel animate-fadeIn">
         <div class="section-header">
-          <h2 class="text-xl font-semibold text-gray-900">Additional Information</h2>
-          <p class="text-gray-600">Help users understand this resource better</p>
+          <h2 class="text-base font-medium text-gray-900">Additional Information</h2>
         </div>
 
         <!-- Country & Language -->
