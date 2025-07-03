@@ -117,7 +117,7 @@ export class AuthService {
       const credential = await createUserWithEmailAndPassword(this.auth, email, password);
       
       // Track user registration
-      this.activityService.trackActivity('user_register', { userEmail: email });
+      this.activityService.trackActivity('user_register', {});
 
       // Navigate to admin dashboard on successful signup
       await this.router.navigate(['/admin']);

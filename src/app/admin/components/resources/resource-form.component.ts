@@ -7,6 +7,7 @@ import { ResourceService } from '../../../core/services/resource.service';
 import { FirestoreService } from '../../../core/services/firestore.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ActivityService } from '../../../core/services/activity.service';
 import { Resource, ResourceType, Language, TopicCategory } from '../../../core/models/resource.model';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { AIService, TagSuggestion } from '../../../core/services/ai.service';
@@ -33,10 +34,12 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   private storageService = inject(StorageService);
   private authService = inject(AuthService);
   private aiService = inject(AIService);
+  private activityService = inject(ActivityService);
   
   resourceForm!: FormGroup;
   isEditMode = false;
   resourceId: string | null = null;
+  resource?: Resource; // Current resource for edit mode
   loading = false;
   saving = false;
   autoSaveTimer: any;
@@ -285,6 +288,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     this.resourceService.getResourceById(this.resourceId).subscribe({
       next: (resource) => {
         if (resource) {
+          this.resource = resource; // Store the resource for tracking
           this.populateForm(resource);
           this.updateFormCompletion();
         }
@@ -474,9 +478,27 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       
       if (this.isEditMode && this.resourceId) {
         await this.resourceService.updateResource(this.resourceId, formData, userId);
+        
+        // Track resource update or publish
+        const activityType = publish ? 'resource_publish' : 'resource_update';
+        await this.activityService.trackResourceManagement(
+          activityType,
+          this.resourceId,
+          formData.title?.en || formData.title?.es || formData.title?.pt || 'Untitled',
+          { previousStatus: this.resource?.status, newStatus: formData.status }
+        );
+        
         this.showSuccess('Resource updated successfully! 🎉');
       } else {
         const resourceId = await this.resourceService.createResource(formData as Omit<Resource, 'id'>, userId);
+        
+        // Track resource creation
+        await this.activityService.trackResourceManagement(
+          'resource_add',
+          resourceId,
+          formData.title?.en || formData.title?.es || formData.title?.pt || 'Untitled'
+        );
+        
         this.showSuccess('Resource created successfully! 🎉');
         
         // Navigate to edit mode
@@ -738,9 +760,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         if (metadata.title) {
           this.resourceForm.patchValue({
             title: {
-              en: metadata.title.en || metadata.title.toString(),
-              es: metadata.title.es || '',
-              pt: metadata.title.pt || ''
+              en: typeof metadata.title === 'string' ? metadata.title : metadata.title.en || '',
+              es: typeof metadata.title === 'string' ? '' : metadata.title.es || '',
+              pt: typeof metadata.title === 'string' ? '' : metadata.title.pt || ''
             }
           });
         }
@@ -748,9 +770,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         if (metadata.description) {
           this.resourceForm.patchValue({
             description: {
-              en: metadata.description.en || metadata.description.toString(),
-              es: metadata.description.es || '',
-              pt: metadata.description.pt || ''
+              en: typeof metadata.description === 'string' ? metadata.description : metadata.description.en || '',
+              es: typeof metadata.description === 'string' ? '' : metadata.description.es || '',
+              pt: typeof metadata.description === 'string' ? '' : metadata.description.pt || ''
             }
           });
         }

@@ -1,31 +1,33 @@
-import * as functions from 'firebase-functions';
+import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { onRequest } from 'firebase-functions/v2/https';
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 
 /**
  * Cloud Function to set admin claims for a user
  * This should be called sparingly and only by existing admins
  */
-export const setAdminClaim = functions.https.onCall(async (data, context) => {
+export const setAdminClaim = onCall(async (request) => {
   // Check that request is made by an authenticated user
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
+  if (!request.auth) {
+    throw new HttpsError(
       'unauthenticated',
       'The function must be called while authenticated.'
     );
   }
   
   // Check that the requesting user is an admin
-  if (!context.auth.token.admin) {
-    throw new functions.https.HttpsError(
+  if (!request.auth.token.admin) {
+    throw new HttpsError(
       'permission-denied',
       'Only admins can set admin claims.'
     );
   }
   
-  const { email, makeAdmin } = data;
+  const { email, makeAdmin } = request.data;
   
   if (!email) {
-    throw new functions.https.HttpsError(
+    throw new HttpsError(
       'invalid-argument',
       'Email is required.'
     );
@@ -46,7 +48,7 @@ export const setAdminClaim = functions.https.onCall(async (data, context) => {
     };
   } catch (error) {
     console.error('Error setting admin claim:', error);
-    throw new functions.https.HttpsError(
+    throw new HttpsError(
       'internal',
       'Unable to set admin claim.'
     );
@@ -57,7 +59,7 @@ export const setAdminClaim = functions.https.onCall(async (data, context) => {
  * Temporary function to create the first admin user
  * This should be disabled after the first admin is created
  */
-export const createFirstAdmin = functions.https.onRequest(async (req, res) => {
+export const createFirstAdmin = onRequest(async (req, res) => {
   // Check if this is the first run
   const adminEmail = functions.config().admin?.email;
   

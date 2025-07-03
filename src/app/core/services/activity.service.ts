@@ -41,7 +41,7 @@ export class ActivityService {
   ): Promise<void> {
     try {
       // Get current user information if authenticated
-      const currentUser = await this.authService.getCurrentUser();
+      const currentUser = this.authService.currentUser;
       
       const activity: Omit<Activity, 'id'> = {
         type,
@@ -113,7 +113,7 @@ export class ActivityService {
    * Track user login
    */
   async trackLogin(userEmail: string): Promise<void> {
-    await this.trackActivity('user_login', { userEmail });
+    await this.trackActivity('user_login', {});
   }
   
   /**

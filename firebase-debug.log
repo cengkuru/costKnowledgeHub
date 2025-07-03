@@ -1,0 +1,35 @@
+[debug] [2025-07-03T19:03:28.818Z] ----------------------------------------------------------------------
+[debug] [2025-07-03T19:03:28.821Z] Command:       /Users/cengkurumichael/.nvm/versions/node/v22.3.0/bin/node /Users/cengkurumichael/.nvm/versions/node/v22.3.0/bin/firebase deploy --only functions:extractUrlMetadata
+[debug] [2025-07-03T19:03:28.821Z] CLI Version:   13.34.0
+[debug] [2025-07-03T19:03:28.821Z] Platform:      darwin
+[debug] [2025-07-03T19:03:28.821Z] Node Version:  v22.3.0
+[debug] [2025-07-03T19:03:28.822Z] Time:          Thu Jul 03 2025 22:03:28 GMT+0300 (East Africa Time)
+[debug] [2025-07-03T19:03:28.822Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-03T19:03:32.400Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-03T19:03:32.403Z] > authorizing via signed-in user (cengkurulabs@gmail.com)
+[debug] [2025-07-03T19:03:32.404Z] [iam] checking project knowledgehub-2ed2f for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-07-03T19:03:32.405Z] Checked if tokens are valid: false, expires at: 1751569687821
+[debug] [2025-07-03T19:03:32.405Z] Checked if tokens are valid: false, expires at: 1751569687821
+[debug] [2025-07-03T19:03:32.406Z] > refreshing access token with scopes: []
+[debug] [2025-07-03T19:03:32.408Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-03T19:03:32.409Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-03T19:03:32.937Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-03T19:03:32.937Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-03T19:03:32.974Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions [none]
+[debug] [2025-07-03T19:03:32.974Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions x-goog-quota-user=projects/knowledgehub-2ed2f
+[debug] [2025-07-03T19:03:32.975Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-03T19:03:35.767Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions 200
+[debug] [2025-07-03T19:03:35.768Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-07-03T19:03:35.768Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:03:35.768Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:03:35.769Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-07-03T19:03:35.770Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-07-03T19:03:37.793Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions 404
+[debug] [2025-07-03T19:03:37.794Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions {"error":{"code":404,"message":"Unknown service account","status":"NOT_FOUND"}}
+[debug] [2025-07-03T19:03:37.795Z] [functions] service account IAM check errored, deploy may fail: Request to https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions had HTTP Error: 404, Unknown service account {"name":"FirebaseError","children":[],"context":{"body":{"error":{"code":404,"message":"Unknown service account","status":"NOT_FOUND"}},"response":{"statusCode":404}},"exit":1,"message":"Request to https://iam.googleapis.com/v1/projects/knowledgehub-2ed2f/serviceAccounts/knowledgehub-2ed2f@appspot.gserviceaccount.com:testIamPermissions had HTTP Error: 404, Unknown service account","status":404}
+[info] 
+[info] === Deploying to 'knowledgehub-2ed2f'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build

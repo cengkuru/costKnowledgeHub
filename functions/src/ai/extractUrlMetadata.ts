@@ -1,10 +1,11 @@
 import * as functions from 'firebase-functions/v2';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { defineSecret } from 'firebase-functions/params';
-import * as cors from 'cors';
+import * as corsModule from 'cors';
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 
+const cors = corsModule as any;
 const corsHandler = cors({ origin: true });
 const geminiApiKey = defineSecret('GEMINI_API_KEY');
 
@@ -23,7 +24,7 @@ export const extractUrlMetadata = functions.https.onRequest(
       }
 
       try {
-        const { url, resourceType } = req.body;
+        const { url } = req.body;
 
         if (!url) {
           res.status(400).json({ success: false, error: 'URL is required' });
@@ -71,7 +72,7 @@ export const extractUrlMetadata = functions.https.onRequest(
         }
 
         // Use AI to enhance metadata extraction if available
-        let enhancedMetadata = basicMetadata;
+        let enhancedMetadata: any = basicMetadata;
         
         try {
           const apiKey = geminiApiKey.value();

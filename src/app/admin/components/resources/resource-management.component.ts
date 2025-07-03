@@ -6,6 +6,7 @@ import { I18nService } from '../../../core/services/i18n.service';
 import { FirestoreService } from '../../../core/services/firestore.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ResourceService } from '../../../core/services/resource.service';
+import { ActivityService } from '../../../core/services/activity.service';
 import { Resource } from '../../../core/models/resource.model';
 
 interface AnimatedResource extends Resource {
@@ -24,6 +25,7 @@ interface AnimatedResource extends Resource {
 export class ResourceManagementComponent implements OnInit {
   private resourceService = inject(ResourceService);
   private authService = inject(AuthService);
+  private activityService = inject(ActivityService);
   private router = inject(Router);
 
   resources: AnimatedResource[] = [];
@@ -306,11 +308,22 @@ export class ResourceManagementComponent implements OnInit {
         case 'publish':
         case 'unpublish':
           for (const id of selectedIds) {
+            const resource = this.resources.find(r => r.id === id);
             await this.resourceService.updateResource(id, {
               status: action === 'publish' ? 'published' : 'unpublished',
               updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
               updatedBy: userId
             }, userId);
+            
+            // Track activity
+            if (resource) {
+              await this.activityService.trackResourceManagement(
+                action === 'publish' ? 'resource_publish' : 'resource_unpublish',
+                id,
+                this.i18nService.getLocalizedText(resource.title),
+                { previousStatus: resource.status, newStatus: action === 'publish' ? 'published' : 'unpublished' }
+              );
+            }
           }
           this.showToast(`${selectedIds.length} resources ${action}ed! 🎯`);
           break;
@@ -320,7 +333,17 @@ export class ResourceManagementComponent implements OnInit {
             return;
           }
           for (const id of selectedIds) {
+            const resource = this.resources.find(r => r.id === id);
             await this.resourceService.deleteResource(id);
+            
+            // Track activity
+            if (resource) {
+              await this.activityService.trackResourceManagement(
+                'resource_delete',
+                id,
+                this.i18nService.getLocalizedText(resource.title)
+              );
+            }
           }
           this.showToast(`${selectedIds.length} resources deleted! 🗑️`);
           break;
