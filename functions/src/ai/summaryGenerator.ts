@@ -1,15 +1,20 @@
 import { onRequest } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from 'firebase-functions';
+import * as dotenv from 'dotenv';
 
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
+// Load environment variables
+dotenv.config();
 
 // Lazy initialization for Gemini client
 let genAI: GoogleGenerativeAI | null = null;
 
-function getGenAI(apiKey: string): GoogleGenerativeAI {
+function getGenAI(): GoogleGenerativeAI {
   if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable is not set');
+    }
     genAI = new GoogleGenerativeAI(apiKey);
   }
   return genAI;
@@ -17,7 +22,6 @@ function getGenAI(apiKey: string): GoogleGenerativeAI {
 
 export const generateMultiLanguageSummary = onRequest({
   cors: true,
-  secrets: [geminiApiKey],
   memory: '512MiB',
   timeoutSeconds: 180,
   maxInstances: 10
@@ -41,9 +45,9 @@ export const generateMultiLanguageSummary = onRequest({
     const { content, title, resourceType } = req.body;
 
     if (!content || typeof content !== 'string') {
-      res.status(400).json({ 
-        success: false, 
-        error: 'Content is required and must be a string' 
+      res.status(400).json({
+        success: false,
+        error: 'Content is required and must be a string'
       });
       return;
     }
@@ -52,8 +56,7 @@ export const generateMultiLanguageSummary = onRequest({
     const truncatedContent = content.substring(0, 10000);
 
     // Initialize Gemini with API key
-    const apiKey = geminiApiKey.value();
-    const genAI = getGenAI(apiKey);
+    const genAI = getGenAI();
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
     // Generate summaries with a single prompt for all languages
@@ -95,7 +98,7 @@ Return ONLY a valid JSON object in this exact format:
 
     const response = await result.response;
     const text = response.text();
-    
+
     // Extract JSON from the response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -122,7 +125,7 @@ Return ONLY a valid JSON object in this exact format:
 
   } catch (error) {
     logger.error('Error generating summaries:', error);
-    
+
     res.status(500).json({
       success: false,
       error: 'Failed to generate summaries. Please try again.'

@@ -1,15 +1,20 @@
 import { onRequest } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from 'firebase-functions';
+import * as dotenv from 'dotenv';
 
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
+// Load environment variables
+dotenv.config();
 
 // Lazy initialization for Gemini client
 let genAI: GoogleGenerativeAI | null = null;
 
-function getGenAI(apiKey: string): GoogleGenerativeAI {
+function getGenAI(): GoogleGenerativeAI {
   if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable is not set');
+    }
     genAI = new GoogleGenerativeAI(apiKey);
   }
   return genAI;
@@ -26,7 +31,6 @@ const COST_TOPICS = [
 
 export const suggestTags = onRequest({
   cors: true,
-  secrets: [geminiApiKey],
   memory: '256MiB',
   timeoutSeconds: 60,
   maxInstances: 10
@@ -50,9 +54,9 @@ export const suggestTags = onRequest({
     const { title, description, content, resourceType, existingTags } = req.body;
 
     if (!title || typeof title !== 'object') {
-      res.status(400).json({ 
-        success: false, 
-        error: 'Title is required and must be a multi-language object' 
+      res.status(400).json({
+        success: false,
+        error: 'Title is required and must be a multi-language object'
       });
       return;
     }
@@ -66,8 +70,7 @@ export const suggestTags = onRequest({
     ].join(' ');
 
     // Initialize Gemini with API key
-    const apiKey = geminiApiKey.value();
-    const genAI = getGenAI(apiKey);
+    const genAI = getGenAI();
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
     // Generate tag suggestions
@@ -113,7 +116,7 @@ Return ONLY a valid JSON array in this exact format:
 
     const response = await result.response;
     const text = response.text();
-    
+
     // Extract JSON array from the response
     const jsonMatch = text.match(/\[[\s\S]*\]/);
     if (!jsonMatch) {
@@ -147,7 +150,7 @@ Return ONLY a valid JSON array in this exact format:
 
   } catch (error) {
     logger.error('Error suggesting tags:', error);
-    
+
     res.status(500).json({
       success: false,
       error: 'Failed to suggest tags. Please try again.'

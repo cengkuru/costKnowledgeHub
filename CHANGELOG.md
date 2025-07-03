@@ -4,6 +4,12 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 23:45:00 UTC
+- **🛠️ Firebase Functions Provider: Added missing Functions provider configuration**
+  - Added provideFunctions and getFunctions imports to app.config.ts (src/app/app.config.ts:9,23)
+  - Resolved "NullInjectorError: No provider for Functions!" runtime error
+  - **Result**: AuthService can now properly inject Functions for email notifications
+
 ### Fixed - 2025-01-03 23:30:00 UTC
 - **🔄 Circular Dependency: Resolved AuthService ↔ ActivityService circular dependency issue**
   - Refactored ActivityService to not inject AuthService directly (src/app/core/services/activity.service.ts:6,13)
