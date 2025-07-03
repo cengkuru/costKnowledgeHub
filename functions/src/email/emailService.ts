@@ -58,7 +58,7 @@ export class EmailService {
       this.geminiClient = new GeminiClient();
 
       // Create Gmail transporter
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: gmailUser.value(),

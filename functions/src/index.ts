@@ -19,4 +19,15 @@ export { setAdminClaim, createFirstAdmin } from './admin';
 export { generateMultiLanguageSummary, suggestTags, healthCheck as aiHealthCheck } from './ai';
 export { extractUrlMetadata } from './ai/extractUrlMetadata';
 
-// Export email functions will be added after creating emailNotifications.ts
+// Export email functions
+export {
+  sendWelcomeEmail,
+  sendAdminRoleEmail,
+  sendResourceNotificationEmail,
+  sendAIProcessingEmail,
+  sendBulkOperationEmail,
+  sendSystemErrorEmail,
+  sendWeeklySummary,
+  sendMonthlyReport,
+  sendPasswordResetConfirmation
+} from './emailNotifications';

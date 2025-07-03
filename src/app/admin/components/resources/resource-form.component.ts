@@ -485,7 +485,8 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
           activityType,
           this.resourceId,
           formData.title?.en || formData.title?.es || formData.title?.pt || 'Untitled',
-          { previousStatus: this.resource?.status, newStatus: formData.status }
+          { previousStatus: this.resource?.status, newStatus: formData.status },
+          this.authService.currentUser
         );
         
         this.showSuccess('Resource updated successfully! 🎉');
@@ -496,7 +497,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         await this.activityService.trackResourceManagement(
           'resource_add',
           resourceId,
-          formData.title?.en || formData.title?.es || formData.title?.pt || 'Untitled'
+          formData.title?.en || formData.title?.es || formData.title?.pt || 'Untitled',
+          undefined,
+          this.authService.currentUser
         );
         
         this.showSuccess('Resource created successfully! 🎉');

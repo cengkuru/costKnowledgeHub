@@ -1,13 +1,16 @@
-import { defineSecret } from 'firebase-functions/params';
 import { logger } from 'firebase-functions';
 import { GeminiClient } from './geminiClient';
 import * as nodemailer from 'nodemailer';
 import { google } from 'googleapis';
+import * as dotenv from 'dotenv';
 
-// Email configuration secrets
-const gmailUser = defineSecret('GMAIL_USER');
-const gmailPassword = defineSecret('GMAIL_APP_PASSWORD');
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
+// Load environment variables
+dotenv.config();
+
+// Email configuration from environment variables
+const gmailUser = process.env.GMAIL_USER || 'cengkurulabs@gmail.com';
+const gmailPassword = process.env.GMAIL_APP_PASSWORD || 'mery zozx vgfj pwgw';
+const geminiApiKey = process.env.GEMINI_API_KEY;
 
 // Email templates and types
 export type EmailType =
@@ -59,11 +62,11 @@ export class EmailService {
       this.geminiClient = new GeminiClient();
 
       // Create Gmail transporter
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: gmailUser.value(),
-          pass: gmailPassword.value()
+          user: gmailUser,
+          pass: gmailPassword
         }
       });
 
@@ -96,7 +99,7 @@ export class EmailService {
         const mailOptions = {
           from: {
             name: 'Knowledge Hub Team',
-            address: gmailUser.value()
+            address: gmailUser
           },
           to: recipient,
           subject: template.subject,

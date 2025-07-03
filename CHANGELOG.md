@@ -4,6 +4,16 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 23:30:00 UTC
+- **🔄 Circular Dependency: Resolved AuthService ↔ ActivityService circular dependency issue**
+  - Refactored ActivityService to not inject AuthService directly (src/app/core/services/activity.service.ts:6,13)
+  - Updated all ActivityService methods to accept optional currentUser parameter instead of accessing AuthService
+  - Modified AuthService calls to pass currentUser when tracking activities (src/app/core/services/auth.service.ts:94,120,151)
+  - Updated ResourceFormComponent to pass currentUser to activity tracking (src/app/admin/components/resources/resource-form.component.ts:488,500)
+  - Updated ResourceDetailComponent to inject AuthService and pass currentUser (src/app/features/detail/resource-detail.component.ts:10,36,145,175,322)
+  - Updated ResourceListComponent to inject AuthService and pass currentUser (src/app/features/resources/resource-list.component.ts:11,55,141,187)
+  - **Result**: Angular application now builds successfully without NG0200 circular dependency error
+
 ### Changed - 2025-01-03 23:15:00 UTC
 - **🔐 Navigation Bar Auth State: Show admin link instead of login when authenticated**
   - Updated app.component.ts to inject AuthService for authentication state (src/app/app.component.ts:6,32)
@@ -12,7 +22,7 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
   - Added "adminDashboard" translation key in all languages:
     - English: "Admin Dashboard" (src/assets/i18n/en.json:131)
     - Spanish: "Panel de Administración" (src/assets/i18n/es.json:131)
-    - Portuguese: "Painel de Administração" (src/assets/i18n/pt.json:131)
+    - Portuguese: "Painel de Administración" (src/assets/i18n/pt.json:131)
   - Uses async pipe with authService.isAuthenticated$ observable for reactive UI updates
   - Maintains consistent button styling for both authenticated and unauthenticated states
 

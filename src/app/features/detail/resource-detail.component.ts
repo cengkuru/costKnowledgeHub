@@ -7,6 +7,7 @@ import { LanguageToggleComponent } from '../../shared/components/language-toggle
 import { ResourceService } from '../../core/services/resource.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ActivityService } from '../../core/services/activity.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Resource } from '../../core/models/resource.model';
 
 @Component({
@@ -33,6 +34,7 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
     private resourceService: ResourceService,
     public i18nService: I18nService,
     private activityService: ActivityService,
+    private authService: AuthService,
     private route: ActivatedRoute
   ) {}
 
@@ -141,7 +143,8 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
       this.activityService.trackResourceDownload(
         this.resource.id,
         this.getLocalizedTitle(),
-        'pdf' // You could determine the actual format from the URL
+        'pdf', // You could determine the actual format from the URL
+        this.authService.currentUser
       );
       window.open(downloadUrl, '_blank');
     }
@@ -171,7 +174,8 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
       this.activityService.trackResourceDownload(
         resource.id,
         this.getResourceTitle(resource),
-        'pdf'
+        'pdf',
+        this.authService.currentUser
       );
       window.open(downloadUrl, '_blank');
     }
@@ -318,7 +322,8 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
     // Track the resource view
     this.activityService.trackResourceView(
       resource.id,
-      this.i18nService.getLocalizedText(resource.title)
+      this.i18nService.getLocalizedText(resource.title),
+      this.authService.currentUser
     );
   }
 }

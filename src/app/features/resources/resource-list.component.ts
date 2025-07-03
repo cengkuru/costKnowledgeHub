@@ -8,6 +8,7 @@ import { LanguageToggleComponent } from '../../shared/components/language-toggle
 import { ResourceService } from '../../core/services/resource.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ActivityService } from '../../core/services/activity.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Resource, ResourceSearchResult } from '../../core/models/resource.model';
 import { FilterGroup, ActiveFilters } from '../../core/models/filter.model';
 
@@ -51,6 +52,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     private resourceService: ResourceService,
     public i18nService: I18nService,
     private activityService: ActivityService,
+    private authService: AuthService,
     private route: ActivatedRoute
   ) {}
 
@@ -138,7 +140,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     if (query.trim()) {
       // Wait a bit to get the result count
       setTimeout(() => {
-        this.activityService.trackSearch(query, this.searchResult.total);
+        this.activityService.trackSearch(query, this.searchResult.total, this.authService.currentUser);
       }, 500);
     }
   }
@@ -184,7 +186,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
         }
       });
       
-      this.activityService.trackFilterChange(filterSummary);
+      this.activityService.trackFilterChange(filterSummary, this.authService.currentUser);
     }
   }
 

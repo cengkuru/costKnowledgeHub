@@ -22,6 +22,8 @@ import {
   sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { AuthService } from './auth.service';
+import { Observable, from } from 'rxjs';
 
 export interface User {
   uid: string;
@@ -56,6 +58,7 @@ export class UserService {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
   private functions = inject(Functions);
+  private authService = inject(AuthService);
 
   /**
    * Get all users
@@ -284,5 +287,88 @@ export class UserService {
       console.error('Error searching users:', error);
       throw error;
     }
+  }
+
+  /**
+   * Set admin claim for a user
+   */
+  setAdminClaim(email: string, makeAdmin: boolean): Observable<any> {
+    const setAdminClaimFn = httpsCallable(this.functions, 'setAdminClaim');
+    return from(setAdminClaimFn({ email, makeAdmin }));
+  }
+
+  /**
+   * Send admin role notification email
+   */
+  sendAdminRoleEmail(email: string, userName: string, isAdmin: boolean): Observable<any> {
+    const sendAdminRoleEmailFn = httpsCallable(this.functions, 'sendAdminRoleEmail');
+    return from(sendAdminRoleEmailFn({
+      email,
+      userName,
+      isAdmin,
+      adminUrl: `${window.location.origin}/admin`,
+      platformUrl: window.location.origin
+    }));
+  }
+
+  /**
+   * Send resource notification email
+   */
+  sendResourceNotificationEmail(data: {
+    email: string;
+    userName: string;
+    resourceTitle: string;
+    resourceType: string;
+    resourceStatus: string;
+    submissionDate: string;
+    resourceUrl?: string;
+    editUrl?: string;
+    feedback?: string;
+    notificationType: 'resource_submitted' | 'resource_approved' | 'resource_rejected';
+  }): Observable<any> {
+    const sendResourceNotificationFn = httpsCallable(this.functions, 'sendResourceNotificationEmail');
+    return from(sendResourceNotificationFn(data));
+  }
+
+  /**
+   * Send AI processing completion email
+   */
+  sendAIProcessingEmail(data: {
+    email: string;
+    userName: string;
+    resourceTitle: string;
+    languageCount?: number;
+    tagCount?: number;
+    resourceUrl?: string;
+  }): Observable<any> {
+    const sendAIProcessingFn = httpsCallable(this.functions, 'sendAIProcessingEmail');
+    return from(sendAIProcessingFn(data));
+  }
+
+  /**
+   * Send bulk operation completion email
+   */
+  sendBulkOperationEmail(data: {
+    adminEmails: string[];
+    operationType: string;
+    operationSummary: string;
+    affectedCount: number;
+    completedAt: string;
+    operationDetails?: any;
+  }): Observable<any> {
+    const sendBulkOperationFn = httpsCallable(this.functions, 'sendBulkOperationEmail');
+    return from(sendBulkOperationFn(data));
+  }
+
+  /**
+   * Send system error notification email
+   */
+  sendSystemErrorEmail(data: {
+    error: any;
+    component: string;
+    adminEmails: string[];
+  }): Observable<any> {
+    const sendSystemErrorFn = httpsCallable(this.functions, 'sendSystemErrorEmail');
+    return from(sendSystemErrorFn(data));
   }
 }

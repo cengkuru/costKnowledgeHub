@@ -1,0 +1,78 @@
+[debug] [2025-07-03T19:26:20.178Z] ----------------------------------------------------------------------
+[debug] [2025-07-03T19:26:20.188Z] Command:       /opt/homebrew/Cellar/node/23.11.0/bin/node /Users/cengkurumichael/.nvm/versions/node/v22.3.0/bin/firebase functions:secrets:set GEMINI_API_KEY
+[debug] [2025-07-03T19:26:20.189Z] CLI Version:   13.34.0
+[debug] [2025-07-03T19:26:20.189Z] Platform:      darwin
+[debug] [2025-07-03T19:26:20.189Z] Node Version:  v23.11.0
+[debug] [2025-07-03T19:26:20.189Z] Time:          Thu Jul 03 2025 22:26:20 GMT+0300 (East Africa Time)
+[debug] [2025-07-03T19:26:20.190Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-03T19:26:20.320Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-03T19:26:20.321Z] > authorizing via signed-in user (cengkurulabs@gmail.com)
+[debug] [2025-07-03T19:26:20.322Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:20.322Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:20.322Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com [none]
+[debug] [2025-07-03T19:26:20.322Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com x-goog-quota-user=projects/knowledgehub-2ed2f
+[debug] [2025-07-03T19:26:22.160Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com 200
+[debug] [2025-07-03T19:26:22.160Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com [omitted]
+[debug] [2025-07-03T19:26:22.160Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-03T19:26:22.160Z] > authorizing via signed-in user (cengkurulabs@gmail.com)
+[debug] [2025-07-03T19:26:22.160Z] [iam] checking project knowledgehub-2ed2f for permissions ["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]
+[debug] [2025-07-03T19:26:22.160Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:22.160Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:22.161Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions [none]
+[debug] [2025-07-03T19:26:22.161Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions x-goog-quota-user=projects/knowledgehub-2ed2f
+[debug] [2025-07-03T19:26:22.161Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2025-07-03T19:26:24.130Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions 200
+[debug] [2025-07-03T19:26:24.131Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2025-07-03T19:26:24.131Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:24.131Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:24.131Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f [none]
+[debug] [2025-07-03T19:26:24.582Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f 200
+[debug] [2025-07-03T19:26:24.582Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f {"projectNumber":"442740476986","projectId":"knowledgehub-2ed2f","lifecycleState":"ACTIVE","name":"knowledgeHub","labels":{"firebase":"enabled","firebase-core":"disabled","generative-language":"enabled"},"createTime":"2025-06-17T13:23:05.339734Z"}
+[debug] [2025-07-03T19:26:24.584Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:24.584Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:24.584Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY [none]
+[debug] [2025-07-03T19:26:25.711Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY 404
+[debug] [2025-07-03T19:26:25.711Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY {"error":{"code":404,"message":"Secret [projects/442740476986/secrets/GEMINI_API_KEY] not found.","status":"NOT_FOUND"}}
+[debug] [2025-07-03T19:26:25.712Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:25.712Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:26:25.712Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets secretId=GEMINI_API_KEY
+[debug] [2025-07-03T19:26:25.712Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets {"name":"GEMINI_API_KEY","replication":{"automatic":{}},"labels":{"firebase-managed":"functions"}}
+[debug] [2025-07-03T19:26:30.385Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets 200
+[debug] [2025-07-03T19:26:30.385Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets {"name":"projects/442740476986/secrets/GEMINI_API_KEY","replication":{"automatic":{}},"createTime":"2025-07-03T19:26:26.280385Z","labels":{"firebase-managed":"functions"},"etag":"\"16390b5ac4d347\""}
+[debug] [2025-07-03T19:35:10.036Z] ----------------------------------------------------------------------
+[debug] [2025-07-03T19:35:10.038Z] Command:       /Users/cengkurumichael/.nvm/versions/node/v22.3.0/bin/node /Users/cengkurumichael/.nvm/versions/node/v22.3.0/bin/firebase functions:secrets:set GEMINI_API_KEY
+[debug] [2025-07-03T19:35:10.038Z] CLI Version:   13.34.0
+[debug] [2025-07-03T19:35:10.039Z] Platform:      darwin
+[debug] [2025-07-03T19:35:10.039Z] Node Version:  v22.3.0
+[debug] [2025-07-03T19:35:10.039Z] Time:          Thu Jul 03 2025 22:35:10 GMT+0300 (East Africa Time)
+[debug] [2025-07-03T19:35:10.039Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-03T19:35:10.165Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-03T19:35:10.166Z] > authorizing via signed-in user (cengkurulabs@gmail.com)
+[debug] [2025-07-03T19:35:10.167Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:10.167Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:10.168Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com [none]
+[debug] [2025-07-03T19:35:10.168Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com x-goog-quota-user=projects/knowledgehub-2ed2f
+[debug] [2025-07-03T19:35:12.344Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com 200
+[debug] [2025-07-03T19:35:12.344Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/knowledgehub-2ed2f/services/secretmanager.googleapis.com [omitted]
+[debug] [2025-07-03T19:35:12.345Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-03T19:35:12.345Z] > authorizing via signed-in user (cengkurulabs@gmail.com)
+[debug] [2025-07-03T19:35:12.345Z] [iam] checking project knowledgehub-2ed2f for permissions ["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]
+[debug] [2025-07-03T19:35:12.345Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:12.345Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:12.345Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions [none]
+[debug] [2025-07-03T19:35:12.345Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions x-goog-quota-user=projects/knowledgehub-2ed2f
+[debug] [2025-07-03T19:35:12.345Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2025-07-03T19:35:13.873Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions 200
+[debug] [2025-07-03T19:35:13.873Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2025-07-03T19:35:13.874Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:13.874Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:13.874Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f [none]
+[debug] [2025-07-03T19:35:14.209Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f 200
+[debug] [2025-07-03T19:35:14.210Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/knowledgehub-2ed2f {"projectNumber":"442740476986","projectId":"knowledgehub-2ed2f","lifecycleState":"ACTIVE","name":"knowledgeHub","labels":{"firebase":"enabled","firebase-core":"disabled","generative-language":"enabled"},"createTime":"2025-06-17T13:23:05.339734Z"}
+[debug] [2025-07-03T19:35:14.211Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:14.211Z] Checked if tokens are valid: true, expires at: 1751573011937
+[debug] [2025-07-03T19:35:14.211Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY [none]
+[debug] [2025-07-03T19:35:15.132Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY 200
+[debug] [2025-07-03T19:35:15.132Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/knowledgehub-2ed2f/secrets/GEMINI_API_KEY {"name":"projects/442740476986/secrets/GEMINI_API_KEY","replication":{"automatic":{}},"createTime":"2025-07-03T19:26:26.280385Z","labels":{"firebase-managed":"functions"},"etag":"\"16390b5ac4d347\""}

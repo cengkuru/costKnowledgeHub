@@ -3,14 +3,13 @@ import { Observable, BehaviorSubject, from, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Activity, ActivityType, ActivityFilter, ActivityMetadata } from '../models/activity.model';
 import { FirestoreService } from './firestore.service';
-import { AuthService } from './auth.service';
+import { User } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityService {
   private firestoreService = inject(FirestoreService);
-  private authService = inject(AuthService);
   
   private activitiesSubject = new BehaviorSubject<Activity[]>([]);
   public activities$ = this.activitiesSubject.asObservable();
@@ -37,12 +36,10 @@ export class ActivityService {
     type: ActivityType,
     metadata?: ActivityMetadata,
     resourceId?: string,
-    resourceTitle?: string
+    resourceTitle?: string,
+    currentUser?: User | null
   ): Promise<void> {
     try {
-      // Get current user information if authenticated
-      const currentUser = this.authService.currentUser;
-      
       const activity: Omit<Activity, 'id'> = {
         type,
         timestamp: new Date(),
@@ -84,43 +81,43 @@ export class ActivityService {
   /**
    * Track resource view
    */
-  async trackResourceView(resourceId: string, resourceTitle: string): Promise<void> {
-    await this.trackActivity('resource_view', {}, resourceId, resourceTitle);
+  async trackResourceView(resourceId: string, resourceTitle: string, currentUser?: User | null): Promise<void> {
+    await this.trackActivity('resource_view', {}, resourceId, resourceTitle, currentUser);
   }
   
   /**
    * Track resource download
    */
-  async trackResourceDownload(resourceId: string, resourceTitle: string, format?: string): Promise<void> {
-    await this.trackActivity('resource_download', { downloadFormat: format }, resourceId, resourceTitle);
+  async trackResourceDownload(resourceId: string, resourceTitle: string, format?: string, currentUser?: User | null): Promise<void> {
+    await this.trackActivity('resource_download', { downloadFormat: format }, resourceId, resourceTitle, currentUser);
   }
   
   /**
    * Track search activity
    */
-  async trackSearch(query: string, resultsCount: number): Promise<void> {
-    await this.trackActivity('resource_search', { searchQuery: query, resultsCount });
+  async trackSearch(query: string, resultsCount: number, currentUser?: User | null): Promise<void> {
+    await this.trackActivity('resource_search', { searchQuery: query, resultsCount }, undefined, undefined, currentUser);
   }
   
   /**
    * Track filter changes
    */
-  async trackFilterChange(filters: any): Promise<void> {
-    await this.trackActivity('resource_filter', { filters });
+  async trackFilterChange(filters: any, currentUser?: User | null): Promise<void> {
+    await this.trackActivity('resource_filter', { filters }, undefined, undefined, currentUser);
   }
   
   /**
    * Track user login
    */
-  async trackLogin(userEmail: string): Promise<void> {
-    await this.trackActivity('user_login', {});
+  async trackLogin(userEmail: string, currentUser?: User | null): Promise<void> {
+    await this.trackActivity('user_login', {}, undefined, undefined, currentUser);
   }
   
   /**
    * Track user logout
    */
-  async trackLogout(): Promise<void> {
-    await this.trackActivity('user_logout');
+  async trackLogout(currentUser?: User | null): Promise<void> {
+    await this.trackActivity('user_logout', {}, undefined, undefined, currentUser);
   }
   
   /**
@@ -130,9 +127,10 @@ export class ActivityService {
     type: 'resource_add' | 'resource_update' | 'resource_publish' | 'resource_unpublish' | 'resource_delete',
     resourceId: string,
     resourceTitle: string,
-    metadata?: ActivityMetadata
+    metadata?: ActivityMetadata,
+    currentUser?: User | null
   ): Promise<void> {
-    await this.trackActivity(type, metadata, resourceId, resourceTitle);
+    await this.trackActivity(type, metadata, resourceId, resourceTitle, currentUser);
   }
   
   /**

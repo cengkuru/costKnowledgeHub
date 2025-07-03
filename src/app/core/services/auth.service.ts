@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActivityService } from './activity.service';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
   private activityService = inject(ActivityService);
+  private functions = inject(Functions);
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -89,9 +91,9 @@ export class AuthService {
       const credential = await signInWithEmailAndPassword(this.auth, trimmedEmail, password);
 
       console.log('Sign in successful:', credential.user.email);
-      
+
       // Track login activity
-      this.activityService.trackLogin(credential.user.email || trimmedEmail);
+      this.activityService.trackLogin(credential.user.email || trimmedEmail, credential.user);
 
       // Don't navigate here - let the LoginComponent handle navigation
       // This allows proper handling of returnUrl
@@ -115,12 +117,25 @@ export class AuthService {
   async signUp(email: string, password: string): Promise<UserCredential> {
     try {
       const credential = await createUserWithEmailAndPassword(this.auth, email, password);
-      
-      // Track user registration
-      this.activityService.trackActivity('user_register', {});
 
-      // Navigate to admin dashboard on successful signup
-      await this.router.navigate(['/admin']);
+      // Track user registration
+      this.activityService.trackActivity('user_register', {}, undefined, undefined, credential.user);
+
+      // Send welcome email
+      try {
+        const sendWelcomeEmail = httpsCallable(this.functions, 'sendWelcomeEmail');
+        await sendWelcomeEmail({
+          email: email,
+          userName: email.split('@')[0],
+          platformUrl: window.location.origin
+        });
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail registration if email fails
+      }
+
+      // Navigate to profile setup after successful signup
+      await this.router.navigate(['/profile-setup']);
 
       return credential;
     } catch (error) {
@@ -135,8 +150,8 @@ export class AuthService {
   async signOut(): Promise<void> {
     try {
       // Track logout activity before signing out
-      await this.activityService.trackLogout();
-      
+      await this.activityService.trackLogout(this.currentUser);
+
       await signOut(this.auth);
       await this.router.navigate(['/login']);
     } catch (error) {
@@ -152,6 +167,18 @@ export class AuthService {
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.auth, email);
+
+      // Send password reset confirmation email
+      try {
+        const sendPasswordResetConfirmation = httpsCallable(this.functions, 'sendPasswordResetConfirmation');
+        await sendPasswordResetConfirmation({
+          email: email,
+          userName: email.split('@')[0]
+        });
+      } catch (emailError) {
+        console.error('Failed to send password reset confirmation:', emailError);
+        // Don't fail the process if email fails
+      }
     } catch (error) {
       console.error('Password reset error:', error);
       throw error;
