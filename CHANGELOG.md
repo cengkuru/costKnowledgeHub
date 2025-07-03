@@ -4,6 +4,20 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 07:25:00 UTC
+- **🐛 Resource Form Save Error: Fixed undefined impact field causing Firebase error**
+  - Removed impact field from prepareFormData method (src/app/admin/components/resources/resource-form.component.ts:591-612)
+  - Error was: "FirebaseError: Function addDoc() called with invalid data. Unsupported field value: undefined"
+  - **Problem**: Impact field was removed from form but still included in data preparation
+  - **Result**: Resources now save successfully without undefined field errors
+
+### Fixed - 2025-07-04 07:25:00 UTC
+- **🎨 Content Tab Textarea Styling: Fixed unstyled textarea appearance**
+  - Enhanced form-textarea styling with proper font inheritance (src/app/admin/components/resources/resource-form.component.scss:398-408)
+  - Added textarea-wrapper styling for proper layout
+  - **Problem**: Textarea appeared as plain HTML element without proper styling
+  - **Result**: Beautiful, consistent textarea styling matching the rest of the form
+
 ### Added - 2025-07-04 07:20:00 UTC
 - **🔄 Resource Type-First Workflow Implementation: Dynamic form flow based on selected resource type**
   - Added resource type selection screen as the first step for new resources (src/app/admin/components/resources/resource-form.component.html:45-102)

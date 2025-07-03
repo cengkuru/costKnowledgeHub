@@ -608,8 +608,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       metadata: {
         difficulty: formValue.difficulty,
         targetAudience: formValue.targetAudience
-      },
-      impact: formValue.impact
+      }
     };
   }
   
