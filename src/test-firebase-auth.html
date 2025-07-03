@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Auth Test</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Firebase Auth Test</h1>
+    <div id="status">Initializing...</div>
+    <br>
+    <button onclick="testAuth()">Test Authentication</button>
+    <div id="result"></div>
+
+    <script>
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsqPYsZeT85x72WqfzDWwh61QhkZptyuM",
+            authDomain: "knowledgehub-2ed2f.firebaseapp.com",
+            projectId: "knowledgehub-2ed2f",
+            storageBucket: "knowledgehub-2ed2f.firebasestorage.app",
+            messagingSenderId: "442740476986",
+            appId: "1:442740476986:web:77a9c6a79593314c74f903",
+            measurementId: "G-92MHFZ8698"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        document.getElementById('status').textContent = 'Firebase initialized';
+
+        async function testAuth() {
+            const email = 'm.cengkuru@infrastructuretransparency.org';
+            const password = '12345678';
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p>Testing authentication...</p>';
+            
+            try {
+                console.log('Attempting sign in with:', email);
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                console.log('Success:', userCredential);
+                resultDiv.innerHTML = `
+                    <p style="color: green;">✓ Authentication successful!</p>
+                    <p>User: ${userCredential.user.email}</p>
+                    <p>UID: ${userCredential.user.uid}</p>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <p style="color: red;">✗ Authentication failed!</p>
+                    <p>Error code: ${error.code}</p>
+                    <p>Error message: ${error.message}</p>
+                    <p>Full error: ${JSON.stringify(error, null, 2)}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

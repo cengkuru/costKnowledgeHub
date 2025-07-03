@@ -254,6 +254,27 @@
       "support": "Support",
       "privacy": "Privacy"
     },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Monitor your content performance and user engagement",
+      "loading": "Loading analytics data...",
+      "totalPageViews": "Total Page Views",
+      "totalDownloads": "Total Downloads",
+      "activeUsers": "Active Users",
+      "totalResources": "Total Resources",
+      "last30Days": "Last 30 days",
+      "thisMonth": "This month",
+      "published": "Published",
+      "pageViewsOverTime": "Page Views Over Time",
+      "resourceTypeDistribution": "Resource Type Distribution",
+      "topResources": "Top Resources",
+      "searchTrends": "Search Trends",
+      "resource": "Resource",
+      "views": "Views",
+      "downloads": "Downloads",
+      "searches": "searches",
+      "noSearchData": "No search data available yet"
+    },
     "dashboard": {
       "title": "Dashboard Overview",
       "subtitle": "Monitor your content performance and activity",

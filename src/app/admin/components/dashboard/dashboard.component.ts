@@ -46,8 +46,8 @@ export class DashboardComponent implements OnInit {
       map(resources => {
         const stats: DashboardStats = {
           totalResources: resources.length,
-          publishedResources: resources.filter(r => r.featured).length, // Using featured as proxy for published
-          unpublishedResources: resources.filter(r => !r.featured).length,
+          publishedResources: resources.filter(r => r.status === 'published').length,
+          unpublishedResources: resources.filter(r => r.status !== 'published').length,
           totalViews: resources.reduce((sum, r) => sum + (r.views || 0), 0),
           totalDownloads: resources.reduce((sum, r) => sum + (r.downloads || 0), 0),
           resourcesByType: this.getResourcesByType(resources),

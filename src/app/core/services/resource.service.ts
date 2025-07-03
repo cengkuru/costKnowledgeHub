@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
+import { Observable, BehaviorSubject, combineLatest, from } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, switchMap, tap, catchError, of } from 'rxjs/operators';
 import { Resource, ResourceFilter, ResourceSearchResult, Language, ResourceType, TopicCategory, Region } from '../models/resource.model';
 import { FilterGroup, ActiveFilters, DEFAULT_FILTERS } from '../models/filter.model';
 import { COST_TOPICS } from '../models/topic.model';
 import { COST_COUNTRIES } from '../models/country.model';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResourceService {
+  private firestoreService = inject(FirestoreService);
+  
   private resourcesSubject = new BehaviorSubject<Resource[]>([]);
   private filtersSubject = new BehaviorSubject<FilterGroup>({
     type: [],
@@ -37,8 +40,24 @@ export class ResourceService {
   public loading$ = this.loadingSubject.asObservable();
 
   constructor() {
-    // Initialize with mock data
-    this.initializeMockData();
+    // Load resources from Firestore
+    this.loadResources();
+  }
+
+  private async loadResources(): Promise<void> {
+    try {
+      this.loadingSubject.next(true);
+      const resources = await this.firestoreService.getResources();
+      this.resourcesSubject.next(resources);
+      
+      // Build filters from loaded resources
+      this.buildFilters(resources);
+    } catch (error) {
+      console.error('Error loading resources:', error);
+      this.resourcesSubject.next([]);
+    } finally {
+      this.loadingSubject.next(false);
+    }
   }
 
   // Get all resources with optional filtering
@@ -246,269 +265,89 @@ export class ResourceService {
     return labels[country] || country.toUpperCase();
   }
 
-  private initializeMockData(): void {
-    const mockResources: Resource[] = [
-      {
-        id: 'res-001',
-        title: {
-          en: 'CoST Infrastructure Data Standard (IDS) Implementation Guide',
-          es: 'Guía de Implementación del Estándar de Datos de Infraestructura (IDS) de CoST',
-          pt: 'Guia de Implementação do Padrão de Dados de Infraestrutura (IDS) do CoST'
-        },
-        description: {
-          en: 'Comprehensive guide for implementing the 40 core data points of CoST IDS across infrastructure projects',
-          es: 'Guía completa para implementar los 40 puntos de datos centrales del IDS de CoST en proyectos de infraestructura',
-          pt: 'Guia abrangente para implementar os 40 pontos de dados principais do IDS do CoST em projetos de infraestrutura'
-        },
-        type: 'guide',
-        category: 'Data Standards',
-        topics: ['disclosure'],
-        tags: ['Transparency', 'Data Disclosure', 'Implementation'],
-        country: 'global',
-        language: 'en',
-        datePublished: { seconds: 1710547200, nanoseconds: 0 }, // 2024-03-15
-        fileLinks: { en: '/assets/samples/cost-ids-guide-2024.pdf' },
-        thumbnailUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: true,
-        fileSize: '3.2 MB',
-        format: 'PDF',
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1710547200, nanoseconds: 0 }
-      },
-      {
-        id: 'res-002',
-        title: {
-          en: 'Thailand Infrastructure Transparency Success Story',
-          es: 'Historia de Éxito de Transparencia en Infraestructura de Tailandia',
-          pt: 'História de Sucesso da Transparência de Infraestrutura da Tailândia'
-        },
-        description: {
-          en: 'How Thailand saved $360 million through CoST implementation in highway projects',
-          es: 'Cómo Tailandia ahorró $360 millones a través de la implementación de CoST en proyectos de carreteras',
-          pt: 'Como a Tailândia economizou $360 milhões através da implementação do CoST em projetos rodoviários'
-        },
-        type: 'case-study',
-        category: 'Impact Stories',
-        topics: ['procurement', 'monitoring'],
-        tags: ['Cost Savings', 'Public Procurement', 'Southeast Asia'],
-        region: 'asia',
-        country: 'th',
-        language: 'en',
-        datePublished: { seconds: 1709856000, nanoseconds: 0 }, // 2024-03-08
-        thumbnailUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: true,
-        impact: {
-          savings: '$360 million',
-          projects: 47,
-          transparency: '85% disclosure rate'
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1709856000, nanoseconds: 0 }
-      },
-      {
-        id: 'res-003',
-        title: {
-          en: 'Infrastructure Transparency Index 2024 Country Scores',
-          es: 'Índice de Transparencia en Infraestructura 2024 - Puntuaciones por País',
-          pt: 'Índice de Transparência de Infraestrutura 2024 - Pontuações por País'
-        },
-        description: {
-          en: 'Comprehensive dataset with transparency scores for 89 countries across infrastructure sectors',
-          es: 'Conjunto de datos completo con puntuaciones de transparencia para 89 países en sectores de infraestructura',
-          pt: 'Conjunto de dados abrangente com pontuações de transparência para 89 países em setores de infraestrutura'
-        },
-        type: 'dataset',
-        category: 'Global Analysis',
-        topics: ['disclosure', 'accountability'],
-        tags: ['Transparency Index', 'Global Assessment', 'Data Analysis'],
-        region: 'global',
-        country: 'global',
-        language: 'en',
-        datePublished: { seconds: 1709251200, nanoseconds: 0 }, // 2024-03-01
-        fileLinks: { en: '/assets/samples/iti-2024-scores.csv' },
-        featured: true,
-        fileSize: '1.8 MB',
-        format: 'CSV',
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1709251200, nanoseconds: 0 }
-      },
-      // Additional CoST resources matching PLAN.md specifications
-      {
-        id: 'res-004',
-        title: {
-          en: 'Independent Assurance Framework for Infrastructure Projects',
-          es: 'Marco de Aseguramiento Independiente para Proyectos de Infraestructura',
-          pt: 'Estrutura de Garantia Independente para Projetos de Infraestrutura'
-        },
-        description: {
-          en: 'Complete framework for implementing independent assurance processes in infrastructure transparency',
-          es: 'Marco completo para implementar procesos de aseguramiento independiente en transparencia de infraestructura',
-          pt: 'Estrutura completa para implementar processos de garantia independente na transparência de infraestrutura'
-        },
-        type: 'guide',
-        category: 'Assurance',
-        topics: ['assurance'],
-        tags: ['Independent Assurance', 'Verification', 'Quality Control'],
-        region: 'global',
-        country: 'global',
-        language: 'en',
-        datePublished: { seconds: 1709424000, nanoseconds: 0 },
-        fileLinks: { en: '/assets/samples/assurance-framework.pdf' },
-        thumbnailUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: false,
-        fileSize: '2.1 MB',
-        format: 'PDF',
-        metadata: {
-          difficulty: 'intermediate',
-          implementationTime: '6-12 months',
-          targetAudience: ['Government', 'Civil Society', 'International Organizations']
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1709424000, nanoseconds: 0 }
-      },
-      {
-        id: 'res-005',
-        title: {
-          en: 'Guatemala Social Accountability Success: Community Oversight',
-          es: 'Éxito de Rendición de Cuentas Social de Guatemala: Supervisión Comunitaria',
-          pt: 'Sucesso de Responsabilidade Social da Guatemala: Supervisão Comunitária'
-        },
-        description: {
-          en: 'How community-led monitoring in Guatemala improved infrastructure project quality and saved $28 million',
-          es: 'Cómo el monitoreo liderado por la comunidad en Guatemala mejoró la calidad de los proyectos de infraestructura y ahorró $28 millones',
-          pt: 'Como o monitoramento liderado pela comunidade na Guatemala melhorou a qualidade dos projetos de infraestrutura e economizou $28 milhões'
-        },
-        type: 'case-study',
-        category: 'Impact Stories',
-        topics: ['accountability', 'stakeholder'],
-        tags: ['Community Monitoring', 'Social Accountability', 'Guatemala'],
-        region: 'latam',
-        country: 'GT',
-        language: 'en',
-        datePublished: { seconds: 1708819200, nanoseconds: 0 },
-        thumbnailUrl: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: true,
-        impact: {
-          savings: '$28 million',
-          projects: 23,
-          transparency: '89% community satisfaction',
-          description: 'Community oversight prevented cost overruns and improved project quality'
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1708819200, nanoseconds: 0 }
-      },
-      {
-        id: 'res-006',
-        title: {
-          en: 'Digital Procurement Tools for Infrastructure Transparency',
-          es: 'Herramientas de Contratación Digital para Transparencia en Infraestructura',
-          pt: 'Ferramentas de Contratação Digital para Transparência de Infraestrutura'
-        },
-        description: {
-          en: 'Comprehensive toolkit for implementing digital procurement systems that enhance transparency',
-          es: 'Kit de herramientas completo para implementar sistemas de contratación digital que mejoran la transparencia',
-          pt: 'Kit de ferramentas abrangente para implementar sistemas de contratação digital que aumentam a transparência'
-        },
-        type: 'tool',
-        category: 'Digital Tools',
-        topics: ['procurement'],
-        tags: ['Digital Procurement', 'E-procurement', 'Technology', 'Collaboration'],
-        region: 'global',
-        country: 'global',
-        language: 'en',
-        datePublished: { seconds: 1708214400, nanoseconds: 0 },
-        downloadUrl: '/assets/downloads/digital-procurement-toolkit.zip',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: false,
-        fileSize: '15.3 MB',
-        format: 'ZIP',
-        metadata: {
-          difficulty: 'advanced',
-          implementationTime: '12-18 months',
-          targetAudience: ['Government IT', 'Procurement Officers'],
-          prerequisites: ['Digital Infrastructure', 'Legal Framework']
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1708214400, nanoseconds: 0 }
-      },
-      {
-        id: 'res-007',
-        title: {
-          en: 'UK Infrastructure Transparency Policy Brief 2024',
-          es: 'Informe de Política de Transparencia en Infraestructura del Reino Unido 2024',
-          pt: 'Relatório de Política de Transparência de Infraestrutura do Reino Unido 2024'
-        },
-        description: {
-          en: 'Analysis of UK infrastructure transparency reforms and their impact on project delivery',
-          es: 'Análisis de las reformas de transparencia en infraestructura del Reino Unido y su impacto en la entrega de proyectos',
-          pt: 'Análise das reformas de transparência de infraestrutura do Reino Unido e seu impacto na entrega de projetos'
-        },
-        type: 'policy',
-        category: 'Policy Analysis',
-        topics: ['disclosure', 'monitoring'],
-        tags: ['Policy Reform', 'United Kingdom', 'Regulatory Framework'],
-        region: 'europe',
-        country: 'UK',
-        language: 'en',
-        datePublished: { seconds: 1707609600, nanoseconds: 0 },
-        fileLinks: { en: '/assets/samples/uk-policy-brief-2024.pdf' },
-        thumbnailUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: false,
-        fileSize: '1.4 MB',
-        format: 'PDF',
-        readingTime: 8,
-        metadata: {
-          difficulty: 'intermediate',
-          implementationTime: '3-6 months',
-          targetAudience: ['Policy Makers', 'Government Officials']
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1707609600, nanoseconds: 0 }
-      },
-      {
-        id: 'res-008',
-        title: {
-          en: 'Multi-stakeholder Platform Setup Guide',
-          es: 'Guía de Configuración de Plataforma Multi-actor',
-          pt: 'Guia de Configuração de Plataforma Multi-partes Interessadas'
-        },
-        description: {
-          en: 'Step-by-step guide for establishing effective multi-stakeholder working groups in CoST implementation',
-          es: 'Guía paso a paso para establecer grupos de trabajo multi-actor efectivos en la implementación de CoST',
-          pt: 'Guia passo a passo para estabelecer grupos de trabalho multi-partes interessadas eficazes na implementação do CoST'
-        },
-        type: 'guide',
-        category: 'Implementation',
-        topics: ['stakeholder'],
-        tags: ['Multi-stakeholder', 'Governance', 'Collaboration', 'Platform Setup'],
-        region: 'global',
-        country: 'global',
-        language: 'en',
-        datePublished: { seconds: 1707004800, nanoseconds: 0 },
-        fileLinks: { en: '/assets/samples/msp-setup-guide.pdf' },
-        thumbnailUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        featured: true,
-        fileSize: '3.8 MB',
-        format: 'PDF',
-        readingTime: 15,
-        metadata: {
-          difficulty: 'beginner',
-          implementationTime: '3-6 months',
-          targetAudience: ['Government', 'Civil Society', 'Private Sector']
-        },
-        status: 'published',
-        createdBy: 'admin',
-        createdAt: { seconds: 1707004800, nanoseconds: 0 }
-      }
-    ];
+  private buildFilters(resources: Resource[]): void {
+    const typeCount: Record<string, number> = {};
+    const topicCount: Record<string, number> = {};
+    const languageCount: Record<string, number> = {};
+    const countryCount: Record<string, number> = {};
 
-    this.resourcesSubject.next(mockResources);
+    resources.forEach(resource => {
+      // Count types
+      if (resource.type) {
+        typeCount[resource.type] = (typeCount[resource.type] || 0) + 1;
+      }
+
+      // Count languages
+      if (resource.language) {
+        languageCount[resource.language] = (languageCount[resource.language] || 0) + 1;
+      }
+
+      // Count countries
+      if (resource.country) {
+        countryCount[resource.country] = (countryCount[resource.country] || 0) + 1;
+      }
+
+      // Count tags/topics
+      if (resource.tags) {
+        resource.tags.forEach(tag => {
+          topicCount[tag] = (topicCount[tag] || 0) + 1;
+        });
+      }
+    });
+
+    // Update filters subject
+    this.filtersSubject.next({
+      type: Object.keys(typeCount),
+      topic: Object.keys(topicCount),
+      region: [],
+      language: Object.keys(languageCount),
+      country: Object.keys(countryCount)
+    });
+  }
+
+  // CRUD Operations
+  async createResource(resource: Omit<Resource, 'id'>): Promise<string> {
+    try {
+      const id = await this.firestoreService.createResource(resource);
+      await this.loadResources(); // Reload to update local state
+      return id;
+    } catch (error) {
+      console.error('Error creating resource:', error);
+      throw error;
+    }
+  }
+
+  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
+    try {
+      await this.firestoreService.updateResource(id, resource);
+      await this.loadResources(); // Reload to update local state
+    } catch (error) {
+      console.error('Error updating resource:', error);
+      throw error;
+    }
+  }
+
+  async deleteResource(id: string): Promise<void> {
+    try {
+      await this.firestoreService.deleteResource(id);
+      await this.loadResources(); // Reload to update local state
+    } catch (error) {
+      console.error('Error deleting resource:', error);
+      throw error;
+    }
+  }
+
+  async getResourceById(id: string): Promise<Resource | null> {
+    try {
+      return await this.firestoreService.getResourceById(id);
+    } catch (error) {
+      console.error('Error getting resource by id:', error);
+      return null;
+    }
+  }
+
+  // Refresh resources from Firestore
+  async refreshResources(): Promise<void> {
+    await this.loadResources();
   }
 }

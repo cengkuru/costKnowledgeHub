@@ -4,7 +4,7 @@ import { CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { map, take } from 'rxjs/operators';
 
-export const authGuard: CanActivateFn = async (route, state) => {
+export const publicGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   
@@ -15,19 +15,11 @@ export const authGuard: CanActivateFn = async (route, state) => {
     take(1),
     map(isAuthenticated => {
       if (isAuthenticated) {
-        // Check if user has completed profile setup
-        if (!authService.hasCompletedProfile() && state.url !== '/profile-setup') {
-          router.navigate(['/profile-setup']);
-          return false;
-        }
-        return true;
-      } else {
-        // Store the attempted URL for redirecting after login
-        router.navigate(['/login'], {
-          queryParams: { returnUrl: state.url }
-        });
+        // User is already logged in, redirect to admin
+        router.navigate(['/admin']);
         return false;
       }
+      return true;
     })
   );
 };

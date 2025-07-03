@@ -1,16 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { 
-  Firestore, 
-  collection, 
-  doc, 
-  addDoc, 
+import {
+  Firestore,
+  collection,
+  doc,
+  addDoc,
   updateDoc,
   getDocs,
   query,
   where,
   orderBy,
   limit,
-  Timestamp,
   serverTimestamp,
   increment
 } from '@angular/fire/firestore';
@@ -21,7 +20,7 @@ export interface PageView {
   resourceTitle: string;
   userId?: string;
   sessionId: string;
-  timestamp: Timestamp;
+  timestamp: Date;
   duration?: number; // Time spent on page in seconds
   referrer?: string;
   userAgent?: string;
@@ -33,7 +32,7 @@ export interface Download {
   resourceTitle: string;
   resourceType: string;
   userId?: string;
-  timestamp: Timestamp;
+  timestamp: Date;
   fileSize?: string;
   fileName?: string;
 }
@@ -42,7 +41,7 @@ export interface AnalyticsEvent {
   eventType: 'page_view' | 'download' | 'search' | 'filter' | 'share';
   resourceId?: string;
   userId?: string;
-  timestamp: Timestamp;
+  timestamp: Date;
   metadata?: { [key: string]: any };
 }
 
@@ -53,17 +52,17 @@ export class AnalyticsService {
   private firestore = inject(Firestore);
   private analytics = inject(Analytics);
   private sessionId: string;
-  
+
   constructor() {
     // Generate unique session ID
     this.sessionId = this.generateSessionId();
   }
-  
+
   /**
    * Track a page view
    */
   async trackPageView(
-    resourceId: string, 
+    resourceId: string,
     resourceTitle: string,
     userId?: string
   ): Promise<void> {
@@ -73,7 +72,7 @@ export class AnalyticsService {
       resource_title: resourceTitle,
       user_id: userId
     });
-    
+
     // Store in Firestore for detailed tracking
     const pageView: Omit<PageView, 'timestamp'> = {
       resourceId,
@@ -83,12 +82,12 @@ export class AnalyticsService {
       referrer: document.referrer,
       userAgent: navigator.userAgent
     };
-    
+
     await addDoc(collection(this.firestore, 'analytics_page_views'), {
       ...pageView,
       timestamp: serverTimestamp()
     });
-    
+
     // Update resource view count
     const resourceRef = doc(this.firestore, 'resources', resourceId);
     await updateDoc(resourceRef, {
@@ -97,7 +96,7 @@ export class AnalyticsService {
       'analytics.lastViewedAt': serverTimestamp()
     });
   }
-  
+
   /**
    * Track a download
    */
@@ -117,7 +116,7 @@ export class AnalyticsService {
       file_name: fileName,
       user_id: userId
     });
-    
+
     // Store in Firestore
     const download: Omit<Download, 'timestamp'> = {
       resourceId,
@@ -127,12 +126,12 @@ export class AnalyticsService {
       fileName,
       fileSize
     };
-    
+
     await addDoc(collection(this.firestore, 'analytics_downloads'), {
       ...download,
       timestamp: serverTimestamp()
     });
-    
+
     // Update resource download count
     const resourceRef = doc(this.firestore, 'resources', resourceId);
     await updateDoc(resourceRef, {
@@ -140,7 +139,7 @@ export class AnalyticsService {
       'analytics.downloads': increment(1)
     });
   }
-  
+
   /**
    * Track a search query
    */
@@ -154,7 +153,7 @@ export class AnalyticsService {
       results_count: resultsCount,
       user_id: userId
     });
-    
+
     await addDoc(collection(this.firestore, 'analytics_searches'), {
       searchQuery,
       resultsCount,
@@ -163,7 +162,7 @@ export class AnalyticsService {
       timestamp: serverTimestamp()
     });
   }
-  
+
   /**
    * Track filter usage
    */
@@ -177,7 +176,7 @@ export class AnalyticsService {
       filter_value: Array.isArray(filterValue) ? filterValue.join(',') : filterValue,
       user_id: userId
     });
-    
+
     await addDoc(collection(this.firestore, 'analytics_filters'), {
       filterType,
       filterValue,
@@ -186,7 +185,7 @@ export class AnalyticsService {
       timestamp: serverTimestamp()
     });
   }
-  
+
   /**
    * Track social share
    */
@@ -202,7 +201,7 @@ export class AnalyticsService {
       platform: platform,
       user_id: userId
     });
-    
+
     await addDoc(collection(this.firestore, 'analytics_shares'), {
       resourceId,
       resourceTitle,
@@ -211,7 +210,7 @@ export class AnalyticsService {
       timestamp: serverTimestamp()
     });
   }
-  
+
   /**
    * Get page view statistics for a resource
    */
@@ -224,38 +223,38 @@ export class AnalyticsService {
   }> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    
-    // Get page views
+
+        // Get page views
     const viewsQuery = query(
       collection(this.firestore, 'analytics_page_views'),
       where('resourceId', '==', resourceId),
-      where('timestamp', '>=', Timestamp.fromDate(startDate)),
+      where('timestamp', '>=', startDate),
       orderBy('timestamp', 'desc')
     );
-    
+
     const viewsSnapshot = await getDocs(viewsQuery);
     const views: PageView[] = [];
     const uniqueSessions = new Set<string>();
-    
-    viewsSnapshot.forEach(doc => {
+
+    viewsSnapshot.forEach((doc: any) => {
       const data = doc.data() as PageView;
       views.push(data);
       uniqueSessions.add(data.sessionId);
     });
-    
+
     // Get downloads
     const downloadsQuery = query(
       collection(this.firestore, 'analytics_downloads'),
       where('resourceId', '==', resourceId),
-      where('timestamp', '>=', Timestamp.fromDate(startDate))
+      where('timestamp', '>=', startDate)
     );
-    
+
     const downloadsSnapshot = await getDocs(downloadsQuery);
     const downloadCount = downloadsSnapshot.size;
-    
+
     // Calculate views by day
     const viewsByDay = this.aggregateViewsByDay(views, days);
-    
+
     return {
       totalViews: views.length,
       uniqueViews: uniqueSessions.size,
@@ -264,13 +263,13 @@ export class AnalyticsService {
       viewsByDay
     };
   }
-  
+
   /**
    * Get top resources by views or downloads
    */
-  async getTopResources(
+    async getTopResources(
     metric: 'views' | 'downloads' = 'views',
-    limit: number = 10
+    limitCount: number = 10
   ): Promise<{ resourceId: string; count: number }[]> {
     // In a production environment, you would maintain aggregated stats
     // For now, we'll query the resources collection
@@ -278,65 +277,65 @@ export class AnalyticsService {
       collection(this.firestore, 'resources'),
       where('status', '==', 'published'),
       orderBy(metric, 'desc'),
-      limit(limit)
+      limit(limitCount)
     );
-    
+
     const snapshot = await getDocs(resourcesQuery);
     const topResources: { resourceId: string; count: number }[] = [];
-    
-    snapshot.forEach(doc => {
+
+    snapshot.forEach((doc: any) => {
       topResources.push({
         resourceId: doc.id,
         count: doc.data()[metric] || 0
       });
     });
-    
+
     return topResources;
   }
-  
+
   /**
    * Get search trends
    */
   async getSearchTrends(days: number = 7): Promise<{ term: string; count: number }[]> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    
-    const searchQuery = query(
+
+        const searchQuery = query(
       collection(this.firestore, 'analytics_searches'),
-      where('timestamp', '>=', Timestamp.fromDate(startDate)),
+      where('timestamp', '>=', startDate),
       orderBy('timestamp', 'desc'),
       limit(1000)
     );
-    
+
     const snapshot = await getDocs(searchQuery);
     const searchCounts: { [term: string]: number } = {};
-    
-    snapshot.forEach(doc => {
+
+    snapshot.forEach((doc: any) => {
       const term = doc.data().searchQuery.toLowerCase();
       searchCounts[term] = (searchCounts[term] || 0) + 1;
     });
-    
+
     // Sort by count and return top terms
     return Object.entries(searchCounts)
       .map(([term, count]) => ({ term, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 20);
   }
-  
+
   /**
    * Generate unique session ID
    */
   private generateSessionId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
-  
+
   /**
    * Aggregate views by day
    */
   private aggregateViewsByDay(views: PageView[], days: number): { date: Date; views: number }[] {
     const viewsByDay: { [key: string]: number } = {};
     const today = new Date();
-    
+
     // Initialize all days with 0
     for (let i = 0; i < days; i++) {
       const date = new Date(today);
@@ -344,16 +343,16 @@ export class AnalyticsService {
       const key = date.toISOString().split('T')[0];
       viewsByDay[key] = 0;
     }
-    
+
     // Count views per day
     views.forEach(view => {
-      const date = view.timestamp.toDate();
+      const date = view.timestamp;
       const key = date.toISOString().split('T')[0];
       if (viewsByDay[key] !== undefined) {
         viewsByDay[key]++;
       }
     });
-    
+
     // Convert to array
     return Object.entries(viewsByDay)
       .map(([dateStr, count]) => ({

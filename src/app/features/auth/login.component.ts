@@ -61,6 +61,10 @@ export class LoginComponent {
         case 'auth/wrong-password':
           this.errorMessage = this.i18nService.t('login.errors.wrongPassword');
           break;
+        case 'auth/invalid-credential':
+          // This is the new error code for wrong email/password in Firebase v10+
+          this.errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+          break;
         case 'auth/invalid-email':
           this.errorMessage = this.i18nService.t('login.errors.invalidEmail');
           break;
@@ -68,7 +72,7 @@ export class LoginComponent {
           this.errorMessage = this.i18nService.t('login.errors.tooManyAttempts');
           break;
         default:
-          this.errorMessage = this.i18nService.t('login.errors.genericError');
+          this.errorMessage = this.i18nService.t('login.errors.genericError') + ' (' + error.code + ')';
       }
     }
   }

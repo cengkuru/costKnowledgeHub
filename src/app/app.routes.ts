@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { publicGuard } from './core/guards/public.guard';
 
 export const routes: Routes = [
   {
@@ -21,7 +22,12 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent)
+    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent),
+    canActivate: [publicGuard]
+  },
+  {
+    path: 'test-auth',
+    loadComponent: () => import('./features/auth/test-auth.component').then(m => m.TestAuthComponent)
   },
   {
     path: 'profile-setup',
@@ -30,7 +36,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin.routes').then(m => m.adminRoutes)
+    loadChildren: () => import('./admin/admin.routes').then(m => m.adminRoutes),
+    canActivate: [authGuard]
   },
   {
     path: '**',

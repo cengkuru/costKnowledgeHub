@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { I18nService } from '../../../core/services/i18n.service';
-// Use mock services until Firebase dependencies are installed
-import { FirestoreService } from '../../../core/services/firestore.service.mock';
-import { AuthService } from '../../../core/services/auth.service.mock';
+import { FirestoreService } from '../../../core/services/firestore.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ResourceService } from '../../../core/services/resource.service';
 import { Resource } from '../../../core/models/resource.model';
 
 @Component({
@@ -16,7 +16,7 @@ import { Resource } from '../../../core/models/resource.model';
   styleUrl: './resource-management.component.scss'
 })
 export class ResourceManagementComponent implements OnInit {
-  private firestoreService = inject(FirestoreService);
+  private resourceService = inject(ResourceService);
   private authService = inject(AuthService);
   
   resources: Resource[] = [];
@@ -41,9 +41,11 @@ export class ResourceManagementComponent implements OnInit {
     this.loading = true;
     
     try {
-      const result = await this.firestoreService.getResources(undefined, 100);
-      this.resources = result.resources;
-      this.applyFilters();
+      // Subscribe to resources from ResourceService
+      this.resourceService.resources$.subscribe(resources => {
+        this.resources = resources;
+        this.applyFilters();
+      });
     } catch (error) {
       console.error('Error loading resources:', error);
     } finally {
@@ -102,13 +104,12 @@ export class ResourceManagementComponent implements OnInit {
     if (!userId) return;
     
     try {
-      if (resource.status === 'published') {
-        await this.firestoreService.unpublishResource(resource.id, userId);
-        resource.status = 'unpublished';
-      } else {
-        await this.firestoreService.publishResource(resource.id, userId);
-        resource.status = 'published';
-      }
+      const newStatus = resource.status === 'published' ? 'unpublished' : 'published';
+      await this.resourceService.updateResource(resource.id, { 
+        status: newStatus,
+        updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+        updatedBy: userId
+      });
     } catch (error) {
       console.error('Error toggling publish status:', error);
     }
@@ -119,12 +120,11 @@ export class ResourceManagementComponent implements OnInit {
     if (!userId) return;
     
     try {
-      await this.firestoreService.updateResource(
-        resource.id,
-        { featured: !resource.featured },
-        userId
-      );
-      resource.featured = !resource.featured;
+      await this.resourceService.updateResource(resource.id, { 
+        featured: !resource.featured,
+        updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+        updatedBy: userId
+      });
     } catch (error) {
       console.error('Error toggling featured status:', error);
     }
@@ -136,9 +136,7 @@ export class ResourceManagementComponent implements OnInit {
     }
     
     try {
-      await this.firestoreService.deleteResource(resource.id);
-      this.resources = this.resources.filter(r => r.id !== resource.id);
-      this.applyFilters();
+      await this.resourceService.deleteResource(resource.id);
     } catch (error) {
       console.error('Error deleting resource:', error);
     }
