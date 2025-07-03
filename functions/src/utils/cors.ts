@@ -11,13 +11,14 @@ export const CORS_CONFIG = {
     'http://localhost:4200',           // Angular development server
     'http://localhost:5000',           // Firebase hosting emulator
     'https://knowledgehub-2ed2f.web.app',      // Firebase hosting production
-    'https://knowledgehub-2ed2f.firebaseapp.com' // Firebase hosting alternative
+    'https://knowledgehub-2ed2f.firebaseapp.com', // Firebase hosting alternative
+    'https://knowledgehub-2ed2f.cloudfunctions.net' // Cloud Functions domain
   ],
   
   // Default headers
   defaultHeaders: {
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
     'Access-Control-Max-Age': '3600',
     'Access-Control-Allow-Credentials': 'true'
   }
@@ -46,7 +47,7 @@ export function setCorsHeaders(req: Request, res: Response): void {
 /**
  * Handle CORS preflight requests
  */
-export function handleCorsPrelight(req: Request, res: Response): boolean {
+export function handleCorsPreflight(req: Request, res: Response): boolean {
   if (req.method === 'OPTIONS') {
     setCorsHeaders(req, res);
     res.status(204).send('');
@@ -62,16 +63,23 @@ export function withCors<T extends any[]>(
   handler: (req: Request, res: Response, ...args: T) => Promise<void> | void
 ) {
   return async (req: Request, res: Response, ...args: T): Promise<void> => {
+    // Always set CORS headers first
+    setCorsHeaders(req, res);
+    
     // Handle preflight
-    if (handleCorsPrelight(req, res)) {
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
       return;
     }
     
-    // Set CORS headers for actual request
-    setCorsHeaders(req, res);
-    
-    // Call the actual handler
-    await handler(req, res, ...args);
+    try {
+      // Call the actual handler
+      await handler(req, res, ...args);
+    } catch (error) {
+      // Ensure CORS headers are set even on errors
+      setCorsHeaders(req, res);
+      throw error;
+    }
   };
 }
 

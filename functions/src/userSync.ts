@@ -5,7 +5,6 @@ import * as admin from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
 import { 
-  withCors, 
   extractIdToken, 
   sendErrorResponse, 
   sendSuccessResponse 
@@ -88,9 +87,26 @@ export const listAllAuthUsers = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: true
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'http://localhost:5000',
+        'https://knowledgehub-2ed2f.web.app',
+        'https://knowledgehub-2ed2f.firebaseapp.com'
+      ],
+      credentials: true
+    }
   },
-  withCors(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    // Handle CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.set('Access-Control-Max-Age', '3600');
+      res.status(204).send('');
+      return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
       sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
@@ -174,7 +190,7 @@ export const listAllAuthUsers = onRequest(
       logger.error('Error listing Auth users:', error);
       sendErrorResponse(res, 500, 'Unable to list users.', error);
     }
-  })
+  }
 );
 
 /**
@@ -185,9 +201,26 @@ export const syncAuthUserToFirestore = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: true
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'http://localhost:5000',
+        'https://knowledgehub-2ed2f.web.app',
+        'https://knowledgehub-2ed2f.firebaseapp.com'
+      ],
+      credentials: true
+    }
   },
-  withCors(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    // Handle CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.set('Access-Control-Max-Age', '3600');
+      res.status(204).send('');
+      return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
       sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
@@ -272,7 +305,7 @@ export const syncAuthUserToFirestore = onRequest(
       
       sendErrorResponse(res, 500, 'Unable to sync user.', error);
     }
-  })
+  }
 );
 
 /**
@@ -283,9 +316,26 @@ export const migrateAllUsers = onRequest(
   {
     timeoutSeconds: 540, // 9 minutes - max for HTTP functions
     memory: '512MiB',
-    cors: true
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'http://localhost:5000',
+        'https://knowledgehub-2ed2f.web.app',
+        'https://knowledgehub-2ed2f.firebaseapp.com'
+      ],
+      credentials: true
+    }
   },
-  withCors(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    // Handle CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.set('Access-Control-Max-Age', '3600');
+      res.status(204).send('');
+      return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
       sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
@@ -391,7 +441,7 @@ export const migrateAllUsers = onRequest(
       logger.error('Error during bulk migration:', error);
       sendErrorResponse(res, 500, 'Unable to complete bulk migration.', error);
     }
-  })
+  }
 );
 
 /**
@@ -401,9 +451,26 @@ export const getMigrationStatus = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: true
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'http://localhost:5000',
+        'https://knowledgehub-2ed2f.web.app',
+        'https://knowledgehub-2ed2f.firebaseapp.com'
+      ],
+      credentials: true
+    }
   },
-  withCors(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    // Handle CORS preflight for OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.set('Access-Control-Max-Age', '3600');
+      res.status(204).send('');
+      return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
       sendErrorResponse(res, 405, 'Method not allowed. Use POST.');
@@ -452,7 +519,7 @@ export const getMigrationStatus = onRequest(
       logger.error('Error getting migration status:', error);
       sendErrorResponse(res, 500, 'Unable to get migration status.', error);
     }
-  })
+  }
 );
 
 /**

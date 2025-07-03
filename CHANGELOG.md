@@ -4,6 +4,37 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 19:55:00 UTC
+- **🔧 Cloud Functions CORS Error: Fixed authentication and CORS issues for admin functions**
+  - Fixed typo in handleCorsPreflight function name (functions/src/utils/cors.ts:49)
+  - Updated all userSync functions to use proper CORS configuration (functions/src/userSync.ts:87-109, 201-223, 316-338, 451-473)
+  - Replaced generic `cors: true` with specific origin configuration for security
+  - Added explicit OPTIONS request handling for preflight requests
+  - Removed withCors wrapper in favor of direct CORS configuration
+  - **Problem**: Functions were returning 403 errors with "The request was not authenticated" and CORS policy errors
+  - **Solution**: Properly configured CORS origins and added explicit OPTIONS request handling
+  - **Result**: Cloud Functions now properly handle CORS preflight requests from localhost:4200
+
+### Added - 2025-07-04 08:00:00 UTC
+- **🔔 Real-Time Notification System: Implemented dynamic notifications for admin users**
+  - Created comprehensive notification model with types, priorities, and metadata (src/app/core/models/notification.model.ts)
+  - Built NotificationService with real-time Firestore listeners and notification management (src/app/core/services/notification.service.ts)
+  - Updated admin layout to display real notifications instead of mock data (src/app/admin/admin-layout.component.ts:30-47, 77-85, 118-151, 154-182)
+  - Added Firestore security rules for notifications collection (firestore.rules:76-103)
+  - Integrated ActivityService to automatically create notifications from user actions (src/app/core/services/activity.service.ts:79-137)
+  - **Features Implemented**:
+    - Real-time notification updates using Firestore listeners
+    - Unread count badge that updates dynamically
+    - Click-to-navigate functionality for actionable notifications
+    - Mark as read/unread functionality
+    - Clear individual or all notifications
+    - Priority-based visual indicators (high priority badge)
+    - Time-based formatting (e.g., "5 minutes ago", "2 hours ago")
+    - Activity-based notifications (resource published, user registered, etc.)
+  - **Notification Types**: resource_published, resource_unpublished, resource_updated, new_user_registration, user_role_changed, system_maintenance, report_available
+  - **Problem Solved**: Admin layout was using static mock notifications with no real functionality
+  - **Result**: Fully functional real-time notification system that keeps admins informed of all system activities
+
 ### Fixed - 2025-01-03 19:50:00 UTC
 - **🔗 Admin Layout Profile Links: Fixed non-functional profile and settings links**
   - Changed profile and settings links from anchors to buttons with proper navigation (src/app/admin/admin-layout.component.html:172-181)

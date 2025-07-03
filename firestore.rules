@@ -72,5 +72,34 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can only read their own notifications
+      allow read: if isOwner(resource.data.userId);
+      
+      // Only the notification service (via Cloud Functions) can create notifications
+      // Users can update (mark as read) and delete their own notifications
+      allow update: if isOwner(resource.data.userId) && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt']);
+      allow delete: if isOwner(resource.data.userId);
+      
+      // Notifications can be created by authenticated users (for system notifications)
+      allow create: if isAuthenticated();
+    }
+    
+    // Notification preferences
+    match /notification_preferences/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+    
+    // Activities collection (for audit trail)
+    match /activities/{activityId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if false; // Activities should be immutable
+      allow delete: if false; // Activities should never be deleted
+    }
   }
 }

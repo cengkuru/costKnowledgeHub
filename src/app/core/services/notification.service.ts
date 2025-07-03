@@ -43,7 +43,7 @@ export class NotificationService {
 
   constructor() {
     // Start listening to notifications when user is authenticated
-    this.authService.user$.subscribe(user => {
+    this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.startListening(user.uid);
       } else {
@@ -373,7 +373,12 @@ export class NotificationService {
    */
   async getNotificationStats(): Promise<NotificationStats> {
     const userId = this.authService.userId;
-    if (!userId) return { total: 0, unread: 0, byType: {}, byPriority: {} };
+    if (!userId) return { 
+      total: 0, 
+      unread: 0, 
+      byType: {} as Record<NotificationType, number>, 
+      byPriority: { low: 0, medium: 0, high: 0 } 
+    };
     
     const q = query(
       this.notificationsCollection,

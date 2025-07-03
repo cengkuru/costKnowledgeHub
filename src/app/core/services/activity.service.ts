@@ -4,12 +4,15 @@ import { map, catchError } from 'rxjs/operators';
 import { Activity, ActivityType, ActivityFilter, ActivityMetadata } from '../models/activity.model';
 import { FirestoreService } from './firestore.service';
 import { User } from '@angular/fire/auth';
+import { NotificationService } from './notification.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityService {
   private firestoreService = inject(FirestoreService);
+  private notificationService = inject(NotificationService);
   
   private activitiesSubject = new BehaviorSubject<Activity[]>([]);
   public activities$ = this.activitiesSubject.asObservable();
@@ -72,10 +75,66 @@ export class ActivityService {
       if (!environment.production) {
         console.log('Activity tracked:', activity);
       }
+      
+      // Create notification for relevant activities
+      if (this.shouldCreateNotification(type)) {
+        await this.notificationService.createFromActivity({
+          action: type,
+          userId: currentUser?.uid || 'anonymous',
+          resourceId,
+          description: this.getActivityDescription(type, resourceTitle),
+          metadata: {
+            ...metadata,
+            resourceTitle,
+            userName: currentUser?.displayName || currentUser?.email?.split('@')[0],
+            userEmail: currentUser?.email
+          }
+        });
+      }
     } catch (error) {
       console.error('Error tracking activity:', error);
       // Don't throw - we don't want tracking errors to affect user experience
     }
+  }
+  
+  /**
+   * Determine if an activity should create a notification
+   */
+  private shouldCreateNotification(type: ActivityType): boolean {
+    const notifiableTypes: ActivityType[] = [
+      'resource_add',
+      'resource_update',
+      'resource_publish',
+      'resource_unpublish',
+      'resource_delete',
+      'user_login',
+      'user_logout'
+    ];
+    
+    return notifiableTypes.includes(type);
+  }
+  
+  /**
+   * Get human-readable description for activity
+   */
+  private getActivityDescription(type: ActivityType, resourceTitle?: string): string {
+    const descriptions: Partial<Record<ActivityType, string>> = {
+      'resource_view': `Viewed resource: ${resourceTitle}`,
+      'resource_download': `Downloaded resource: ${resourceTitle}`,
+      'resource_search': 'Performed a search',
+      'resource_filter': 'Applied filters',
+      'resource_add': `Created new resource: ${resourceTitle}`,
+      'resource_update': `Updated resource: ${resourceTitle}`,
+      'resource_publish': `Published resource: ${resourceTitle}`,
+      'resource_unpublish': `Unpublished resource: ${resourceTitle}`,
+      'resource_delete': `Deleted resource: ${resourceTitle}`,
+      'user_login': 'User logged in',
+      'user_logout': 'User logged out',
+      'user_register': 'New user registered',
+      'user_signup': 'New user signed up'
+    };
+    
+    return descriptions[type] || `Activity: ${type}`;
   }
   
   /**
@@ -185,5 +244,3 @@ export class ActivityService {
   }
 }
 
-// Import environment configuration
-import { environment } from '../../../environments/environment';
