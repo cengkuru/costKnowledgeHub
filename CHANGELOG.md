@@ -4,14 +4,29 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-01-03 23:30:00 UTC
+- **🔧 Persistent Navigation Drawer (Mini Variant): Implemented collapsible sidebar for space-saving admin layout**
+  - Added toggleSidebarCollapse() method to admin layout component (src/app/admin/admin-layout.component.ts:48-50)
+  - Added isSidebarCollapsed property to track sidebar state (src/app/admin/admin-layout.component.ts:17)
+  - Implemented desktop-only collapse/expand toggle button with animated chevron icon
+  - Modified sidebar width to toggle between w-64 (full) and w-16 (mini) with smooth 300ms transitions
+  - Updated all navigation items to conditionally show/hide labels based on collapse state
+  - Added tooltips for collapsed navigation items to maintain usability
+  - Implemented icon-only quick actions for collapsed state
+  - Adjusted main content and footer margins to accommodate sidebar width changes
+  - Enhanced user experience: full menu with icons + labels ↔ space-saving icon-only strip
+  - **Features**: Desktop-only functionality, smooth animations, accessibility tooltips
+  - **Result**: Admin users can now toggle between full sidebar and compact icon-only navigation to optimize screen space
+
 ### Fixed - 2025-01-03 UTC
-- **📊 Admin Dashboard: Removed hardcoded values and applied EMOTIONAL_DESIGN_SYSTEM principles**
-  - Replaced hardcoded "245" active users with dynamic UserService call (src/app/admin/components/dashboard/dashboard.component.html:143)
-  - Removed hardcoded "+12%" growth percentage with calculated monthly growth (src/app/admin/components/dashboard/dashboard.component.html:151)
-  - Added getActiveUsersStats() method to fetch real user metrics (src/app/admin/components/dashboard/dashboard.component.ts)
-  - Applied design system compliance: consistent spacing, professional interactions, semantic colors
-  - Enhanced loading states and error handling for user statistics
-  - **Result**: Dashboard now displays real user analytics instead of static placeholder values
+- **📊 Admin Dashboard: Fixed dark stat card backgrounds and applied clean design system**
+  - Replaced dark card backgrounds with clean white backgrounds and subtle shadows
+  - Fixed stat card styling to follow professional, minimal design principles
+  - Removed hardcoded "245" active users with dynamic UserService call
+  - Removed hardcoded "+12%" growth percentage with calculated monthly growth
+  - Added getActiveUsersStats() method to fetch real user metrics
+  - Applied EMOTIONAL_DESIGN_SYSTEM compliance: consistent spacing, professional interactions
+  - **Result**: Dashboard now displays real user analytics with clean, professional styling
 
 ### Fixed - 2025-01-03 23:55:00 UTC
 - **📝 Form Controls: Fixed nested FormGroup binding structure in resource form**

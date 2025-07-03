@@ -25,12 +25,26 @@
 
 // Professional card interactions - minimal and functional
 .stat-card {
+  background: white !important;
+  border: 1px solid #e5e7eb;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
     // Subtle lift - follows 1-2px movement principle
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-color: rgba(59, 130, 246, 0.15);
+  }
+  
+  // Ensure text colors are dark for contrast
+  .stat-value,
+  .stat-label {
+    color: #111827 !important;
+  }
+  
+  // Clean background for bottom sections
+  .bg-gray-50 {
+    background-color: #f9fafb !important;
   }
 }
 
@@ -89,15 +103,4 @@
   }
 }
 
-// Professional dark mode support
-@media (prefers-color-scheme: dark) {
-  .stat-card {
-    background: rgba(31, 41, 55, 0.8);
-    border-color: rgba(55, 65, 81, 0.6);
-    color: #f8fafc;
-  }
-  
-  .activity-item:hover {
-    background-color: rgba(55, 65, 81, 0.3);
-  }
-}
+// Professional white backgrounds with no dark mode overrides

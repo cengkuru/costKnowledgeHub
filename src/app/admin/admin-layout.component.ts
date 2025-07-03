@@ -14,6 +14,7 @@ import { I18nService } from '../core/services/i18n.service';
 export class AdminLayoutComponent {
   isSidebarOpen = true;
   isProfileMenuOpen = false;
+  isSidebarCollapsed = false; // New property for mini variant
   
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -42,6 +43,10 @@ export class AdminLayoutComponent {
     } catch (error) {
       console.error('Sign out error:', error);
     }
+  }
+  
+  toggleSidebarCollapse(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
   
   navigateTo(path: string): void {
