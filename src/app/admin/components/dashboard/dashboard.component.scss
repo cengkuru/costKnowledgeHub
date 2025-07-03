@@ -1,4 +1,6 @@
-// Dashboard specific styles
+// Dashboard specific styles following EMOTIONAL_DESIGN_SYSTEM principles
+
+// Professional loading animation - subtle and functional
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -8,6 +10,94 @@
     opacity: 1;
   }
   50% {
-    opacity: .5;
+    opacity: 0.7; // More subtle opacity change
+  }
+}
+
+// Consistent spacing using 8px grid
+.dashboard-container {
+  --space-1: 0.5rem;   /* 8px */
+  --space-2: 1rem;     /* 16px */
+  --space-3: 1.5rem;   /* 24px */
+  --space-4: 2rem;     /* 32px */
+  --space-6: 3rem;     /* 48px */
+}
+
+// Professional card interactions - minimal and functional
+.stat-card {
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    // Subtle lift - follows 1-2px movement principle
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Activity timeline improvements
+.activity-item {
+  transition: background-color 200ms ease-out;
+  
+  &:hover {
+    background-color: rgba(249, 250, 251, 0.5); // Very subtle background change
+  }
+}
+
+// Professional focus states
+.interactive-element:focus-visible {
+  outline: 2px solid var(--color-primary, #355E69);
+  outline-offset: 2px;
+  transition: outline 150ms ease-out;
+}
+
+// Semantic color system
+.growth-positive {
+  color: #059669; // Success green
+}
+
+.growth-negative {
+  color: #dc2626; // Error red
+}
+
+// Typography hierarchy - limit to 3 sizes
+.dashboard-title {
+  font-size: 1.5rem;      /* Section headers */
+  font-weight: 600;       /* Semibold */
+  line-height: 1.25;
+}
+
+.stat-value {
+  font-size: 2.25rem;     /* Large numbers */
+  font-weight: 600;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;    /* Small text */
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+// Respect user motion preferences
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .stat-card,
+  .activity-item,
+  .interactive-element {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// Professional dark mode support
+@media (prefers-color-scheme: dark) {
+  .stat-card {
+    background: rgba(31, 41, 55, 0.8);
+    border-color: rgba(55, 65, 81, 0.6);
+    color: #f8fafc;
+  }
+  
+  .activity-item:hover {
+    background-color: rgba(55, 65, 81, 0.3);
   }
 }

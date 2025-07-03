@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { I18nService } from '../../../core/services/i18n.service';
 import { ResourceService } from '../../../core/services/resource.service';
 import { ActivityService } from '../../../core/services/activity.service';
-import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { UserService } from '../../../core/services/user.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
+import { Observable, combineLatest, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Activity } from '../../../core/models/activity.model';
 
 interface DashboardStats {
@@ -13,6 +15,8 @@ interface DashboardStats {
   unpublishedResources: number;
   totalViews: number;
   totalDownloads: number;
+  activeUsers: number;
+  monthlyGrowth: number;
   resourcesByType: { type: string; count: number }[];
   recentActivity: Activity[];
 }
@@ -32,6 +36,8 @@ interface DashboardActivity extends Activity {
 export class DashboardComponent implements OnInit {
   private resourceService = inject(ResourceService);
   private activityService = inject(ActivityService);
+  private userService = inject(UserService);
+  private analyticsService = inject(AnalyticsService);
   
   stats$!: Observable<DashboardStats>;
   
@@ -44,20 +50,37 @@ export class DashboardComponent implements OnInit {
   private loadDashboardData(): void {
     this.stats$ = combineLatest([
       this.resourceService.resources$,
-      this.activityService.getAdminActivities(10)
+      this.activityService.getAdminActivities(10),
+      this.getActiveUsersStats()
     ]).pipe(
-      map(([resources, activities]) => {
+      map(([resources, activities, userStats]) => {
         const stats: DashboardStats = {
           totalResources: resources.length,
           publishedResources: resources.filter(r => r.status === 'published').length,
           unpublishedResources: resources.filter(r => r.status !== 'published').length,
           totalViews: resources.reduce((sum, r) => sum + (r.views || 0), 0),
           totalDownloads: resources.reduce((sum, r) => sum + (r.downloads || 0), 0),
+          activeUsers: userStats.activeUsers,
+          monthlyGrowth: userStats.monthlyGrowth,
           resourcesByType: this.getResourcesByType(resources),
           recentActivity: activities
         };
         
         return stats;
+      }),
+      catchError(error => {
+        console.error('Error loading dashboard data:', error);
+        return of({
+          totalResources: 0,
+          publishedResources: 0,
+          unpublishedResources: 0,
+          totalViews: 0,
+          totalDownloads: 0,
+          activeUsers: 0,
+          monthlyGrowth: 0,
+          resourcesByType: [],
+          recentActivity: []
+        } as DashboardStats);
       })
     );
   }
@@ -153,6 +176,49 @@ export class DashboardComponent implements OnInit {
     } else {
       return actualDate.toLocaleDateString();
     }
+  }
+  
+  /**
+   * Get active users statistics
+   */
+  private getActiveUsersStats(): Observable<{ activeUsers: number; monthlyGrowth: number }> {
+    return new Observable(observer => {
+      this.userService.getUsers().then(users => {
+        const now = new Date();
+        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate());
+        
+        // Count active users (users with activity in last 30 days)
+        const activeUsers = users.filter(user => {
+          const lastActivity = user.lastActivityAt || user.lastLoginAt;
+          return lastActivity && new Date(lastActivity) >= lastMonth;
+        }).length;
+        
+        // Calculate monthly growth
+        const usersThisMonth = users.filter(user => {
+          const lastActivity = user.lastActivityAt || user.lastLoginAt;
+          return lastActivity && new Date(lastActivity) >= lastMonth;
+        }).length;
+        
+        const usersLastMonth = users.filter(user => {
+          const lastActivity = user.lastActivityAt || user.lastLoginAt;
+          return lastActivity && 
+                 new Date(lastActivity) >= twoMonthsAgo && 
+                 new Date(lastActivity) < lastMonth;
+        }).length;
+        
+        const monthlyGrowth = usersLastMonth > 0 
+          ? Math.round(((usersThisMonth - usersLastMonth) / usersLastMonth) * 100)
+          : 0;
+          
+        observer.next({ activeUsers, monthlyGrowth });
+        observer.complete();
+      }).catch(error => {
+        console.error('Error getting user stats:', error);
+        observer.next({ activeUsers: 0, monthlyGrowth: 0 });
+        observer.complete();
+      });
+    });
   }
   
   getActivityDescription(activity: Activity): string {

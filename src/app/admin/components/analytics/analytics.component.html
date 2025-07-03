@@ -1,0 +1,177 @@
+<div class="analytics-dashboard">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ t('admin.analytics.title') }}</h1>
+    <p class="text-gray-600 mt-2">{{ t('admin.analytics.subtitle') }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-64">
+    <div class="text-center">
+      <div class="inline-flex items-center">
+        <svg class="animate-spin h-8 w-8 text-cost-teal mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-lg text-gray-700">{{ t('admin.analytics.loading') }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 text-red-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="text-red-800">{{ error }}</p>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div *ngIf="!loading && stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Page Views -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.totalPageViews') }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.totalPageViews) }}</p>
+          <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.last30Days') }}</p>
+        </div>
+        <div class="p-3 bg-blue-100 rounded-lg">
+          <svg class="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Downloads -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.totalDownloads') }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.totalDownloads) }}</p>
+          <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.last30Days') }}</p>
+        </div>
+        <div class="p-3 bg-green-100 rounded-lg">
+          <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Users -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.activeUsers') }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.activeUsers) }}</p>
+          <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.thisMonth') }}</p>
+        </div>
+        <div class="p-3 bg-purple-100 rounded-lg">
+          <svg class="w-8 h-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Resources -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.totalResources') }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.totalResources) }}</p>
+          <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.published') }}</p>
+        </div>
+        <div class="p-3 bg-amber-100 rounded-lg">
+          <svg class="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div *ngIf="!loading && stats" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Page Views Chart -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.pageViewsOverTime') }}</h2>
+      <canvas #viewsChart height="300"></canvas>
+    </div>
+
+    <!-- Resource Type Distribution -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.resourceTypeDistribution') }}</h2>
+      <canvas #typeChart height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Tables Section -->
+  <div *ngIf="!loading && stats" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Top Resources -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.topResources') }}</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ t('admin.analytics.resource') }}
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ t('admin.analytics.views') }}
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ t('admin.analytics.downloads') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let resource of stats.topResources; let i = index"
+                class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 text-sm">
+                <div class="flex items-center">
+                  <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-xs font-medium mr-3">
+                    {{ i + 1 }}
+                  </span>
+                  <span class="text-gray-900 font-medium">{{ resource.title }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                {{ formatNumber(resource.views) }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                {{ formatNumber(resource.downloads) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Search Trends -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.searchTrends') }}</h2>
+      <div class="space-y-3">
+        <div *ngFor="let trend of stats.searchTrends; let i = index"
+             class="flex items-center justify-between">
+          <div class="flex items-center">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-medium mr-3">
+              {{ i + 1 }}
+            </span>
+            <span class="text-gray-900">{{ trend.term }}</span>
+          </div>
+          <span class="text-sm text-gray-500">{{ trend.count }} {{ t('admin.analytics.searches') }}</span>
+        </div>
+        <div *ngIf="stats.searchTrends.length === 0" class="text-center py-8 text-gray-500">
+          {{ t('admin.analytics.noSearchData') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

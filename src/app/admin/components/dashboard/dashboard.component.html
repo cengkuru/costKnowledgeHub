@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="space-y-6 dashboard-container">
   <!-- Page header -->
   <div>
     <h1 class="text-2xl font-semibold text-gray-900">{{ i18nService.t('admin.dashboard.title') }}</h1>
@@ -40,7 +40,7 @@
     <!-- Stats overview -->
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Total Resources -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
         <div class="p-5">
           <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -50,10 +50,10 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
+                <dt class="stat-label text-gray-500 truncate">
                   {{ i18nService.t('admin.dashboard.totalResources') }}
                 </dt>
-                <dd class="text-3xl font-semibold text-gray-900">
+                <dd class="stat-value text-gray-900">
                   {{ stats.totalResources }}
                 </dd>
               </dl>
@@ -69,7 +69,7 @@
       </div>
       
       <!-- Total Views -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
         <div class="p-5">
           <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -80,10 +80,10 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
+                <dt class="stat-label text-gray-500 truncate">
                   {{ i18nService.t('admin.dashboard.totalViews') }}
                 </dt>
-                <dd class="text-3xl font-semibold text-gray-900">
+                <dd class="stat-value text-gray-900">
                   {{ stats.totalViews || 0 }}
                 </dd>
               </dl>
@@ -98,7 +98,7 @@
       </div>
       
       <!-- Total Downloads -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
         <div class="p-5">
           <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -108,10 +108,10 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
+                <dt class="stat-label text-gray-500 truncate">
                   {{ i18nService.t('admin.dashboard.totalDownloads') }}
                 </dt>
-                <dd class="text-3xl font-semibold text-gray-900">
+                <dd class="stat-value text-gray-900">
                   {{ stats.totalDownloads || 0 }}
                 </dd>
               </dl>
@@ -126,7 +126,7 @@
       </div>
       
       <!-- Active Users -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
         <div class="p-5">
           <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -136,11 +136,11 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
+                <dt class="stat-label text-gray-500 truncate">
                   {{ i18nService.t('admin.dashboard.activeUsers') }}
                 </dt>
-                <dd class="text-3xl font-semibold text-gray-900">
-                  245
+                <dd class="stat-value text-gray-900">
+                  {{ stats.activeUsers }}
                 </dd>
               </dl>
             </div>
@@ -148,7 +148,9 @@
         </div>
         <div class="bg-gray-50 px-5 py-3">
           <div class="text-sm">
-            <span class="text-green-600 font-medium">+12%</span>
+            <span [class]="stats.monthlyGrowth >= 0 ? 'text-green-600 font-medium' : 'text-red-600 font-medium'">
+              {{ stats.monthlyGrowth >= 0 ? '+' : '' }}{{ stats.monthlyGrowth }}%
+            </span>
             <span class="text-gray-500"> {{ i18nService.t('admin.dashboard.fromLastMonth') }}</span>
           </div>
         </div>
@@ -160,7 +162,7 @@
       <!-- Resources by Type -->
       <div class="bg-white shadow rounded-lg">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">
+          <h3 class="dashboard-title text-gray-900">
             {{ i18nService.t('admin.dashboard.resourcesByType') }}
           </h3>
         </div>
@@ -180,7 +182,7 @@
       <!-- Recent Activity -->
       <div class="bg-white shadow rounded-lg">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">
+          <h3 class="dashboard-title text-gray-900">
             {{ i18nService.t('admin.dashboard.recentActivity') }}
           </h3>
         </div>
@@ -188,7 +190,7 @@
           <div class="flow-root">
             <ul class="-mb-8">
               <li *ngFor="let activity of stats.recentActivity; let last = last">
-                <div class="relative pb-8">
+                <div class="relative pb-8 activity-item rounded-lg px-2 py-1">
                   <span *ngIf="!last" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
                   <div class="relative flex space-x-3">
                     <div>

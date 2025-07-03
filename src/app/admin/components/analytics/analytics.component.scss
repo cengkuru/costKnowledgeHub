@@ -1,0 +1,13 @@
+.analytics-dashboard {
+  padding: 2rem;
+}
+
+canvas {
+  max-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .analytics-dashboard {
+    padding: 1rem;
+  }
+}
