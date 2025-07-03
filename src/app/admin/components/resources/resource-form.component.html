@@ -122,7 +122,28 @@
                   <span *ngIf="isFieldValid('title.' + lang.value)" class="success-checkmark">✓</span>
                 </div>
               </div>
+              
+              <!-- Enhanced character count and validation -->
+              <div class="field-meta">
+                <div class="character-info" 
+                     [ngClass]="{
+                       'text-green-600': getCharacterInfo('title.' + lang.value).status === 'good',
+                       'text-yellow-600': getCharacterInfo('title.' + lang.value).status === 'warning',
+                       'text-red-600': getCharacterInfo('title.' + lang.value).status === 'error'
+                     }">
+                  {{ getCharacterInfo('title.' + lang.value).count }} characters
+                  <span *ngIf="getCharacterInfo('title.' + lang.value).status === 'good'">✓ Good length</span>
+                  <span *ngIf="getCharacterInfo('title.' + lang.value).status === 'warning'">⚠ Could be better</span>
+                  <span *ngIf="getCharacterInfo('title.' + lang.value).status === 'error'">✗ Needs attention</span>
+                </div>
+                <div class="field-hint-text">{{ getFieldHint('title.' + lang.value) }}</div>
+              </div>
+              
+              <!-- Error message -->
               <p class="field-error" *ngIf="resourceForm.get('title.' + lang.value)?.invalid && resourceForm.get('title.' + lang.value)?.touched">
+                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
                 {{ getFieldError('title.' + lang.value) }}
               </p>
             </div>
@@ -149,7 +170,10 @@
             </button>
           </div>
           <p class="field-error" *ngIf="resourceForm.get('type')?.invalid && resourceForm.get('type')?.touched">
-            Please select a resource type 🎯
+            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            {{ friendlyMessages.noTypeSelected }}
           </p>
         </div>
 
@@ -171,7 +195,10 @@
             </button>
           </div>
           <p class="field-error" *ngIf="resourceForm.get('topics')?.invalid && resourceForm.get('topics')?.touched">
-            Please select at least one topic 📌
+            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            {{ friendlyMessages.noTopicsSelected }}
           </p>
         </div>
 
@@ -266,11 +293,30 @@
                   [class.invalid]="resourceForm.get('description.' + lang.value)?.invalid && resourceForm.get('description.' + lang.value)?.touched"
                   rows="6"
                   placeholder="Provide a clear and comprehensive description of this resource..."></textarea>
-                <div class="character-count">
-                  {{ resourceForm.get('description.' + lang.value)?.value?.length || 0 }} characters
+                
+                <!-- Enhanced character count with visual feedback -->
+                <div class="field-meta">
+                  <div class="character-info" 
+                       [ngClass]="{
+                         'text-green-600': getCharacterInfo('description.' + lang.value).status === 'good',
+                         'text-yellow-600': getCharacterInfo('description.' + lang.value).status === 'warning',
+                         'text-red-600': getCharacterInfo('description.' + lang.value).status === 'error'
+                       }">
+                    {{ getCharacterInfo('description.' + lang.value).count }} characters
+                    <span *ngIf="getCharacterInfo('description.' + lang.value).max"> / {{ getCharacterInfo('description.' + lang.value).max }}</span>
+                    <span *ngIf="getCharacterInfo('description.' + lang.value).status === 'good'">✓ Good detail</span>
+                    <span *ngIf="getCharacterInfo('description.' + lang.value).status === 'warning'">⚠ Consider more detail</span>
+                    <span *ngIf="getCharacterInfo('description.' + lang.value).status === 'error'">✗ Too short or too long</span>
+                  </div>
+                  <div class="field-hint-text">{{ getFieldHint('description.' + lang.value) }}</div>
                 </div>
               </div>
+              
+              <!-- Error message -->
               <p class="field-error" *ngIf="resourceForm.get('description.' + lang.value)?.invalid && resourceForm.get('description.' + lang.value)?.touched">
+                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
                 {{ getFieldError('description.' + lang.value) }}
               </p>
             </div>

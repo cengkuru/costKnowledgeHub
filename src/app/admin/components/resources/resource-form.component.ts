@@ -164,9 +164,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     this.resourceForm = this.fb.group({
       // Basic Information
       title: this.fb.group({
-        en: ['', [Validators.required, Validators.minLength(3)]],
-        es: ['', [Validators.minLength(3)]],
-        pt: ['', [Validators.minLength(3)]]
+        en: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(80)]],
+        es: ['', [Validators.minLength(10), Validators.maxLength(80)]],
+        pt: ['', [Validators.minLength(10), Validators.maxLength(80)]]
       }),
       type: ['', Validators.required],
       topics: [[], Validators.required],
@@ -175,9 +175,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       
       // Content
       description: this.fb.group({
-        en: ['', [Validators.required, Validators.minLength(10)]],
-        es: ['', [Validators.minLength(10)]],
-        pt: ['', [Validators.minLength(10)]]
+        en: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(2000)]],
+        es: ['', [Validators.minLength(50), Validators.maxLength(2000)]],
+        pt: ['', [Validators.minLength(50), Validators.maxLength(2000)]]
       }),
       tags: [[]],
       
@@ -588,14 +588,20 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   }
   
   showValidationErrors(): void {
-    // Find first invalid field and focus
-    const firstError = document.querySelector('.ng-invalid');
-    if (firstError) {
-      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      (firstError as HTMLElement).focus();
-    }
+    const summary = this.getFormValidationSummary();
     
-    this.showError('Please fill in all required fields ✨');
+    if (summary) {
+      // Find first invalid field and focus
+      const firstError = document.querySelector('.ng-invalid');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (firstError as HTMLElement).focus();
+      }
+      
+      this.showError(summary);
+    } else {
+      this.showError('Please review and fix the highlighted fields');
+    }
   }
   
   showSuccess(message: string): void {
@@ -623,7 +629,124 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     if (!field || !field.touched || !field.errors) return '';
     
     const errorKey = Object.keys(field.errors)[0];
-    return this.friendlyMessages[errorKey as keyof typeof this.friendlyMessages] || 'Invalid field';
+    const errorValue = field.errors[errorKey];
+    
+    // Handle specific field types with enhanced messaging
+    if (fieldPath.includes('title')) {
+      if (errorKey === 'minlength') return this.friendlyMessages.titleTooShort;
+      if (errorKey === 'maxlength') return this.friendlyMessages.titleTooLong;
+    }
+    
+    if (fieldPath.includes('description')) {
+      if (errorKey === 'minlength') return this.friendlyMessages.descriptionTooShort;
+      if (errorKey === 'maxlength') return this.friendlyMessages.descriptionTooLong;
+    }
+    
+    if (fieldPath.includes('Link') || fieldPath.includes('Url')) {
+      if (errorKey === 'pattern') return this.friendlyMessages.invalidUrl;
+    }
+    
+    // Handle length-specific errors with actual requirements
+    if (errorKey === 'minlength' && errorValue.requiredLength) {
+      return this.friendlyMessages.minlength.replace('{{requiredLength}}', errorValue.requiredLength);
+    }
+    
+    if (errorKey === 'maxlength' && errorValue.requiredLength) {
+      return this.friendlyMessages.maxlength.replace('{{requiredLength}}', errorValue.requiredLength);
+    }
+    
+    return this.friendlyMessages[errorKey as keyof typeof this.friendlyMessages] || 'Please check this field';
+  }
+  
+  /**
+   * Get character count and status for text fields
+   */
+  getCharacterInfo(fieldPath: string): { count: number; max?: number; status: 'good' | 'warning' | 'error' } {
+    const field = this.resourceForm.get(fieldPath);
+    const value = field?.value || '';
+    const count = value.length;
+    
+    // Define optimal ranges for different field types
+    let min = 0;
+    let max = 500;
+    let optimal = 100;
+    
+    if (fieldPath.includes('title')) {
+      min = 10;
+      max = 80;
+      optimal = 50;
+    } else if (fieldPath.includes('description')) {
+      min = 50;
+      max = 2000;
+      optimal = 200;
+    }
+    
+    let status: 'good' | 'warning' | 'error' = 'good';
+    
+    if (count < min) {
+      status = 'error';
+    } else if (count > max) {
+      status = 'error';
+    } else if (count < optimal * 0.5 || count > optimal * 1.5) {
+      status = 'warning';
+    }
+    
+    return { count, max, status };
+  }
+  
+  /**
+   * Get contextual hint for field improvement
+   */
+  getFieldHint(fieldPath: string): string {
+    if (fieldPath.includes('title')) {
+      return 'Clear, descriptive titles help users understand your resource quickly';
+    }
+    
+    if (fieldPath.includes('description')) {
+      return 'Explain what this resource contains and how it helps users';
+    }
+    
+    if (fieldPath.includes('externalLink')) {
+      return 'Link to the original source or authoritative version';
+    }
+    
+    if (fieldPath.includes('tags')) {
+      return 'Add keywords that users might search for';
+    }
+    
+    return '';
+  }
+  
+  /**
+   * Check if form has validation errors and provide specific guidance
+   */
+  getFormValidationSummary(): string {
+    const errors: string[] = [];
+    
+    // Check required title
+    if (!this.resourceForm.get('title.en')?.value) {
+      errors.push('Add a title in English');
+    }
+    
+    // Check type selection
+    if (!this.resourceForm.get('type')?.value) {
+      errors.push('Select a resource type');
+    }
+    
+    // Check topics
+    const topics = this.resourceForm.get('topics')?.value || [];
+    if (topics.length === 0) {
+      errors.push('Choose at least one topic');
+    }
+    
+    // Check description
+    if (!this.resourceForm.get('description.en')?.value) {
+      errors.push('Add a description in English');
+    }
+    
+    if (errors.length === 0) return '';
+    
+    return `Please complete: ${errors.join(', ')}`;
   }
   
   isFieldValid(fieldPath: string): boolean {

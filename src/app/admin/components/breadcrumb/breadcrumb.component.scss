@@ -1,141 +1,68 @@
-// Breadcrumb Component Styles
-// Following EMOTIONAL_DESIGN_SYSTEM principles
+// Clean, Simple Breadcrumb - EMOTIONAL_DESIGN_SYSTEM Compliant
+// One line, minimal visual noise, maximum clarity
 
 .breadcrumb-nav {
-  // Compact, space-efficient design
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 0.5rem 0;
-  margin-bottom: 0.75rem;
-}
-
-.breadcrumb-list {
-  display: flex;
-  align-items: center;
-  list-style: none;
-  margin: 0;
+  background: transparent;
   padding: 0;
-  gap: 0.25rem;
+  margin-bottom: 1rem;
 }
 
-.breadcrumb-item {
+.breadcrumb-simple {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #666666;
+}
+
+.breadcrumb-back {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  
-  &.active {
-    .breadcrumb-current {
-      color: #1a1a1a;
-      font-weight: 500;
-    }
-  }
-}
-
-.breadcrumb-link {
-  // Compact typography for space efficiency
-  font-size: 0.875rem;
-  color: #666666;
-  text-decoration: none;
-  transition: all 150ms ease-out;
-  padding: 1px 3px;
-  border-radius: 3px;
-  
-  // Hover state - 50ms response time
-  &:hover {
-    color: #355E69;
-    background: rgba(53, 94, 105, 0.05);
-    transform: translateY(-1px);
-    transition: all 50ms ease-out;
-  }
-  
-  // Focus state - accessibility
-  &:focus-visible {
-    outline: 2px solid #355E69;
-    outline-offset: 2px;
-  }
-  
-  // Active state
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.breadcrumb-current {
-  font-size: 0.875rem;
-  color: #1a1a1a;
-  font-weight: 500;
-}
-
-.breadcrumb-separator {
-  width: 12px;
-  height: 12px;
-  color: #666666;
-  opacity: 0.5;
-  flex-shrink: 0;
-}
-
-// Mobile Breadcrumb Styles
-.breadcrumb-mobile {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.breadcrumb-back-btn {
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
-  color: #355E69;
   background: none;
   border: none;
+  color: #355E69;
   cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 3px;
-  transition: all 150ms ease-out;
-  width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 150ms ease;
+  font-size: 0.875rem;
   
   &:hover {
     background: rgba(53, 94, 105, 0.1);
-    transform: translateY(-1px);
-    transition: all 50ms ease-out;
   }
   
   &:focus-visible {
     outline: 2px solid #355E69;
-    outline-offset: 2px;
-  }
-  
-  &:active {
-    transform: translateY(0);
+    outline-offset: 1px;
   }
 }
 
-.breadcrumb-current-mobile {
-  font-size: 0.875rem;
+.breadcrumb-sep {
+  color: #ccc;
+  font-weight: 300;
+}
+
+.breadcrumb-current {
   color: #1a1a1a;
   font-weight: 500;
-  padding-left: 0.5rem;
 }
 
-// Responsive Design
+// Mobile: even simpler
 @media (max-width: 640px) {
   .breadcrumb-nav {
-    padding: 0.25rem 0;
     margin-bottom: 0.5rem;
+  }
+  
+  .breadcrumb-simple {
+    font-size: 0.8rem;
+    gap: 0.375rem;
   }
 }
 
-// Always maintain light, clean appearance following EMOTIONAL_DESIGN_SYSTEM
-// No dark mode - professional, consistent interface
-
-// Reduced motion preferences
+// Respect reduced motion
 @media (prefers-reduced-motion: reduce) {
-  .breadcrumb-link,
-  .breadcrumb-back-btn {
+  .breadcrumb-back {
     transition: none;
-    
-    &:hover {
-      transform: none;
-    }
   }
 }
