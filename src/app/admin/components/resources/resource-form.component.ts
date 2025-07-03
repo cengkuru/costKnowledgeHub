@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
@@ -160,6 +160,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   selectedUploadMethod: 'file' | 'link' | 'import' | null = null;
   selectedResourceType: ResourceType | null = null;
   showTypeSelection = true;
+  showKeyboardHelp = false;
   
   // Form completion tracking
   formCompletion = 0;
@@ -425,9 +426,18 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       language: resource.language,
       difficulty: resource.metadata?.difficulty,
       targetAudience: resource.metadata?.targetAudience || [],
-      format: resource.format,
-      impact: resource.impact || {}
+      format: resource.format
     });
+
+    // Populate independent review data if applicable
+    if (resource.type === 'independent-review' && resource.independentReviewData) {
+      this.resourceForm.patchValue({
+        independentReviewData: {
+          reportUrl: resource.independentReviewData.reportUrl || '',
+          reportPeriod: resource.independentReviewData.reportPeriod || ''
+        }
+      });
+    }
     
     this.thumbnailUrl = resource.thumbnailUrl || null;
   }
@@ -591,7 +601,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   prepareFormData(): Partial<Resource> {
     const formValue = this.resourceForm.value;
     
-    return {
+    const data: Partial<Resource> = {
       title: formValue.title,
       description: formValue.description,
       type: formValue.type,
@@ -610,6 +620,16 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         targetAudience: formValue.targetAudience
       }
     };
+
+    // Add independentReviewData if it's an independent review type
+    if (formValue.type === 'independent-review' && formValue.independentReviewData) {
+      data.independentReviewData = {
+        reportUrl: formValue.independentReviewData.reportUrl,
+        reportPeriod: formValue.independentReviewData.reportPeriod
+      };
+    }
+
+    return data;
   }
   
   async saveResource(publish = false): Promise<void> {
@@ -1249,6 +1269,63 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.autoSaveTimer) {
       clearInterval(this.autoSaveTimer);
+    }
+  }
+  
+  // Keyboard navigation
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    // Skip if user is typing in an input/textarea
+    const activeElement = document.activeElement;
+    if (activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName)) {
+      return;
+    }
+    
+    // Alt + number to jump to tabs
+    if (event.altKey && event.key >= '1' && event.key <= '4') {
+      event.preventDefault();
+      const tabIndex = parseInt(event.key) - 1;
+      if (tabIndex < this.tabs.length) {
+        this.setActiveTab(this.tabs[tabIndex].id);
+      }
+    }
+    
+    // Ctrl/Cmd + S to save
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      event.preventDefault();
+      this.saveResource();
+    }
+    
+    // Ctrl/Cmd + Enter to save and publish
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      event.preventDefault();
+      this.saveResource(true); // Save and publish
+    }
+    
+    // Arrow keys for tab navigation (when tabs are focused)
+    if (event.target && (event.target as HTMLElement).classList.contains('tab-button')) {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        this.navigateToTab('next');
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        this.navigateToTab('previous');
+      }
+    }
+  }
+  
+  // Focus management for skip links
+  skipToContent(): void {
+    const firstInput = document.querySelector('.tab-panel input, .tab-panel textarea, .tab-panel select') as HTMLElement;
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }
+  
+  skipToNavigation(): void {
+    const firstTab = document.querySelector('.tab-button') as HTMLElement;
+    if (firstTab) {
+      firstTab.focus();
     }
   }
 }

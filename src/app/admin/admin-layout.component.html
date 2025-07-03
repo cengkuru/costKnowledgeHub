@@ -169,16 +169,16 @@
                 <p class="text-sm font-medium text-gray-900">{{ displayName || userEmail }}</p>
                 <p class="text-xs text-gray-500">{{ userEmail }}</p>
               </div>
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button
+                (click)="navigateToProfile()"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 {{ i18nService.t('admin.profile') }}
-              </a>
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              </button>
+              <button
+                (click)="navigateToSettings()"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 {{ i18nService.t('admin.settings') }}
-              </a>
+              </button>
               <hr class="my-1">
               <button
                 (click)="signOut()"

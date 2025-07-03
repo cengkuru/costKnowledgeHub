@@ -4,11 +4,36 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
-### Fixed - 2025-07-04 07:25:00 UTC
+### Fixed - 2025-01-03 19:50:00 UTC
+- **🔗 Admin Layout Profile Links: Fixed non-functional profile and settings links**
+  - Changed profile and settings links from anchors to buttons with proper navigation (src/app/admin/admin-layout.component.html:172-181)
+  - Added navigateToProfile() and navigateToSettings() methods (src/app/admin/admin-layout.component.ts:143-151)
+  - **Problem**: Profile and Settings links had href="#" which didn't navigate anywhere
+  - **Solution**: Implemented proper navigation methods to route to /admin/profile and /admin/settings
+  - **Result**: Profile and settings links now navigate to their respective pages
+
+### Added - 2025-07-04 07:35:00 UTC
+- **♿ Keyboard Navigation & Accessibility: Enhanced form navigation and accessibility features**
+  - Added keyboard shortcuts for efficient form navigation (src/app/admin/components/resources/resource-form.component.ts:1274-1329)
+    - Alt + 1-4: Jump directly to specific tabs
+    - Ctrl/Cmd + S: Save draft
+    - Ctrl/Cmd + Enter: Save and publish
+    - Arrow keys: Navigate between tabs when focused
+  - Implemented skip links for screen reader users (src/app/admin/components/resources/resource-form.component.html:2-6)
+  - Added keyboard shortcuts help panel with toggle button (src/app/admin/components/resources/resource-form.component.html:8-27)
+  - Enhanced tab navigation with proper ARIA attributes (role="tab", aria-selected, aria-controls)
+  - Added focus management methods for skip links (skipToContent, skipToNavigation)
+  - Created comprehensive CSS for accessibility features (src/app/admin/components/resources/resource-form.component.scss:14-123)
+  - **Problem Solved**: Form was difficult to navigate with keyboard only
+  - **Result**: Full keyboard navigation support and improved screen reader experience
+
+### Fixed - 2025-01-03 19:45:00 UTC
 - **🐛 Resource Form Save Error: Fixed undefined impact field causing Firebase error**
-  - Removed impact field from prepareFormData method (src/app/admin/components/resources/resource-form.component.ts:591-612)
-  - Error was: "FirebaseError: Function addDoc() called with invalid data. Unsupported field value: undefined"
-  - **Problem**: Impact field was removed from form but still included in data preparation
+  - Removed impact field from populateForm method (src/app/admin/components/resources/resource-form.component.ts:412-442)
+  - Updated prepareFormData to properly handle independentReviewData (src/app/admin/components/resources/resource-form.component.ts:591-623)
+  - Error was: "FirebaseError: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field impact)"
+  - **Problem**: Impact field was being set in populateForm but not included in form structure or prepareFormData
+  - **Solution**: Removed impact field reference and added proper handling for independentReviewData
   - **Result**: Resources now save successfully without undefined field errors
 
 ### Fixed - 2025-07-04 07:25:00 UTC

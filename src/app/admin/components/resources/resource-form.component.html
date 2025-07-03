@@ -1,4 +1,31 @@
 <div class="resource-form-container">
+  <!-- Skip Links for Accessibility -->
+  <div class="skip-links">
+    <a href="#main-content" class="skip-link" (click)="skipToContent()">Skip to main content</a>
+    <a href="#form-navigation" class="skip-link" (click)="skipToNavigation()">Skip to navigation</a>
+  </div>
+  
+  <!-- Keyboard Shortcuts Help -->
+  <div class="keyboard-help" [class.visible]="showKeyboardHelp">
+    <button type="button" class="keyboard-help-toggle" (click)="showKeyboardHelp = !showKeyboardHelp" 
+            aria-label="Toggle keyboard shortcuts help">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span class="sr-only">Keyboard shortcuts</span>
+    </button>
+    <div class="keyboard-help-content" *ngIf="showKeyboardHelp">
+      <h3>Keyboard Shortcuts</h3>
+      <ul>
+        <li><kbd>Alt + 1-4</kbd> Jump to tab</li>
+        <li><kbd>Ctrl/Cmd + S</kbd> Save draft</li>
+        <li><kbd>Ctrl/Cmd + Enter</kbd> Save & publish</li>
+        <li><kbd>←/→</kbd> Navigate tabs (when focused)</li>
+        <li><kbd>Esc</kbd> Close dialogs</li>
+      </ul>
+    </div>
+  </div>
+  
   <!-- Compact Header -->
   <div class="compact-header">
     <div class="flex items-center justify-between">
@@ -114,13 +141,17 @@
     </div>
     
     <!-- Sticky Tabs Navigation -->
-    <div class="tabs-navigation sticky-navigation">
+    <div id="form-navigation" class="tabs-navigation sticky-navigation">
       <button
         *ngFor="let tab of tabs; let i = index"
         (click)="setActiveTab(tab.id)"
         class="tab-button"
         [class.active]="activeTab === tab.id"
-        [class.complete]="tab.complete">
+        [class.complete]="tab.complete"
+        [attr.aria-selected]="activeTab === tab.id"
+        [attr.aria-controls]="tab.id + '-panel'"
+        [attr.tabindex]="activeTab === tab.id ? '0' : '-1'"
+        role="tab">
         <div class="tab-icon">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="tab.icon" />
@@ -134,9 +165,13 @@
     </div>
 
     <!-- Tab Content -->
-    <form [formGroup]="resourceForm" class="tab-content">
+    <form id="main-content" [formGroup]="resourceForm" class="tab-content">
       <!-- Basic Information Tab -->
-      <div *ngIf="activeTab === 'basic'" class="tab-panel animate-fadeIn">
+      <div *ngIf="activeTab === 'basic'" 
+           [attr.id]="'basic-panel'"
+           class="tab-panel animate-fadeIn"
+           role="tabpanel"
+           [attr.aria-labelledby]="'basic-tab'">
         <div class="section-header">
           <h2 class="text-base font-medium text-gray-900">Basic Information</h2>
           <p *ngIf="getTabHint('basic')" class="text-sm text-gray-600 mt-1">

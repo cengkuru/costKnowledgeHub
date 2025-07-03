@@ -5,6 +5,9 @@ import { AuthService } from '../core/services/auth.service';
 import { I18nService } from '../core/services/i18n.service';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { Language } from '../core/models/resource.model';
+import { NotificationService } from '../core/services/notification.service';
+import { Notification, getNotificationColor, formatNotificationTime } from '../core/models/notification.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-layout',
@@ -22,34 +25,15 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   
   private authService = inject(AuthService);
   private router = inject(Router);
+  private notificationService = inject(NotificationService);
   
-  // Mock notifications - in production, this would come from a service
-  notifications = [
-    {
-      id: 1,
-      type: 'info',
-      title: 'New resource published',
-      message: 'A new implementation guide has been published',
-      time: '5 minutes ago',
-      read: false
-    },
-    {
-      id: 2,
-      type: 'success',
-      title: 'Upload successful',
-      message: 'Your file has been uploaded successfully',
-      time: '1 hour ago',
-      read: false
-    },
-    {
-      id: 3,
-      type: 'warning',
-      title: 'System maintenance',
-      message: 'Scheduled maintenance on Sunday at 2 AM',
-      time: '2 hours ago',
-      read: true
-    }
-  ];
+  // Real notifications from service
+  notifications: Notification[] = [];
+  unreadCount = 0;
+  
+  // Subscriptions
+  private notificationsSubscription?: Subscription;
+  private unreadCountSubscription?: Subscription;
   
   // Available languages
   languages = [
@@ -57,6 +41,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     { code: 'es', name: 'Español', flag: '🇪🇸' },
     { code: 'pt', name: 'Português', flag: '🇵🇹' }
   ];
+  
+  // Helper functions for notifications
+  getNotificationColor = getNotificationColor;
+  formatNotificationTime = formatNotificationTime;
   
   constructor(public i18nService: I18nService) {}
   
@@ -93,8 +81,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.isLanguageMenuOpen = false;
     
     // Mark all notifications as read when opened
-    if (this.isNotificationsOpen) {
-      this.markAllNotificationsAsRead();
+    if (this.isNotificationsOpen && this.unreadCount > 0) {
+      this.notificationService.markAllAsRead();
     }
   }
   
@@ -128,36 +116,69 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   }
   
   get unreadNotificationsCount(): number {
-    return this.notifications.filter(n => !n.read).length;
+    return this.unreadCount;
   }
   
-  markAllNotificationsAsRead(): void {
-    this.notifications.forEach(n => n.read = true);
+  async clearNotification(notificationId: string): Promise<void> {
+    await this.notificationService.deleteNotification(notificationId);
   }
   
-  markNotificationAsRead(notificationId: number): void {
-    const notification = this.notifications.find(n => n.id === notificationId);
-    if (notification) {
-      notification.read = true;
+  async clearAllNotifications(): Promise<void> {
+    await this.notificationService.clearAllNotifications();
+    this.isNotificationsOpen = false;
+  }
+  
+  navigateToNotificationAction(notification: Notification): void {
+    if (notification.actionUrl) {
+      this.router.navigate([notification.actionUrl]);
+      this.isNotificationsOpen = false;
+      
+      // Mark as read if not already
+      if (!notification.read) {
+        this.notificationService.markAsRead(notification.id);
+      }
     }
   }
   
-  clearNotification(notificationId: number): void {
-    this.notifications = this.notifications.filter(n => n.id !== notificationId);
+  navigateToProfile(): void {
+    this.router.navigate(['/admin/profile']);
+    this.isProfileMenuOpen = false;
   }
   
-  clearAllNotifications(): void {
-    this.notifications = [];
-    this.isNotificationsOpen = false;
+  navigateToSettings(): void {
+    this.router.navigate(['/admin/settings']);
+    this.isProfileMenuOpen = false;
   }
   
   // Close dropdowns when clicking outside
   ngOnInit(): void {
     document.addEventListener('click', this.handleOutsideClick.bind(this));
+    
+    // Subscribe to notifications
+    this.notificationsSubscription = this.notificationService.notifications$.subscribe(
+      notifications => {
+        this.notifications = notifications;
+      }
+    );
+    
+    // Subscribe to unread count
+    this.unreadCountSubscription = this.notificationService.unreadCount$.subscribe(
+      count => {
+        this.unreadCount = count;
+      }
+    );
   }
   
   ngOnDestroy(): void {
     document.removeEventListener('click', this.handleOutsideClick.bind(this));
+    
+    // Unsubscribe from notifications
+    if (this.notificationsSubscription) {
+      this.notificationsSubscription.unsubscribe();
+    }
+    if (this.unreadCountSubscription) {
+      this.unreadCountSubscription.unsubscribe();
+    }
   }
   
   private handleOutsideClick(event: MouseEvent): void {
