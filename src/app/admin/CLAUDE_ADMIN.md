@@ -51,6 +51,10 @@ src/app/admin/
   - Delete resource
   - View analytics
 
+**AI-Powered Features**:
+- **Auto-Generated Summaries**: Generate professional multi-language descriptions
+- **Smart Tag Suggestions**: AI analyzes content and suggests relevant tags
+
 **Data Flow**:
 ```typescript
 ResourceManagementComponent
@@ -88,6 +92,17 @@ Firebase Firestore
 - Type selection required
 - At least one topic required
 - Valid URLs for file/external links
+
+**AI Integration**:
+- **Generate Summaries Button**: Located in Content tab next to description fields
+  - Generates 150-200 word summaries in English, Spanish, and Portuguese
+  - Uses title and existing English content as input
+  - Summaries are editable after generation
+- **Suggest Tags Button**: Located in Content tab in tags section
+  - Analyzes title, description, and resource type
+  - Suggests 5-10 relevant tags with confidence scores
+  - One-click to add suggested tags
+  - Filters out already existing tags
 
 ### 3. **Analytics Dashboard** (`analytics/analytics.component.ts`)
 
@@ -338,6 +353,22 @@ getFileUrl(path: string): Promise<string>
 listFiles(path?: string): Promise<StorageReference[]>
 getFileMetadata(path: string): Promise<FullMetadata>
 ```
+
+### AIService
+**Purpose**: AI-powered features for resource documentation
+
+**Key Methods**:
+```typescript
+generateSummaries(request: SummaryGenerationRequest): Observable<MultiLanguageText>
+suggestTags(request: TagSuggestionRequest): Observable<TagSuggestion[]>
+checkAIAvailability(): Observable<boolean>
+```
+
+**Features**:
+- **Multi-Language Summaries**: Generates professional summaries in EN, ES, PT
+- **Smart Tag Suggestions**: Analyzes content and suggests relevant CoST-related tags
+- **Fallback Handling**: Provides basic functionality when AI is unavailable
+- **Error Recovery**: Graceful degradation with informative error messages
 
 ## 🌐 Internationalization
 
@@ -678,8 +709,22 @@ Additional fields:
 
 ### API Endpoints (Cloud Functions)
 
+#### Admin Functions
 - `setAdminClaim`: Add/remove admin privileges (admin only)
 - `createFirstAdmin`: One-time setup for first admin
+
+#### AI Functions
+- `generateMultiLanguageSummary`: Generate summaries in EN, ES, PT
+  - Method: POST
+  - Body: `{ content: string, title?: string, resourceType?: string }`
+  - Returns: `{ success: boolean, summaries?: MultiLanguageText }`
+- `suggestTags`: Analyze content and suggest relevant tags
+  - Method: POST
+  - Body: `{ title: MultiLanguageText, description?: MultiLanguageText, resourceType?: string, existingTags?: string[] }`
+  - Returns: `{ success: boolean, suggestions?: TagSuggestion[] }`
+- `aiHealthCheck`: Check AI service availability
+  - Method: GET
+  - Returns: `{ available: boolean, features: object }`
 
 ### Future Enhancements
 
