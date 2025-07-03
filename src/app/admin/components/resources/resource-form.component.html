@@ -48,8 +48,8 @@
 
   <!-- Form Content -->
   <div *ngIf="!loading" class="form-content">
-    <!-- Tabs Navigation -->
-    <div class="tabs-navigation">
+    <!-- Sticky Tabs Navigation -->
+    <div class="tabs-navigation sticky-navigation">
       <button
         *ngFor="let tab of tabs; let i = index"
         (click)="setActiveTab(tab.id)"
@@ -79,7 +79,19 @@
 
         <!-- Title with Language Tabs -->
         <div class="form-section">
-          <label class="form-label required">Resource Title</label>
+          <div class="form-section-header">
+            <label class="form-label required">Resource Title</label>
+            <button
+              type="button"
+              (click)="copyToAllLanguages('title')"
+              class="btn-copy-all"
+              title="Copy English title to all languages">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy to all
+            </button>
+          </div>
           <div class="language-tabs">
             <button
               *ngFor="let lang of languages"
@@ -179,6 +191,31 @@
             </label>
           </div>
         </div>
+
+        <!-- Section Navigation -->
+        <div class="section-navigation">
+          <button
+            *ngIf="canNavigate('previous')"
+            type="button"
+            (click)="navigateToTab('previous')"
+            class="btn-nav-previous">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous: {{ tabs[getCurrentTabIndex() - 1]?.label }}
+          </button>
+          <div class="nav-spacer"></div>
+          <button
+            *ngIf="canNavigate('next')"
+            type="button"
+            (click)="navigateToTab('next')"
+            class="btn-nav-next">
+            Next: {{ tabs[getCurrentTabIndex() + 1]?.label }}
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Content Tab -->
@@ -190,7 +227,19 @@
 
         <!-- Description with Language Tabs -->
         <div class="form-section">
-          <label class="form-label required">Description</label>
+          <div class="form-section-header">
+            <label class="form-label required">Description</label>
+            <button
+              type="button"
+              (click)="copyToAllLanguages('description')"
+              class="btn-copy-all"
+              title="Copy English description to all languages">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy to all
+            </button>
+          </div>
           <div class="language-tabs">
             <button
               *ngFor="let lang of languages"
@@ -245,6 +294,31 @@
                 (keydown.enter)="addTag($event); $event.preventDefault()">
             </div>
           </div>
+        </div>
+
+        <!-- Section Navigation -->
+        <div class="section-navigation">
+          <button
+            *ngIf="canNavigate('previous')"
+            type="button"
+            (click)="navigateToTab('previous')"
+            class="btn-nav-previous">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous: {{ tabs[getCurrentTabIndex() - 1]?.label }}
+          </button>
+          <div class="nav-spacer"></div>
+          <button
+            *ngIf="canNavigate('next')"
+            type="button"
+            (click)="navigateToTab('next')"
+            class="btn-nav-next">
+            Next: {{ tabs[getCurrentTabIndex() + 1]?.label }}
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
 

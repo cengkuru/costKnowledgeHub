@@ -327,12 +327,60 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   
   setActiveTab(tabId: string): void {
     this.activeTab = tabId;
-    // Smooth scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Remove forced scroll to top - let users stay where they are
+    // Navigation should be user-friendly and respect user's context
   }
   
   setActiveLanguage(lang: Language): void {
     this.activeLanguage = lang;
+  }
+
+  /**
+   * Navigate to next/previous tab for better UX
+   */
+  navigateToTab(direction: 'next' | 'previous'): void {
+    const currentIndex = this.tabs.findIndex(tab => tab.id === this.activeTab);
+    if (direction === 'next' && currentIndex < this.tabs.length - 1) {
+      this.setActiveTab(this.tabs[currentIndex + 1].id);
+    } else if (direction === 'previous' && currentIndex > 0) {
+      this.setActiveTab(this.tabs[currentIndex - 1].id);
+    }
+  }
+
+  /**
+   * Copy content from English to all other languages
+   */
+  copyToAllLanguages(fieldType: 'title' | 'description'): void {
+    const englishValue = this.resourceForm.get(`${fieldType}.en`)?.value;
+    if (!englishValue) {
+      this.showError('Please enter English content first');
+      return;
+    }
+
+    // Copy to Spanish and Portuguese
+    const formGroup = this.resourceForm.get(fieldType);
+    if (formGroup) {
+      formGroup.patchValue({
+        es: englishValue,
+        pt: englishValue
+      });
+      this.showSuccess(`${fieldType} copied to all languages!`);
+    }
+  }
+
+  /**
+   * Get current tab index for navigation
+   */
+  getCurrentTabIndex(): number {
+    return this.tabs.findIndex(tab => tab.id === this.activeTab);
+  }
+
+  /**
+   * Check if we can navigate to next/previous tab
+   */
+  canNavigate(direction: 'next' | 'previous'): boolean {
+    const currentIndex = this.getCurrentTabIndex();
+    return direction === 'next' ? currentIndex < this.tabs.length - 1 : currentIndex > 0;
   }
   
   toggleTopic(topic: TopicCategory): void {

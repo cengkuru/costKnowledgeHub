@@ -249,6 +249,11 @@
     "quickActions": "Quick Actions",
     "addResource": "Add Resource",
     "uploadFile": "Upload File",
+    "breadcrumb": {
+      "newResource": "New Resource",
+      "editResource": "Edit Resource",
+      "fileUpload": "File Upload"
+    },
     "footer": {
       "copyright": "© 2025 CoST Knowledge Hub Admin",
       "documentation": "Documentation",

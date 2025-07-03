@@ -231,5 +231,28 @@
       "title": "Restablecer tu contraseña",
       "description": "Ingresa tu dirección de correo electrónico y te enviaremos instrucciones para restablecer tu contraseña."
     }
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "subtitle": "Sistema de Gestión de Contenido",
+    "welcomeBack": "Bienvenido de nuevo",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "signOut": "Cerrar Sesión",
+    "menu": {
+      "dashboard": "Panel",
+      "resources": "Recursos",
+      "analytics": "Analíticas",
+      "users": "Usuarios",
+      "settings": "Configuración"
+    },
+    "quickActions": "Acciones Rápidas",
+    "addResource": "Agregar Recurso",
+    "uploadFile": "Subir Archivo",
+    "breadcrumb": {
+      "newResource": "Nuevo Recurso",
+      "editResource": "Editar Recurso",
+      "fileUpload": "Subir Archivo"
+    }
   }
 }

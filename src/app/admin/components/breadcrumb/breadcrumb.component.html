@@ -1,0 +1,74 @@
+<!-- Breadcrumb Navigation -->
+<nav 
+  *ngIf="breadcrumbs.length > 1" 
+  class="breadcrumb-nav"
+  aria-label="Breadcrumb"
+  role="navigation">
+  
+  <!-- Desktop Breadcrumb -->
+  <ol class="breadcrumb-list hidden sm:flex">
+    <li 
+      *ngFor="let breadcrumb of breadcrumbs; let last = last; trackBy: trackByUrl"
+      class="breadcrumb-item"
+      [class.active]="breadcrumb.isActive">
+      
+      <!-- Clickable breadcrumb -->
+      <a 
+        *ngIf="breadcrumb.url && !breadcrumb.isActive"
+        [routerLink]="breadcrumb.url"
+        class="breadcrumb-link"
+        [attr.aria-label]="'Navigate to ' + getBreadcrumbLabel(breadcrumb)">
+        {{ getBreadcrumbLabel(breadcrumb) }}
+      </a>
+      
+      <!-- Current page (non-clickable) -->
+      <span 
+        *ngIf="!breadcrumb.url || breadcrumb.isActive"
+        class="breadcrumb-current"
+        aria-current="page">
+        {{ getBreadcrumbLabel(breadcrumb) }}
+      </span>
+      
+      <!-- Separator -->
+      <svg 
+        *ngIf="!last"
+        class="breadcrumb-separator"
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor"
+        aria-hidden="true">
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M9 5l7 7-7 7" />
+      </svg>
+    </li>
+  </ol>
+  
+  <!-- Mobile Breadcrumb (simplified) -->
+  <div class="breadcrumb-mobile sm:hidden">
+    <button 
+      *ngIf="breadcrumbs.length > 1"
+      (click)="goBack()"
+      class="breadcrumb-back-btn"
+      [attr.aria-label]="'Go back to ' + getBreadcrumbLabel(breadcrumbs[breadcrumbs.length - 2])">
+      <svg 
+        class="w-4 h-4 mr-2" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor">
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M15 19l-7-7 7-7" />
+      </svg>
+      {{ getBreadcrumbLabel(breadcrumbs[breadcrumbs.length - 2]) }}
+    </button>
+    
+    <span class="breadcrumb-current-mobile">
+      {{ getBreadcrumbLabel(breadcrumbs[breadcrumbs.length - 1]) }}
+    </span>
+  </div>
+</nav>
