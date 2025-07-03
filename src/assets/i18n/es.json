@@ -140,6 +140,9 @@
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "signIn": "Iniciar sesión",
     "signingIn": "Iniciando sesión...",
+    "sending": "Enviando...",
+    "sendResetEmail": "Enviar email de restablecimiento",
+    "backToLogin": "Volver al inicio de sesión",
     "demoMode": "Modo Demo:",
     "demoDescription": "Usa cualquier correo electrónico y contraseña para iniciar sesión y explorar la plataforma.",
     "backToHub": "← Volver al Knowledge Hub",
@@ -209,5 +212,23 @@
     "newsletter": "Boletín",
     "socialMedia": "Redes Sociales",
     "copyright": "© 2025 CoST Knowledge Hub. Todos los derechos reservados."
+  },
+  "login": {
+    "errors": {
+      "requiredFields": "Por favor ingrese el correo electrónico y la contraseña.",
+      "userNotFound": "No se encontró ningún usuario con esta dirección de correo electrónico.",
+      "wrongPassword": "Contraseña incorrecta. Por favor intenta de nuevo.",
+      "invalidEmail": "Por favor ingrese una dirección de correo electrónico válida.",
+      "tooManyAttempts": "Demasiados intentos fallidos. Por favor intenta más tarde.",
+      "genericError": "Ocurrió un error. Por favor intenta de nuevo.",
+      "emailRequired": "Por favor ingrese su dirección de correo electrónico.",
+      "emailNotFound": "No se encontró ninguna cuenta con esta dirección de correo electrónico.",
+      "resetFailed": "Error al enviar el email de restablecimiento. Por favor intenta de nuevo."
+    },
+    "resetPassword": {
+      "success": "¡Email de restablecimiento de contraseña enviado! Por favor revisa tu bandeja de entrada.",
+      "title": "Restablecer tu contraseña",
+      "description": "Ingresa tu dirección de correo electrónico y te enviaremos instrucciones para restablecer tu contraseña."
+    }
   }
 }

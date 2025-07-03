@@ -271,7 +271,10 @@ export class ResourceService {
         thumbnailUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         featured: true,
         fileSize: '3.2 MB',
-        format: 'PDF'
+        format: 'PDF',
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1710547200, nanoseconds: 0 }
       },
       {
         id: 'res-002',
@@ -299,7 +302,10 @@ export class ResourceService {
           savings: '$360 million',
           projects: 47,
           transparency: '85% disclosure rate'
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1709856000, nanoseconds: 0 }
       },
       {
         id: 'res-003',
@@ -324,7 +330,10 @@ export class ResourceService {
         fileLinks: { en: '/assets/samples/iti-2024-scores.csv' },
         featured: true,
         fileSize: '1.8 MB',
-        format: 'CSV'
+        format: 'CSV',
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1709251200, nanoseconds: 0 }
       },
       // Additional CoST resources matching PLAN.md specifications
       {
@@ -356,7 +365,10 @@ export class ResourceService {
           difficulty: 'intermediate',
           implementationTime: '6-12 months',
           targetAudience: ['Government', 'Civil Society', 'International Organizations']
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1709424000, nanoseconds: 0 }
       },
       {
         id: 'res-005',
@@ -385,7 +397,10 @@ export class ResourceService {
           projects: 23,
           transparency: '89% community satisfaction',
           description: 'Community oversight prevented cost overruns and improved project quality'
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1708819200, nanoseconds: 0 }
       },
       {
         id: 'res-006',
@@ -417,7 +432,10 @@ export class ResourceService {
           implementationTime: '12-18 months',
           targetAudience: ['Government IT', 'Procurement Officers'],
           prerequisites: ['Digital Infrastructure', 'Legal Framework']
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1708214400, nanoseconds: 0 }
       },
       {
         id: 'res-007',
@@ -449,7 +467,10 @@ export class ResourceService {
           difficulty: 'intermediate',
           implementationTime: '3-6 months',
           targetAudience: ['Policy Makers', 'Government Officials']
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1707609600, nanoseconds: 0 }
       },
       {
         id: 'res-008',
@@ -481,7 +502,10 @@ export class ResourceService {
           difficulty: 'beginner',
           implementationTime: '3-6 months',
           targetAudience: ['Government', 'Civil Society', 'Private Sector']
-        }
+        },
+        status: 'published',
+        createdBy: 'admin',
+        createdAt: { seconds: 1707004800, nanoseconds: 0 }
       }
     ];
 

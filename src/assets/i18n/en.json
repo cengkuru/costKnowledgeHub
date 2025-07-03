@@ -140,6 +140,9 @@
     "forgotPassword": "Forgot your password?",
     "signIn": "Sign in",
     "signingIn": "Signing in...",
+    "sending": "Sending...",
+    "sendResetEmail": "Send reset email",
+    "backToLogin": "Back to login",
     "demoMode": "Demo Mode:",
     "demoDescription": "Use any email and password to sign in and explore the platform.",
     "backToHub": "← Back to Knowledge Hub",
@@ -209,5 +212,108 @@
     "newsletter": "Newsletter",
     "socialMedia": "Social Media",
     "copyright": "© 2025 CoST Knowledge Hub. All rights reserved."
+  },
+  "login": {
+    "errors": {
+      "requiredFields": "Please enter both email and password.",
+      "userNotFound": "No user found with this email address.",
+      "wrongPassword": "Incorrect password. Please try again.",
+      "invalidEmail": "Please enter a valid email address.",
+      "tooManyAttempts": "Too many failed attempts. Please try again later.",
+      "genericError": "An error occurred. Please try again.",
+      "emailRequired": "Please enter your email address.",
+      "emailNotFound": "No account found with this email address.",
+      "resetFailed": "Failed to send reset email. Please try again."
+    },
+    "resetPassword": {
+      "success": "Password reset email sent! Please check your inbox.",
+      "title": "Reset Your Password",
+      "description": "Enter your email address and we'll send you instructions to reset your password."
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Content Management System",
+    "welcomeBack": "Welcome back",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "menu": {
+      "dashboard": "Dashboard",
+      "resources": "Resources",
+      "analytics": "Analytics",
+      "users": "Users",
+      "settings": "Settings"
+    },
+    "quickActions": "Quick Actions",
+    "addResource": "Add Resource",
+    "uploadFile": "Upload File",
+    "footer": {
+      "copyright": "© 2025 CoST Knowledge Hub Admin",
+      "documentation": "Documentation",
+      "support": "Support",
+      "privacy": "Privacy"
+    },
+    "dashboard": {
+      "title": "Dashboard Overview",
+      "subtitle": "Monitor your content performance and activity",
+      "totalResources": "Total Resources",
+      "published": "Published",
+      "totalViews": "Total Views",
+      "totalDownloads": "Total Downloads",
+      "activeUsers": "Active Users",
+      "thisMonth": "This month",
+      "fromLastMonth": "from last month",
+      "resourcesByType": "Resources by Type",
+      "recentActivity": "Recent Activity"
+    },
+    "resources": {
+      "title": "Manage Resources",
+      "subtitle": "Create, edit, and manage your knowledge resources",
+      "addNew": "Add Resource",
+      "search": "Search",
+      "searchPlaceholder": "Search by title, description, or tags...",
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "published": "Published",
+      "draft": "Draft",
+      "unpublished": "Unpublished",
+      "type": "Type",
+      "allTypes": "All Types",
+      "showing": "Showing",
+      "of": "of",
+      "resources": "resources",
+      "loading": "Loading resources...",
+      "titleColumn": "Title",
+      "typeColumn": "Type",
+      "statusColumn": "Status",
+      "featuredColumn": "Featured",
+      "dateColumn": "Date",
+      "viewsColumn": "Views",
+      "actions": "Actions",
+      "edit": "Edit",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "delete": "Delete",
+      "noResources": "No resources found",
+      "getStarted": "Get started by creating your first resource.",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    }
+  },
+  "profileSetup": {
+    "title": "Complete Your Profile",
+    "subtitle": "Let's personalize your experience",
+    "welcome": "Welcome!",
+    "firstTimeMessage": "This is your first time signing in. Please set up your profile to continue.",
+    "displayNameLabel": "Display Name",
+    "displayNamePlaceholder": "Enter your display name",
+    "displayNameHelp": "This is how your name will appear throughout the system.",
+    "emailLabel": "Email Address",
+    "continue": "Continue to Dashboard",
+    "updating": "Updating...",
+    "skipForNow": "Skip for now",
+    "footer": "You can update your profile information anytime from the admin dashboard."
   }
 }

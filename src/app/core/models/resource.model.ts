@@ -43,6 +43,15 @@ export interface Resource {
   views?: number; // View count
   downloads?: number; // Download count
   lastUpdated?: Timestamp;
+  // Publishing status
+  status: 'draft' | 'published' | 'unpublished';
+  publishedBy?: string; // User ID who published
+  publishedAt?: Timestamp;
+  // Content management
+  createdBy: string; // User ID who created
+  createdAt: Timestamp;
+  updatedBy?: string; // User ID who last updated
+  updatedAt?: Timestamp;
   // CoST-specific impact metrics
   impact?: {
     savings?: string; // e.g., "$360 million"
@@ -50,12 +59,33 @@ export interface Resource {
     transparency?: string; // e.g., "85% disclosure rate"
     description?: string; // Impact description
   };
+  // Assurance report specific fields
+  assuranceData?: {
+    projectsReviewed: number;
+    totalInvestment: string; // e.g., "$3.27 billion"
+    sectors: string[]; // ["building", "road", "water"]
+    disclosureRate: number; // percentage
+    averageTimeOverrun?: number; // percentage
+    averageCostOverrun?: number; // percentage
+    keyFindings?: string[];
+    recommendations?: string[];
+  };
   // Metadata for C40-style categorization
   metadata?: {
     difficulty?: 'beginner' | 'intermediate' | 'advanced';
     implementationTime?: string; // e.g., "3-6 months"
     targetAudience?: string[]; // e.g., ["Government", "Civil Society"]
     prerequisites?: string[];
+    sourceOrganization?: string; // e.g., "CoST Ethiopia"
+  };
+  // Analytics tracking
+  analytics?: {
+    pageViews: number;
+    uniqueViews: number;
+    downloads: number;
+    averageTimeOnPage?: number; // seconds
+    bounceRate?: number; // percentage
+    lastViewedAt?: Timestamp;
   };
 }
 

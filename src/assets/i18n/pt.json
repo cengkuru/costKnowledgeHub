@@ -140,6 +140,9 @@
     "forgotPassword": "Esqueceu sua senha?",
     "signIn": "Entrar",
     "signingIn": "Entrando...",
+    "sending": "Enviando...",
+    "sendResetEmail": "Enviar email de redefinição",
+    "backToLogin": "Voltar ao login",
     "demoMode": "Modo Demo:",
     "demoDescription": "Use qualquer e-mail e senha para entrar e explorar a plataforma.",
     "backToHub": "← Voltar ao Knowledge Hub",
@@ -209,5 +212,23 @@
     "newsletter": "Boletim",
     "socialMedia": "Redes Sociais",
     "copyright": "© 2025 CoST Knowledge Hub. Todos os direitos reservados."
+  },
+  "login": {
+    "errors": {
+      "requiredFields": "Por favor, insira o email e a senha.",
+      "userNotFound": "Nenhum usuário encontrado com este endereço de email.",
+      "wrongPassword": "Senha incorreta. Por favor, tente novamente.",
+      "invalidEmail": "Por favor, insira um endereço de email válido.",
+      "tooManyAttempts": "Muitas tentativas falhadas. Por favor, tente novamente mais tarde.",
+      "genericError": "Ocorreu um erro. Por favor, tente novamente.",
+      "emailRequired": "Por favor, insira seu endereço de email.",
+      "emailNotFound": "Nenhuma conta encontrada com este endereço de email.",
+      "resetFailed": "Falha ao enviar email de redefinição. Por favor, tente novamente."
+    },
+    "resetPassword": {
+      "success": "Email de redefinição de senha enviado! Por favor, verifique sua caixa de entrada.",
+      "title": "Redefinir sua senha",
+      "description": "Digite seu endereço de email e enviaremos instruções para redefinir sua senha."
+    }
   }
 }

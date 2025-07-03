@@ -1,0 +1,103 @@
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <!-- Header -->
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="flex justify-center">
+      <img src="assets/logo.png" alt="CoST Logo" class="h-12 w-auto">
+    </div>
+    <h2 class="mt-6 text-center text-3xl font-bold text-cost-charcoal">
+      {{ i18nService.t('profileSetup.title') }}
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+      {{ i18nService.t('profileSetup.subtitle') }}
+    </p>
+  </div>
+
+  <!-- Profile Setup Form -->
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10">
+      <!-- Welcome Message -->
+      <div class="mb-6 p-4 bg-cost-gray rounded-md">
+        <p class="text-sm text-gray-700">
+          <strong class="text-cost-teal">{{ i18nService.t('profileSetup.welcome') }}</strong>
+          {{ authService.userEmail }}
+        </p>
+        <p class="mt-1 text-sm text-gray-600">
+          {{ i18nService.t('profileSetup.firstTimeMessage') }}
+        </p>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+        <p class="text-sm text-red-600">{{ errorMessage }}</p>
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" #profileForm="ngForm" class="space-y-6">
+        <!-- Display Name Field -->
+        <div>
+          <label for="displayName" class="block text-sm font-medium text-gray-700">
+            {{ i18nService.t('profileSetup.displayNameLabel') }}
+          </label>
+          <div class="mt-1">
+            <input
+              id="displayName"
+              name="displayName"
+              type="text"
+              [(ngModel)]="displayName"
+              required
+              autocomplete="name"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-cost-teal focus:border-cost-teal sm:text-sm"
+              [placeholder]="i18nService.t('profileSetup.displayNamePlaceholder')">
+          </div>
+          <p class="mt-2 text-xs text-gray-500">
+            {{ i18nService.t('profileSetup.displayNameHelp') }}
+          </p>
+        </div>
+
+        <!-- Current Email Display -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700">
+            {{ i18nService.t('profileSetup.emailLabel') }}
+          </label>
+          <div class="mt-1">
+            <div class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-gray-600">
+              {{ authService.userEmail }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="space-y-3">
+          <button
+            type="submit"
+            [disabled]="loading || !profileForm.form.valid"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-cost-teal hover:bg-cost-teal/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cost-teal disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <!-- Loading Spinner -->
+            <span *ngIf="loading" class="mr-2">
+              <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            {{ loading ? i18nService.t('profileSetup.updating') : i18nService.t('profileSetup.continue') }}
+          </button>
+
+          <button
+            type="button"
+            (click)="skipForNow()"
+            [disabled]="loading"
+            class="w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cost-teal disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            {{ i18nService.t('profileSetup.skipForNow') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mt-8 text-center">
+    <p class="text-xs text-gray-500">
+      {{ i18nService.t('profileSetup.footer') }}
+    </p>
+  </div>
+</div>

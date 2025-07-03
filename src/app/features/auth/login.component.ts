@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { I18nService } from '../../core/services/i18n.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,34 +18,96 @@ export class LoginComponent {
   rememberMe = false;
   loading = false;
   errorMessage = '';
-
+  successMessage = '';
+  showResetPassword = false;
+  resetEmail = '';
+  
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  
   constructor(
-    private router: Router,
     public i18nService: I18nService
   ) {}
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (!this.email || !this.password) {
-      this.errorMessage = 'Please enter both email and password.';
+      this.errorMessage = this.i18nService.t('login.errors.requiredFields');
       return;
     }
 
     this.loading = true;
     this.errorMessage = '';
 
-    // Simulate login process
-    setTimeout(() => {
-      this.loading = false;
-
-      // For demo purposes, accept any email/password combination
-      if (this.email && this.password) {
-        // Simulate successful login
-        alert('Login successful! (Demo mode)');
-        this.router.navigate(['/home']);
+    try {
+      const credential = await this.authService.signIn(this.email, this.password, this.rememberMe);
+      
+      // Check if user needs to complete profile setup
+      if (!credential.user.displayName) {
+        await this.router.navigate(['/profile-setup']);
       } else {
-        this.errorMessage = 'Invalid credentials. Please try again.';
+        // Navigate to return URL or admin dashboard
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
+        await this.router.navigate([returnUrl]);
       }
-    }, 1500);
+    } catch (error: any) {
+      this.loading = false;
+      
+      // Handle specific Firebase auth errors
+      switch (error.code) {
+        case 'auth/user-not-found':
+          this.errorMessage = this.i18nService.t('login.errors.userNotFound');
+          break;
+        case 'auth/wrong-password':
+          this.errorMessage = this.i18nService.t('login.errors.wrongPassword');
+          break;
+        case 'auth/invalid-email':
+          this.errorMessage = this.i18nService.t('login.errors.invalidEmail');
+          break;
+        case 'auth/too-many-requests':
+          this.errorMessage = this.i18nService.t('login.errors.tooManyAttempts');
+          break;
+        default:
+          this.errorMessage = this.i18nService.t('login.errors.genericError');
+      }
+    }
+  }
+  
+  async onResetPassword(): Promise<void> {
+    if (!this.resetEmail) {
+      this.errorMessage = this.i18nService.t('login.errors.emailRequired');
+      return;
+    }
+    
+    this.loading = true;
+    this.errorMessage = '';
+    
+    try {
+      await this.authService.sendPasswordResetEmail(this.resetEmail);
+      this.successMessage = this.i18nService.t('login.resetPassword.success');
+      this.showResetPassword = false;
+      this.resetEmail = '';
+    } catch (error: any) {
+      switch (error.code) {
+        case 'auth/user-not-found':
+          this.errorMessage = this.i18nService.t('login.errors.emailNotFound');
+          break;
+        case 'auth/invalid-email':
+          this.errorMessage = this.i18nService.t('login.errors.invalidEmail');
+          break;
+        default:
+          this.errorMessage = this.i18nService.t('login.errors.resetFailed');
+      }
+    } finally {
+      this.loading = false;
+    }
+  }
+  
+  toggleResetPassword(): void {
+    this.showResetPassword = !this.showResetPassword;
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.resetEmail = this.email; // Pre-fill with login email if available
   }
 
   navigateBack(): void {
