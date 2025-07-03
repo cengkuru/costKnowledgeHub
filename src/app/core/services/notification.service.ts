@@ -21,7 +21,6 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject, from, map, switchMap, of } from 'rxjs';
 import { Notification, NotificationType, NotificationPriority, NotificationStats } from '../models/notification.model';
-import { AuthService } from './auth.service';
 import { I18nService } from './i18n.service';
 
 @Injectable({
@@ -29,7 +28,6 @@ import { I18nService } from './i18n.service';
 })
 export class NotificationService {
   private firestore = inject(Firestore);
-  private authService = inject(AuthService);
   private i18nService = inject(I18nService);
   
   private notificationsCollection = collection(this.firestore, 'notifications');
@@ -40,16 +38,22 @@ export class NotificationService {
   public notifications$ = this.notificationsSubject.asObservable();
   
   private unsubscribe: Unsubscribe | null = null;
+  private currentUserId: string | null = null;
 
   constructor() {
-    // Start listening to notifications when user is authenticated
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.startListening(user.uid);
-      } else {
-        this.stopListening();
-      }
-    });
+    // AuthService will call startListeningForUser when user changes
+  }
+  
+  /**
+   * Start listening for a specific user (called by AuthService)
+   */
+  public startListeningForUser(userId: string | null): void {
+    this.currentUserId = userId;
+    if (userId) {
+      this.startListening(userId);
+    } else {
+      this.stopListening();
+    }
   }
 
   /**
@@ -316,7 +320,7 @@ export class NotificationService {
    * Mark all notifications as read for current user
    */
   async markAllAsRead(): Promise<void> {
-    const userId = this.authService.userId;
+    const userId = this.currentUserId;
     if (!userId) return;
     
     const q = query(
@@ -350,7 +354,7 @@ export class NotificationService {
    * Clear all notifications for current user
    */
   async clearAllNotifications(): Promise<void> {
-    const userId = this.authService.userId;
+    const userId = this.currentUserId;
     if (!userId) return;
     
     const q = query(
@@ -372,7 +376,7 @@ export class NotificationService {
    * Get notification statistics
    */
   async getNotificationStats(): Promise<NotificationStats> {
-    const userId = this.authService.userId;
+    const userId = this.currentUserId;
     if (!userId) return { 
       total: 0, 
       unread: 0, 

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Injector } from '@angular/core';
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -22,8 +22,17 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
-  private activityService = inject(ActivityService);
+  private injector = inject(Injector);
   private functions = inject(Functions);
+  
+  // Lazy load ActivityService to avoid circular dependency
+  private _activityService: ActivityService | null = null;
+  private get activityService(): ActivityService {
+    if (!this._activityService) {
+      this._activityService = this.injector.get(ActivityService);
+    }
+    return this._activityService;
+  }
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();

@@ -154,6 +154,11 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     document.addEventListener('click', this.handleOutsideClick.bind(this));
     
+    // Initialize notification service with current user
+    this.authService.currentUser$.subscribe(user => {
+      this.notificationService.startListeningForUser(user?.uid || null);
+    });
+    
     // Subscribe to notifications
     this.notificationsSubscription = this.notificationService.notifications$.subscribe(
       notifications => {

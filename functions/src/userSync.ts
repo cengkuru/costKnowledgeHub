@@ -87,15 +87,12 @@ export const listAllAuthUsers = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: {
-      origin: [
-        'http://localhost:4200',
-        'http://localhost:5000',
-        'https://knowledgehub-2ed2f.web.app',
-        'https://knowledgehub-2ed2f.firebaseapp.com'
-      ],
-      credentials: true
-    }
+    cors: [
+      'http://localhost:4200',
+      'http://localhost:5000',
+      'https://knowledgehub-2ed2f.web.app',
+      'https://knowledgehub-2ed2f.firebaseapp.com'
+    ]
   },
   async (req: Request, res: Response) => {
     // Handle CORS preflight for OPTIONS requests
@@ -201,15 +198,12 @@ export const syncAuthUserToFirestore = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: {
-      origin: [
-        'http://localhost:4200',
-        'http://localhost:5000',
-        'https://knowledgehub-2ed2f.web.app',
-        'https://knowledgehub-2ed2f.firebaseapp.com'
-      ],
-      credentials: true
-    }
+    cors: [
+      'http://localhost:4200',
+      'http://localhost:5000',
+      'https://knowledgehub-2ed2f.web.app',
+      'https://knowledgehub-2ed2f.firebaseapp.com'
+    ]
   },
   async (req: Request, res: Response) => {
     // Handle CORS preflight for OPTIONS requests
@@ -316,15 +310,12 @@ export const migrateAllUsers = onRequest(
   {
     timeoutSeconds: 540, // 9 minutes - max for HTTP functions
     memory: '512MiB',
-    cors: {
-      origin: [
-        'http://localhost:4200',
-        'http://localhost:5000',
-        'https://knowledgehub-2ed2f.web.app',
-        'https://knowledgehub-2ed2f.firebaseapp.com'
-      ],
-      credentials: true
-    }
+    cors: [
+      'http://localhost:4200',
+      'http://localhost:5000',
+      'https://knowledgehub-2ed2f.web.app',
+      'https://knowledgehub-2ed2f.firebaseapp.com'
+    ]
   },
   async (req: Request, res: Response) => {
     // Handle CORS preflight for OPTIONS requests
@@ -451,15 +442,12 @@ export const getMigrationStatus = onRequest(
   {
     timeoutSeconds: 60,
     memory: '256MiB',
-    cors: {
-      origin: [
-        'http://localhost:4200',
-        'http://localhost:5000',
-        'https://knowledgehub-2ed2f.web.app',
-        'https://knowledgehub-2ed2f.firebaseapp.com'
-      ],
-      credentials: true
-    }
+    cors: [
+      'http://localhost:4200',
+      'http://localhost:5000',
+      'https://knowledgehub-2ed2f.web.app',
+      'https://knowledgehub-2ed2f.firebaseapp.com'
+    ]
   },
   async (req: Request, res: Response) => {
     // Handle CORS preflight for OPTIONS requests
