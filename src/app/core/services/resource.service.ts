@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest, from } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, switchMap, tap, catchError, of } from 'rxjs/operators';
+import { Observable, BehaviorSubject, combineLatest, from, of } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, switchMap, tap, catchError } from 'rxjs/operators';
 import { Resource, ResourceFilter, ResourceSearchResult, Language, ResourceType, TopicCategory, Region } from '../models/resource.model';
 import { FilterGroup, ActiveFilters, DEFAULT_FILTERS } from '../models/filter.model';
 import { COST_TOPICS } from '../models/topic.model';
@@ -12,7 +12,7 @@ import { FirestoreService } from './firestore.service';
 })
 export class ResourceService {
   private firestoreService = inject(FirestoreService);
-  
+
   private resourcesSubject = new BehaviorSubject<Resource[]>([]);
   private filtersSubject = new BehaviorSubject<FilterGroup>({
     type: [],
@@ -44,14 +44,14 @@ export class ResourceService {
     this.loadResources();
   }
 
-  private async loadResources(): Promise<void> {
+    private async loadResources(): Promise<void> {
     try {
       this.loadingSubject.next(true);
-      const resources = await this.firestoreService.getResources();
-      this.resourcesSubject.next(resources);
-      
+      const result = await this.firestoreService.getResources();
+      this.resourcesSubject.next(result.resources);
+
       // Build filters from loaded resources
-      this.buildFilters(resources);
+      this.buildFilters(result.resources);
     } catch (error) {
       console.error('Error loading resources:', error);
       this.resourcesSubject.next([]);
@@ -126,7 +126,7 @@ export class ResourceService {
     return this.resources$.pipe(
       map(resources => {
         return resources
-          .filter(resource => 
+          .filter(resource =>
             resource.id !== resourceId && (
               resource.topics.some(topic => topics.includes(topic)) ||
               resource.tags.some(tag => tags.includes(tag))
@@ -297,18 +297,34 @@ export class ResourceService {
 
     // Update filters subject
     this.filtersSubject.next({
-      type: Object.keys(typeCount),
-      topic: Object.keys(topicCount),
+      type: Object.entries(typeCount).map(([value, count]) => ({
+        value,
+        label: this.formatTypeLabel(value),
+        count
+      })),
+      topic: Object.entries(topicCount).map(([value, count]) => ({
+        value,
+        label: value,
+        count
+      })),
       region: [],
-      language: Object.keys(languageCount),
-      country: Object.keys(countryCount)
+      language: Object.entries(languageCount).map(([value, count]) => ({
+        value,
+        label: this.formatLanguageLabel(value),
+        count
+      })),
+      country: Object.entries(countryCount).map(([value, count]) => ({
+        value,
+        label: this.formatCountryLabel(value),
+        count
+      }))
     });
   }
 
   // CRUD Operations
-  async createResource(resource: Omit<Resource, 'id'>): Promise<string> {
+  async createResource(resource: Omit<Resource, 'id'>, userId: string): Promise<string> {
     try {
-      const id = await this.firestoreService.createResource(resource);
+      const id = await this.firestoreService.createResource(resource, userId);
       await this.loadResources(); // Reload to update local state
       return id;
     } catch (error) {
@@ -317,9 +333,9 @@ export class ResourceService {
     }
   }
 
-  async updateResource(id: string, resource: Partial<Resource>): Promise<void> {
+  async updateResource(id: string, resource: Partial<Resource>, userId: string): Promise<void> {
     try {
-      await this.firestoreService.updateResource(id, resource);
+      await this.firestoreService.updateResource(id, resource, userId);
       await this.loadResources(); // Reload to update local state
     } catch (error) {
       console.error('Error updating resource:', error);
@@ -337,14 +353,7 @@ export class ResourceService {
     }
   }
 
-  async getResourceById(id: string): Promise<Resource | null> {
-    try {
-      return await this.firestoreService.getResourceById(id);
-    } catch (error) {
-      console.error('Error getting resource by id:', error);
-      return null;
-    }
-  }
+
 
   // Refresh resources from Firestore
   async refreshResources(): Promise<void> {

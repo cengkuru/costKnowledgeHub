@@ -1,3 +1,29 @@
+## 📚 CLAUDE_CORE CONTEXT FILES
+
+**MANDATORY**: Always reference these core files for design and development decisions:
+
+### Core Documentation Files:
+1. **CLAUDE_CORE/EMOTIONAL_DESIGN_SYSTEM.md** - Professional design principles (Simplicity First, Function Drives Form)
+2. **CLAUDE_CORE/TS_PATTERNS.md** - TypeScript patterns and best practices
+3. **CLAUDE_CORE/DEVELOPMENT_GUIDELINES.md** - Development standards and workflows
+4. **CLAUDE_CORE/CLOUD_FUNCTIONS_GUIDE.md** - Firebase Cloud Functions implementation
+5. **CLAUDE_CORE/AI_IMPLEMENTATION_GUIDE.md** - AI integration patterns
+6. **src/app/admin/CLAUDE_ADMIN.md** - Complete admin module documentation
+
+### Design Philosophy:
+- **Professional Tone**: This is a serious infrastructure transparency platform, not a consumer app
+- **Simplicity First**: Every element must justify its existence
+- **Function Over Form**: Design decisions must improve functionality
+- **Subtle Interactions**: Minimal animations (200-250ms), 1-2px movements only
+- **No Decorative Elements**: Remove floating animations, gradient texts, excessive transforms
+
+### Key Design Changes Applied:
+- Removed playful hover effects (scale transforms)
+- Eliminated glass morphism in favor of clean, solid backgrounds
+- Simplified shadows to functional 1-3px depths
+- Professional button states without transform effects
+- Clean card designs without decorative elements
+
 ## 🚨 CRITICAL PATH INFORMATION - UNICODE TRAP PREVENTION
 
 **CRITICAL RULE**: The project path contains a Unicode curly apostrophe character U+2019 (') in "cengkuru's MacBook Pro". This creates phantom folders if not handled correctly.

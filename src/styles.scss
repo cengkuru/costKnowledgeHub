@@ -32,63 +32,60 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Custom component classes using CoST palette - C40 Knowledge Hub inspired
+// Professional component classes using CoST palette - Infrastructure platform optimized
 @layer components {
-  /* Button System - Matching C40 Design */
+  /* Button System - Professional & Functional */
   .btn-primary {
-    @apply bg-cost-teal hover:bg-cost-teal-600 text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card focus:outline-none focus:ring-2 focus:ring-cost-teal focus:ring-offset-2;
-    position: relative;
-    overflow: hidden;
+    @apply bg-cost-teal hover:bg-cost-teal-600 text-white font-semibold py-3 px-6 rounded-button transition-colors duration-200 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-cost-teal focus:ring-offset-2;
   }
 
   .btn-primary:hover {
-    transform: translateY(-1px) scale(1.02);
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    @apply bg-white border-2 border-cost-teal text-cost-teal hover:bg-cost-teal hover:text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card;
+    @apply bg-white border-2 border-cost-teal text-cost-teal hover:bg-cost-teal hover:text-white font-semibold py-3 px-6 rounded-button transition-colors duration-200;
   }
 
   .btn-accent {
-    @apply bg-cost-amber hover:bg-cost-amber-600 text-white font-semibold py-3 px-6 rounded-button transition-all duration-250 shadow-sm hover:shadow-card focus:outline-none focus:ring-2 focus:ring-cost-amber focus:ring-offset-2;
+    @apply bg-cost-amber hover:bg-cost-amber-600 text-white font-semibold py-3 px-6 rounded-button transition-colors duration-200 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-cost-amber focus:ring-offset-2;
   }
 
-  /* Glass Morphism Cards - Jony Ive Inspired */
+  /* Professional Cards - Clean & Functional */
   .card {
-    @apply bg-white/80 backdrop-blur-glass rounded-card border border-white/20 p-6 transition-all duration-350;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    @apply bg-white rounded-card border border-gray-200 p-6 transition-shadow duration-200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .card:hover {
-    @apply shadow-glass-hover border-cost-teal/30;
-    transform: translateY(-4px) scale(1.02);
+    @apply shadow-md border-cost-teal/20;
   }
 
-  /* Resource Cards - C40 Style */
+  /* Resource Cards - Professional Style */
   .resource-card {
-    @apply bg-white rounded-card border border-neutral-200 overflow-hidden transition-all duration-350 cursor-pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    @apply bg-white rounded-card border border-neutral-200 overflow-hidden transition-shadow duration-200 cursor-pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
   .resource-card:hover {
-    @apply shadow-card-hover border-cost-cyan/50;
-    transform: translateY(-2px) scale(1.01);
+    @apply shadow-md border-cost-cyan/30;
+    transform: translateY(-1px);
   }
 
-  /* Input Fields - Clean & Modern */
+  /* Input Fields - Clean & Professional */
   .input-field {
-    @apply w-full px-4 py-3 border border-neutral-300 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-all duration-250;
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-colors duration-200;
     font-size: 16px; /* Prevent zoom on iOS */
   }
 
   .input-field:focus {
-    @apply bg-white shadow-sm;
+    @apply bg-white border-cost-cyan;
   }
 
-  /* Search Bar - Hero Style */
+  /* Search Bar - Professional Style */
   .search-hero {
-    @apply w-full px-6 py-4 text-lg border-2 border-white/30 rounded-2xl bg-white/90 backdrop-blur-glass focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-cost-cyan transition-all duration-350;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    @apply w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-2xl bg-white focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-cost-cyan transition-colors duration-200;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   /* Filter Sidebar */
@@ -106,16 +103,16 @@ body {
 
   /* Topic Grid Cards */
   .topic-card {
-    @apply bg-gradient-to-br rounded-card p-6 text-white relative overflow-hidden cursor-pointer transition-all duration-350;
+    @apply bg-gradient-to-br rounded-card p-6 text-white relative overflow-hidden cursor-pointer transition-shadow duration-200;
   }
 
   .topic-card:hover {
-    transform: translateY(-4px) scale(1.05);
+    @apply shadow-lg;
   }
 
   /* Navigation Header */
   .nav-header {
-    @apply bg-white/95 backdrop-blur-glass border-b border-neutral-200/50 sticky top-0 z-50 transition-all duration-250;
+    @apply bg-white border-b border-neutral-200 sticky top-0 z-50;
   }
 
   /* Hero Section */
@@ -129,12 +126,11 @@ body {
 
   /* Stats Cards */
   .stats-card {
-    @apply bg-white/10 backdrop-blur-glass rounded-card p-6 text-center border border-white/20 transition-all duration-350;
+    @apply bg-white/10 rounded-card p-6 text-center border border-white/20 transition-colors duration-200;
   }
 
   .stats-card:hover {
-    @apply bg-white/20 shadow-glass;
-    transform: translateY(-2px);
+    @apply bg-white/20 shadow-md;
   }
 
   /* Loading States */
@@ -151,16 +147,6 @@ body {
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
     animation: shimmer 2s infinite;
-  }
-
-  /* Floating Elements */
-  .floating-element {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  /* Gradient Text */
-  .gradient-text {
-    @apply bg-gradient-to-r from-cost-teal to-cost-cyan bg-clip-text text-transparent;
   }
 }
 

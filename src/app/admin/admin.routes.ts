@@ -43,7 +43,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'upload',
-        loadComponent: () => import('./components/upload/file-upload.component').then(m => m.FileUploadComponent)
+        loadComponent: () => import('./components/file-upload/file-upload.component').then(m => m.FileUploadComponent)
       }
     ]
   }

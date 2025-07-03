@@ -159,7 +159,7 @@ interface DashboardStats {
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let resource of stats.topResources; let i = index" 
+                <tr *ngFor="let resource of stats.topResources; let i = index"
                     class="hover:bg-gray-50 transition-colors">
                   <td class="px-4 py-3 text-sm">
                     <div class="flex items-center">
@@ -185,7 +185,7 @@ interface DashboardStats {
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ i18nService.t('admin.analytics.searchTrends') }}</h2>
           <div class="space-y-3">
-            <div *ngFor="let trend of stats.searchTrends; let i = index" 
+            <div *ngFor="let trend of stats.searchTrends; let i = index"
                  class="flex items-center justify-between">
               <div class="flex items-center">
                 <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-xs font-medium mr-3">
@@ -244,7 +244,7 @@ export class AnalyticsComponent implements OnInit {
       const [
         topResourcesData,
         searchTrends,
-        allResources
+        allResourcesResult
       ] = await Promise.all([
         this.analyticsService.getTopResources('views', 10),
         this.analyticsService.getSearchTrends(7),
@@ -252,17 +252,20 @@ export class AnalyticsComponent implements OnInit {
       ]);
 
       // Calculate stats
-      const publishedResources = allResources.filter(r => r.status === 'published');
-      const totalPageViews = publishedResources.reduce((sum, r) => sum + (r.views || 0), 0);
-      const totalDownloads = publishedResources.reduce((sum, r) => sum + (r.downloads || 0), 0);
+      const publishedResources = allResourcesResult.resources.filter((r: any) => r.status === 'published');
+      const totalPageViews = publishedResources.reduce((sum: any, r: any) => sum + (r.views || 0), 0);
+      const totalDownloads = publishedResources.reduce((sum: any, r: any) => sum + (r.downloads || 0), 0);
 
       // Get resource details for top resources
       const topResources = await Promise.all(
-        topResourcesData.slice(0, 5).map(async (item) => {
-          const resource = publishedResources.find(r => r.id === item.resourceId);
+        topResourcesData.slice(0, 5).map(async (item: any) => {
+          const resource = publishedResources.find((r: any) => r.id === item.resourceId);
+          const title = resource?.title ?
+            (typeof resource.title === 'string' ? resource.title : resource.title.en || 'Unknown Resource') :
+            'Unknown Resource';
           return {
             id: item.resourceId,
-            title: resource?.title || 'Unknown Resource',
+            title,
             views: resource?.views || 0,
             downloads: resource?.downloads || 0
           };
@@ -304,7 +307,7 @@ export class AnalyticsComponent implements OnInit {
 
   private calculateTypeDistribution(resources: any[]): { type: string; count: number }[] {
     const typeCounts: { [key: string]: number } = {};
-    
+
     resources.forEach(resource => {
       const type = resource.type || 'other';
       typeCounts[type] = (typeCounts[type] || 0) + 1;
@@ -318,13 +321,13 @@ export class AnalyticsComponent implements OnInit {
   private generateViewsChartData(): { labels: string[]; data: number[] } {
     const labels: string[] = [];
     const data: number[] = [];
-    
+
     // Generate last 30 days of data
     for (let i = 29; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-      
+
       // Generate mock view data with some variation
       const baseViews = 50;
       const variation = Math.floor(Math.random() * 30) - 15;
@@ -384,7 +387,7 @@ export class AnalyticsComponent implements OnInit {
         this.typeChartInstance.destroy();
       }
 
-      const typeLabels = this.stats.resourceTypeDistribution.map(item => 
+      const typeLabels = this.stats.resourceTypeDistribution.map(item =>
         this.i18nService.t(`resourceTypes.${item.type}`)
       );
       const typeData = this.stats.resourceTypeDistribution.map(item => item.count);

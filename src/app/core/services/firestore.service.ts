@@ -1,23 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { 
-  Firestore, 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
+import {
+  Firestore,
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
   getDoc,
   getDocs,
-  query, 
-  where, 
-  orderBy, 
+  query,
+  where,
+  orderBy,
   limit,
   startAfter,
-  DocumentData,
-  QueryConstraint,
-  CollectionReference,
-  DocumentReference,
-  Timestamp as FirestoreTimestamp,
   serverTimestamp,
   increment
 } from '@angular/fire/firestore';
@@ -30,12 +25,12 @@ import { map } from 'rxjs/operators';
 })
 export class FirestoreService {
   private firestore = inject(Firestore);
-  private resourcesCollection: CollectionReference;
-  
+  private resourcesCollection: any;
+
   constructor() {
     this.resourcesCollection = collection(this.firestore, 'resources');
   }
-  
+
   /**
    * Create a new resource
    */
@@ -55,11 +50,11 @@ export class FirestoreService {
         downloads: 0
       }
     };
-    
+
     const docRef = await addDoc(this.resourcesCollection, resourceData);
     return docRef.id;
   }
-  
+
   /**
    * Update an existing resource
    */
@@ -70,10 +65,10 @@ export class FirestoreService {
       updatedBy: userId,
       updatedAt: serverTimestamp()
     };
-    
+
     await updateDoc(docRef, updateData);
   }
-  
+
   /**
    * Delete a resource
    */
@@ -81,111 +76,113 @@ export class FirestoreService {
     const docRef = doc(this.firestore, 'resources', id);
     await deleteDoc(docRef);
   }
-  
+
   /**
    * Get a single resource by ID
    */
   async getResource(id: string): Promise<Resource | null> {
     const docRef = doc(this.firestore, 'resources', id);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return { id: docSnap.id, ...docSnap.data() } as Resource;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Get resources with filters
    */
-  async getResources(filter?: ResourceFilter, pageSize: number = 20, lastDoc?: DocumentData): Promise<{
+  async getResources(filter?: ResourceFilter, pageSize: number = 20, lastDoc?: any): Promise<{
     resources: Resource[];
     hasMore: boolean;
-    lastDocument?: DocumentData;
+    lastDocument?: any;
   }> {
-    const constraints: QueryConstraint[] = [];
-    
+    const constraints: any[] = [];
+
     // Apply filters
     if (filter) {
       if (filter.type && filter.type.length > 0) {
         constraints.push(where('type', 'in', filter.type));
       }
-      
+
       if (filter.featured !== undefined) {
         constraints.push(where('featured', '==', filter.featured));
       }
-      
+
       if (filter.language && filter.language.length > 0) {
         constraints.push(where('language', 'in', filter.language));
       }
-      
+
       if (filter.country && filter.country.length > 0) {
         constraints.push(where('country', 'in', filter.country));
       }
     }
-    
+
     // Add ordering and pagination
     constraints.push(orderBy('datePublished', 'desc'));
     constraints.push(limit(pageSize + 1)); // Get one extra to check if there are more
-    
+
     if (lastDoc) {
       constraints.push(startAfter(lastDoc));
     }
-    
+
     const q = query(this.resourcesCollection, ...constraints);
     const querySnapshot = await getDocs(q);
-    
-    const resources: Resource[] = [];
-    let lastDocument: DocumentData | undefined;
-    
-    querySnapshot.forEach((doc, index) => {
+
+        const resources: Resource[] = [];
+    let lastDocument: any | undefined;
+
+    let index = 0;
+    querySnapshot.forEach((doc: any) => {
       if (index < pageSize) {
         resources.push({ id: doc.id, ...doc.data() } as Resource);
         lastDocument = doc;
       }
+      index++;
     });
-    
+
     return {
       resources,
       hasMore: querySnapshot.size > pageSize,
       lastDocument
     };
   }
-  
+
   /**
    * Get published resources only (for public view)
    */
   async getPublishedResources(filter?: ResourceFilter, pageSize: number = 20): Promise<Resource[]> {
-    const constraints: QueryConstraint[] = [
+    const constraints: any[] = [
       where('status', '==', 'published')
     ];
-    
+
     // Apply additional filters
     if (filter) {
       if (filter.type && filter.type.length > 0) {
         constraints.push(where('type', 'in', filter.type));
       }
-      
+
       if (filter.featured !== undefined) {
         constraints.push(where('featured', '==', filter.featured));
       }
     }
-    
+
     constraints.push(orderBy('datePublished', 'desc'));
     constraints.push(limit(pageSize));
-    
+
     const q = query(this.resourcesCollection, ...constraints);
     const querySnapshot = await getDocs(q);
-    
+
     const resources: Resource[] = [];
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((doc: any) => {
       resources.push({ id: doc.id, ...doc.data() } as Resource);
     });
-    
+
     return resources;
   }
-  
+
   /**
    * Publish a resource
    */
@@ -199,7 +196,7 @@ export class FirestoreService {
       updatedAt: serverTimestamp()
     });
   }
-  
+
   /**
    * Unpublish a resource
    */
@@ -211,7 +208,7 @@ export class FirestoreService {
       updatedAt: serverTimestamp()
     });
   }
-  
+
   /**
    * Increment view count
    */
@@ -223,7 +220,7 @@ export class FirestoreService {
       'analytics.lastViewedAt': serverTimestamp()
     });
   }
-  
+
   /**
    * Increment download count
    */
@@ -234,92 +231,92 @@ export class FirestoreService {
       'analytics.downloads': increment(1)
     });
   }
-  
+
   /**
    * Get resources by user
    */
-  async getResourcesByUser(userId: string): Promise<Resource[]> {
+    async getResourcesByUser(userId: string): Promise<Resource[]> {
     const q = query(
       this.resourcesCollection,
       where('createdBy', '==', userId),
       orderBy('createdAt', 'desc')
     );
-    
+
     const querySnapshot = await getDocs(q);
     const resources: Resource[] = [];
-    
-    querySnapshot.forEach((doc) => {
+
+    querySnapshot.forEach((doc: any) => {
       resources.push({ id: doc.id, ...doc.data() } as Resource);
     });
-    
+
     return resources;
   }
-  
+
   /**
    * Search resources by text
    */
-  async searchResources(searchQuery: string, language?: string): Promise<Resource[]> {
+    async searchResources(searchQuery: string, language?: string): Promise<Resource[]> {
     // Note: For full-text search, you would typically use a dedicated search service
     // like Algolia or ElasticSearch. This is a simple implementation.
-    
-    const constraints: QueryConstraint[] = [
+
+    const constraints: any[] = [
       where('status', '==', 'published')
     ];
-    
+
     if (language) {
       constraints.push(where('language', '==', language));
     }
-    
+
     constraints.push(orderBy('datePublished', 'desc'));
     constraints.push(limit(50));
-    
+
     const q = query(this.resourcesCollection, ...constraints);
     const querySnapshot = await getDocs(q);
-    
+
     const resources: Resource[] = [];
     const searchLower = searchQuery.toLowerCase();
-    
-    querySnapshot.forEach((doc) => {
+
+        querySnapshot.forEach((doc: any) => {
       const data = doc.data() as Resource;
-      
+
       // Simple text matching - in production, use proper search indexing
-      const titleMatch = Object.values(data.title).some(t => 
+      const titleMatch = Object.values(data.title).some(t =>
         t.toLowerCase().includes(searchLower)
       );
-      const descMatch = Object.values(data.description).some(d => 
+      const descMatch = Object.values(data.description).some(d =>
         d.toLowerCase().includes(searchLower)
       );
-      const tagMatch = data.tags.some(tag => 
+      const tagMatch = data.tags.some(tag =>
         tag.toLowerCase().includes(searchLower)
       );
-      
+
       if (titleMatch || descMatch || tagMatch) {
-        resources.push({ id: doc.id, ...data });
+        resources.push({ ...data, id: doc.id });
       }
     });
-    
+
     return resources;
   }
-  
+
   /**
    * Get featured resources
    */
-  async getFeaturedResources(limit: number = 6): Promise<Resource[]> {
+    async getFeaturedResources(limitCount: number = 6): Promise<Resource[]> {
     const q = query(
       this.resourcesCollection,
       where('status', '==', 'published'),
       where('featured', '==', true),
       orderBy('datePublished', 'desc'),
-      limit(limit)
+      limit(limitCount)
     );
-    
+
     const querySnapshot = await getDocs(q);
     const resources: Resource[] = [];
-    
-    querySnapshot.forEach((doc) => {
+
+    querySnapshot.forEach((doc: any) => {
       resources.push({ id: doc.id, ...doc.data() } as Resource);
     });
-    
+
     return resources;
   }
 }

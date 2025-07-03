@@ -1,0 +1,9 @@
+.file-upload-container {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .file-upload-container {
+    padding: 1rem;
+  }
+}
