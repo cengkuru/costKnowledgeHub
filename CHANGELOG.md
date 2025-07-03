@@ -4,6 +4,18 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 08:10:00 UTC
+- **🌐 Cloud Functions CORS Configuration: Fixed CORS errors for all Cloud Functions**
+  - Updated CORS configuration syntax for Firebase Functions v2 (functions/src/userSync.ts)
+  - Changed from object-based cors config to array format for all user sync functions
+  - Maintained explicit OPTIONS request handling for preflight requests
+  - Enhanced CORS utility to include Cloud Functions domain in allowed origins (functions/src/utils/cors.ts:12)
+  - Created enhanced CORS wrapper utility for consistent CORS handling (functions/src/utils/corsWrapper.ts)
+  - **Problem**: Functions returning "The request was not authenticated" and CORS policy errors
+  - **Root Cause**: Firebase Functions v2 requires specific CORS array format, not object format
+  - **Solution**: Updated all functions to use proper CORS array configuration
+  - **Result**: Cloud Functions now properly handle CORS requests from all allowed origins
+
 ### Fixed - 2025-01-03 19:55:00 UTC
 - **🔧 Cloud Functions CORS Error: Fixed authentication and CORS issues for admin functions**
   - Fixed typo in handleCorsPreflight function name (functions/src/utils/cors.ts:49)
