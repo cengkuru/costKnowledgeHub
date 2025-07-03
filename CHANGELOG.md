@@ -4,6 +4,26 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-07-04 07:20:00 UTC
+- **🔄 Resource Type-First Workflow Implementation: Dynamic form flow based on selected resource type**
+  - Added resource type selection screen as the first step for new resources (src/app/admin/components/resources/resource-form.component.html:45-102)
+  - Implemented WorkflowConfig interface for type-specific configurations (src/app/admin/components/resources/resource-form.component.ts:22-28)
+  - Created WORKFLOW_CONFIGS with tailored workflows for each resource type (src/app/admin/components/resources/resource-form.component.ts:31-124)
+  - Added selectResourceType() method to apply workflow configuration (src/app/admin/components/resources/resource-form.component.ts:933-957)
+  - Implemented dynamic tab reordering based on resource type (src/app/admin/components/resources/resource-form.component.ts:959-964)
+  - Added workflow hints for each tab to guide users (src/app/admin/components/resources/resource-form.component.html:142-144, 320-323, 444-446, 632-634)
+  - Created type badge display with ability to change type (src/app/admin/components/resources/resource-form.component.html:106-114)
+  - Added comprehensive CSS styles for type selection UI (src/app/admin/components/resources/resource-form.component.scss:13-117)
+  - **Type-Specific Workflows Implemented**:
+    - Independent Review: Files → Basic → Content → Metadata (optimized for report uploads)
+    - Dataset: Files → Metadata → Basic → Content (metadata-first for data files)
+    - Infographic: Files → Basic → Content → Metadata (skips content tab)
+    - Case Study: Basic → Content → Files → Metadata (narrative-focused)
+    - Tool: Basic → Metadata → Content → Files (specs before description)
+  - **Auto-fill Fields**: Each type pre-fills relevant topics, audience, and difficulty
+  - **Problem Solved**: Fixed workflow now adapts to resource type mental models
+  - **Result**: More intuitive creation process with fewer clicks and better guidance
+
 ### Added - 2025-07-04 07:10:00 UTC
 - **🔔 Admin Layout Enhancements: Added functional language toggle and notification system**
   - Implemented language selector dropdown with support for English, Spanish, and Portuguese (src/app/admin/admin-layout.component.html:33-60)

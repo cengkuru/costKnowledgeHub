@@ -251,6 +251,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     this.resourceId = this.route.snapshot.paramMap.get('id');
     if (this.resourceId) {
       this.isEditMode = true;
+      this.showTypeSelection = false; // Skip type selection for editing
       this.loadResource();
     }
     
@@ -927,6 +928,66 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         this.aiAvailable = false;
       }
     });
+  }
+
+  // Resource type selection and workflow methods
+  selectResourceType(type: ResourceType): void {
+    this.selectedResourceType = type;
+    this.showTypeSelection = false;
+    
+    // Set the type in the form
+    this.resourceForm.patchValue({ type });
+    
+    // Apply workflow configuration
+    const workflow = WORKFLOW_CONFIGS[type];
+    if (workflow) {
+      // Apply auto-fill fields
+      if (workflow.autoFillFields) {
+        this.resourceForm.patchValue(workflow.autoFillFields);
+      }
+      
+      // Reorder tabs based on workflow
+      this.reorderTabs(workflow.tabOrder);
+      
+      // Set the first tab as active
+      this.activeTab = workflow.tabOrder[0];
+      
+      // Store workflow hints
+      this.currentWorkflowHints = workflow.hints || {};
+    }
+  }
+  
+  reorderTabs(tabOrder: string[]): void {
+    const tabMap = new Map(this.tabs.map(tab => [tab.id, tab]));
+    this.tabs = tabOrder
+      .map(id => tabMap.get(id))
+      .filter((tab): tab is FormTab => tab !== undefined);
+  }
+  
+  currentWorkflowHints: Record<string, string> = {};
+  
+  getTabHint(tabId: string): string | null {
+    return this.currentWorkflowHints[tabId] || null;
+  }
+  
+  getResourceTypeLabel(): string {
+    if (!this.selectedResourceType) return '';
+    const type = this.resourceTypes.find(t => t.value === this.selectedResourceType);
+    return type ? type.label : '';
+  }
+  
+  resetTypeSelection(): void {
+    this.selectedResourceType = null;
+    this.showTypeSelection = true;
+    this.resourceForm.patchValue({ type: '' });
+    
+    // Reset tabs to default order
+    this.tabs = [
+      { id: 'basic', label: 'Basic Info', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', complete: false },
+      { id: 'content', label: 'Content', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', complete: false },
+      { id: 'files', label: 'Files & Media', icon: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12', complete: false },
+      { id: 'metadata', label: 'Metadata', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z', complete: false }
+    ];
   }
 
   generateSummaries(): void {

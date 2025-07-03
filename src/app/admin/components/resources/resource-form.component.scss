@@ -10,6 +10,112 @@
   }
 }
 
+// Type Selection Screen Styles
+.type-selection-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  
+  .type-selection-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .type-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 200ms ease-out;
+    
+    &:hover {
+      border-color: #355E69;
+      box-shadow: 0 4px 12px rgba(53, 94, 105, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    .type-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      background: #f9fafb;
+      border-radius: 12px;
+      color: #355E69;
+      transition: all 200ms ease-out;
+    }
+    
+    &:hover .type-icon {
+      background: #355E69;
+      color: white;
+    }
+    
+    .type-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+    
+    .type-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Type Badge
+.type-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    background: #355E69;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+  
+  .change-type-btn {
+    font-size: 0.875rem;
+    color: #0AAEA0;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    
+    &:hover {
+      color: #355E69;
+    }
+  }
+}
+
 // Compact Header - EMOTIONAL_DESIGN_SYSTEM Compliant
 .compact-header {
   background: white;
