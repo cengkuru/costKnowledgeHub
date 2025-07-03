@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18nService } from '../../../core/services/i18n.service';
-import { UserService, User } from '../../../core/services/user.service';
+import { UserService, User, ExtendedUser, MigrationStatus } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -15,6 +15,62 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">{{ i18nService.t('admin.users.title') }}</h1>
         <p class="text-gray-600 mt-2">{{ i18nService.t('admin.users.subtitle') }}</p>
+        
+        <!-- Migration Status Summary -->
+        <div *ngIf="migrationStatus" class="mt-4 flex items-center gap-4 text-sm">
+          <span class="text-gray-600">
+            <strong>{{ migrationStatus.authUserCount }}</strong> Auth Users
+          </span>
+          <span class="text-gray-600">
+            <strong>{{ migrationStatus.firestoreUserCount }}</strong> Synced to Firestore
+          </span>
+          <span *ngIf="migrationStatus.unsyncedCount > 0" class="text-yellow-600">
+            <strong>{{ migrationStatus.unsyncedCount }}</strong> Need Sync
+          </span>
+          <span class="text-gray-600">
+            {{ migrationStatus.syncRate }}% Sync Rate
+          </span>
+        </div>
+      </div>
+
+      <!-- Migration Panel -->
+      <div *ngIf="showMigrationPanel && migrationStatus" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3 flex-1">
+            <h3 class="text-sm font-medium text-yellow-800">
+              User Synchronization Required
+            </h3>
+            <div class="mt-2 text-sm text-yellow-700">
+              <p>
+                {{ migrationStatus.unsyncedCount }} users from Firebase Auth need to be synced to Firestore.
+                This will create user profiles for all authenticated users.
+              </p>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <button
+                (click)="migrateAllUsers()"
+                [disabled]="migrating"
+                class="bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-yellow-700 disabled:opacity-50">
+                {{ migrating ? 'Migrating...' : 'Sync All Users' }}
+              </button>
+              <button
+                (click)="refreshMigrationStatus()"
+                class="bg-white text-yellow-800 px-4 py-2 rounded-md text-sm font-medium border border-yellow-300 hover:bg-yellow-50">
+                Refresh Status
+              </button>
+              <button
+                (click)="closeMigrationPanel()"
+                class="text-yellow-700 text-sm font-medium hover:text-yellow-600">
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Actions Bar -->
@@ -93,6 +149,9 @@ import { AuthService } from '../../../core/services/auth.service';
                   {{ i18nService.t('admin.users.lastLoginColumn') }}
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Sync Status
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {{ i18nService.t('admin.users.actions') }}
                 </th>
               </tr>
@@ -139,6 +198,21 @@ import { AuthService } from '../../../core/services/auth.service';
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ formatDate(user.lastLoginAt) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    [ngClass]="getSyncStatusClass(user)">
+                    {{ getSyncStatusText(user) }}
+                  </span>
+                  <button
+                    *ngIf="needsSync(user)"
+                    (click)="syncUser(user)"
+                    [disabled]="syncingUser === user.uid"
+                    class="ml-2 text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                    title="Sync user to Firestore">
+                    {{ syncingUser === user.uid ? 'Syncing...' : 'Sync' }}
+                  </button>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div class="flex items-center gap-2">
@@ -394,12 +468,18 @@ export class UserManagementComponent implements OnInit {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   
-  users: User[] = [];
-  filteredUsers: User[] = [];
+  users: ExtendedUser[] = [];
+  filteredUsers: ExtendedUser[] = [];
   loading = true;
   searchQuery = '';
   selectedRole: 'all' | 'admin' | 'editor' | 'viewer' = 'all';
   selectedStatus: 'all' | 'active' | 'suspended' | 'pending' = 'all';
+  
+  // Migration status
+  migrationStatus: MigrationStatus | null = null;
+  showMigrationPanel = false;
+  migrating = false;
+  syncingUser: string | null = null;
   
   // Pagination
   pageSize = 10;
@@ -440,10 +520,32 @@ export class UserManagementComponent implements OnInit {
     this.loading = true;
     
     try {
-      this.users = await this.userService.getUsers();
+      // Load Firebase Auth users with sync status
+      this.users = await this.userService.getAllAuthUsers();
+      
+      // Load migration status
+      this.migrationStatus = await this.userService.getMigrationStatus();
+      
+      // Show migration panel if users need syncing
+      if (this.migrationStatus.needsMigration && this.migrationStatus.unsyncedCount > 0) {
+        this.showMigrationPanel = true;
+      }
+      
       this.applyFilters();
     } catch (error) {
       console.error('Error loading users:', error);
+      
+      // Fallback to Firestore-only users
+      try {
+        const firestoreUsers = await this.userService.getUsers();
+        this.users = firestoreUsers.map(user => ({
+          ...user,
+          syncStatus: { syncedToFirestore: true }
+        }));
+        this.applyFilters();
+      } catch (fallbackError) {
+        console.error('Error loading fallback users:', fallbackError);
+      }
     } finally {
       this.loading = false;
     }
@@ -631,5 +733,118 @@ export class UserManagementComponent implements OnInit {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
+  }
+
+  /**
+   * Sync a specific user from Firebase Auth to Firestore
+   */
+  async syncUser(user: ExtendedUser): Promise<void> {
+    if (this.syncingUser) return; // Prevent multiple sync operations
+    
+    this.syncingUser = user.uid;
+    
+    try {
+      const result = await this.userService.syncUserToFirestore(user.uid);
+      
+      if (result.success) {
+        // Update user in local array
+        user.syncStatus = { syncedToFirestore: true, lastSyncedAt: new Date() };
+        
+        // Refresh migration status
+        this.migrationStatus = await this.userService.getMigrationStatus(true);
+        
+        alert(`User ${user.email} synced successfully!`);
+      } else {
+        alert(`Failed to sync user: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error syncing user:', error);
+      alert('Failed to sync user. Please try again.');
+    } finally {
+      this.syncingUser = null;
+    }
+  }
+
+  /**
+   * Migrate all unsynced users from Firebase Auth to Firestore
+   */
+  async migrateAllUsers(): Promise<void> {
+    if (!this.migrationStatus || this.migrating) return;
+    
+    const confirmed = confirm(
+      `This will sync ${this.migrationStatus.unsyncedCount} users from Firebase Auth to Firestore. This operation may take a while. Continue?`
+    );
+    
+    if (!confirmed) return;
+    
+    this.migrating = true;
+    
+    try {
+      const result = await this.userService.migrateAllUsers(100);
+      
+      if (result.success) {
+        alert(`Migration completed! Processed: ${result.totalProcessed}, Successful: ${result.totalSuccessful}, Errors: ${result.totalErrors}`);
+        
+        // Refresh user list and migration status
+        await this.loadUsers();
+        
+        // Hide migration panel if no more users need syncing
+        if (this.migrationStatus && !this.migrationStatus.needsMigration) {
+          this.showMigrationPanel = false;
+        }
+      } else {
+        alert('Migration failed. Please check the console for details.');
+      }
+    } catch (error) {
+      console.error('Error during migration:', error);
+      alert('Migration failed. Please try again or check your permissions.');
+    } finally {
+      this.migrating = false;
+    }
+  }
+
+  /**
+   * Refresh migration status
+   */
+  async refreshMigrationStatus(): Promise<void> {
+    try {
+      this.migrationStatus = await this.userService.getMigrationStatus(true);
+    } catch (error) {
+      console.error('Error refreshing migration status:', error);
+    }
+  }
+
+  /**
+   * Close the migration panel
+   */
+  closeMigrationPanel(): void {
+    this.showMigrationPanel = false;
+  }
+
+  /**
+   * Check if user needs syncing
+   */
+  needsSync(user: ExtendedUser): boolean {
+    return !user.syncStatus?.syncedToFirestore;
+  }
+
+  /**
+   * Get sync status text for user
+   */
+  getSyncStatusText(user: ExtendedUser): string {
+    if (user.syncStatus?.syncedToFirestore) {
+      return 'Synced';
+    }
+    return 'Needs Sync';
+  }
+
+  /**
+   * Get sync status class for styling
+   */
+  getSyncStatusClass(user: ExtendedUser): string {
+    if (user.syncStatus?.syncedToFirestore) {
+      return 'bg-green-100 text-green-800';
+    }
+    return 'bg-yellow-100 text-yellow-800';
   }
 }

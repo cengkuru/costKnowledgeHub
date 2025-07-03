@@ -4,6 +4,15 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 05:35:00 UTC
+- **🎯 Create Resource Layout: Fixed section alignment and spacing consistency**
+  - Fixed misaligned header, tabs, and form content sections (src/app/admin/components/resources/resource-form.component.scss:3-11)
+  - Removed excessive container padding causing alignment issues (padding: 2rem → 0)
+  - Aligned sticky navigation margins with header and form content (lines 121)
+  - Ensured consistent left margin alignment across all form elements
+  - **Problem Solved**: All form sections now properly aligned without indentation mismatch
+  - **Result**: Clean, professional alignment following design system guidelines
+
 ### Fixed - 2025-07-04 05:30:00 UTC
 - **🎯 Create Resource Layout: Optimized form layout for maximum usability**
   - Replaced large header (text-3xl) with compact version (text-lg) (src/app/admin/components/resources/resource-form.component.html:3-34)

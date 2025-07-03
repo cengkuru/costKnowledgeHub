@@ -97,7 +97,7 @@ export class UserService {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   /**
-   * Get all users
+   * Get all users (Firestore only - legacy method)
    */
   async getUsers(): Promise<User[]> {
     try {
@@ -115,6 +115,171 @@ export class UserService {
       console.error('Error getting users:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get all Firebase Auth users with sync status (primary method)
+   * Combines Firebase Auth data with Firestore metadata
+   */
+  async getAllAuthUsers(forceRefresh = false): Promise<ExtendedUser[]> {
+    try {
+      // Check cache first
+      const now = Date.now();
+      if (!forceRefresh && (now - this.lastCacheUpdate) < this.CACHE_DURATION) {
+        const cached = this.userCache.getValue();
+        if (cached.length > 0) {
+          return cached;
+        }
+      }
+
+      // Call Cloud Function to get Auth users
+      const listAuthUsers = httpsCallable(this.functions, 'listAllAuthUsers');
+      const result = await listAuthUsers({ maxResults: 1000 });
+      
+      const { users } = result.data as { users: any[], pageToken?: string, totalCount: number };
+      
+      // Transform to ExtendedUser format
+      const extendedUsers: ExtendedUser[] = users.map(user => ({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        role: this.getUserRoleFromClaims(user.customClaims),
+        status: user.disabled ? 'suspended' : 'active',
+        createdAt: new Date(user.metadata.creationTime),
+        lastLoginAt: user.metadata.lastSignInTime ? new Date(user.metadata.lastSignInTime) : undefined,
+        emailVerified: user.emailVerified,
+        disabled: user.disabled,
+        authMetadata: user.metadata,
+        customClaims: user.customClaims,
+        syncStatus: user.syncStatus
+      }));
+
+      // Update cache
+      this.userCache.next(extendedUsers);
+      this.lastCacheUpdate = now;
+
+      return extendedUsers;
+    } catch (error) {
+      console.error('Error getting Auth users:', error);
+      // Fallback to Firestore users if Cloud Function fails
+      const firestoreUsers = await this.getUsers();
+      return firestoreUsers.map(user => ({
+        ...user,
+        syncStatus: { syncedToFirestore: true }
+      }));
+    }
+  }
+
+  /**
+   * Get migration status showing Auth vs Firestore user counts
+   */
+  async getMigrationStatus(forceRefresh = false): Promise<MigrationStatus> {
+    try {
+      // Check cache first
+      const now = Date.now();
+      if (!forceRefresh && (now - this.lastCacheUpdate) < this.CACHE_DURATION) {
+        const cached = this.migrationStatusCache.getValue();
+        if (cached) {
+          return cached;
+        }
+      }
+
+      const getMigrationStatusFn = httpsCallable(this.functions, 'getMigrationStatus');
+      const result = await getMigrationStatusFn();
+      
+      const status = result.data as MigrationStatus;
+      
+      // Update cache
+      this.migrationStatusCache.next(status);
+      
+      return status;
+    } catch (error) {
+      console.error('Error getting migration status:', error);
+      
+      // Fallback: count Firestore users only
+      const firestoreUsers = await this.getUsers();
+      return {
+        authUserCount: 0, // Unknown without Admin SDK
+        firestoreUserCount: firestoreUsers.length,
+        syncedCount: firestoreUsers.length,
+        unsyncedCount: 0,
+        syncRate: 0,
+        needsMigration: false
+      };
+    }
+  }
+
+  /**
+   * Sync a specific user from Firebase Auth to Firestore
+   */
+  async syncUserToFirestore(uid: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const syncUserFn = httpsCallable(this.functions, 'syncAuthUserToFirestore');
+      const result = await syncUserFn({ uid });
+      
+      // Clear cache to force refresh on next request
+      this.clearCache();
+      
+      return {
+        success: true,
+        message: `User ${uid} synced successfully`
+      };
+    } catch (error) {
+      console.error('Error syncing user:', error);
+      return {
+        success: false,
+        message: 'Failed to sync user'
+      };
+    }
+  }
+
+  /**
+   * Migrate all Firebase Auth users to Firestore in batches
+   */
+  async migrateAllUsers(batchSize = 100): Promise<{
+    success: boolean;
+    totalProcessed: number;
+    totalSuccessful: number;
+    totalErrors: number;
+    hasMoreUsers: boolean;
+  }> {
+    try {
+      const migrateAllFn = httpsCallable(this.functions, 'migrateAllUsers');
+      const result = await migrateAllFn({ batchSize });
+      
+      // Clear cache to force refresh on next request
+      this.clearCache();
+      
+      return result.data as any;
+    } catch (error) {
+      console.error('Error migrating users:', error);
+      return {
+        success: false,
+        totalProcessed: 0,
+        totalSuccessful: 0,
+        totalErrors: 1,
+        hasMoreUsers: false
+      };
+    }
+  }
+
+  /**
+   * Clear user cache to force fresh data on next request
+   */
+  clearCache(): void {
+    this.userCache.next([]);
+    this.migrationStatusCache.next(null);
+    this.lastCacheUpdate = 0;
+  }
+
+  /**
+   * Get user role from Firebase custom claims
+   */
+  private getUserRoleFromClaims(customClaims?: any): 'admin' | 'editor' | 'viewer' {
+    if (customClaims?.admin) return 'admin';
+    if (customClaims?.editor) return 'editor';
+    return 'viewer';
   }
 
   /**
