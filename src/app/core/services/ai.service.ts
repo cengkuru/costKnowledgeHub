@@ -37,6 +37,26 @@ export interface TagSuggestionResponse {
   error?: string;
 }
 
+export interface UrlMetadataRequest {
+  url: string;
+  resourceType?: string;
+}
+
+export interface UrlMetadata {
+  title?: MultiLanguageText | string;
+  description?: MultiLanguageText | string;
+  thumbnailUrl?: string;
+  publishedDate?: string;
+  suggestedTopics?: string[];
+  suggestedTags?: string[];
+}
+
+export interface UrlMetadataResponse {
+  success: boolean;
+  metadata?: UrlMetadata;
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -158,6 +178,62 @@ export class AIService {
     }
     
     return suggestions.slice(0, 5); // Return top 5
+  }
+
+  /**
+   * Extract metadata from a URL
+   */
+  extractUrlMetadata(request: UrlMetadataRequest): Observable<UrlMetadata> {
+    const url = `${this.functionsUrl}/extractUrlMetadata`;
+    
+    return this.http.post<UrlMetadataResponse>(url, request, this.httpOptions).pipe(
+      timeout(30000), // 30 seconds timeout
+      retry(1),
+      map(response => {
+        if (response.success && response.metadata) {
+          return response.metadata;
+        }
+        throw new Error(response.error || 'Failed to extract metadata');
+      }),
+      catchError(error => {
+        console.error('URL Metadata Extraction Error:', error);
+        
+        // Fallback to basic metadata
+        return of(this.createFallbackMetadata(request.url));
+      })
+    );
+  }
+
+  /**
+   * Create basic metadata when extraction fails
+   */
+  private createFallbackMetadata(url: string): UrlMetadata {
+    // Extract a basic title from the URL
+    const urlParts = url.split('/');
+    const lastPart = urlParts[urlParts.length - 1] || urlParts[urlParts.length - 2];
+    const title = lastPart
+      .replace(/-/g, ' ')
+      .replace(/_/g, ' ')
+      .split('.')
+      [0]
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    return {
+      title: {
+        en: title || 'Independent Review Report',
+        es: title || 'Informe de Revisión Independiente',
+        pt: title || 'Relatório de Revisão Independente'
+      },
+      description: {
+        en: 'Please add a description for this report.',
+        es: 'Por favor, agregue una descripción para este informe.',
+        pt: 'Por favor, adicione uma descrição para este relatório.'
+      },
+      suggestedTopics: ['assurance'],
+      suggestedTags: ['independent-review', 'cost-report']
+    };
   }
 
   /**

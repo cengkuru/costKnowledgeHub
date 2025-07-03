@@ -17,6 +17,7 @@ import {
   increment
 } from '@angular/fire/firestore';
 import { Resource, ResourceFilter } from '../models/resource.model';
+import { Activity, ActivityFilter } from '../models/activity.model';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -26,9 +27,11 @@ import { map } from 'rxjs/operators';
 export class FirestoreService {
   private firestore = inject(Firestore);
   private resourcesCollection: any;
+  private activitiesCollection: any;
 
   constructor() {
     this.resourcesCollection = collection(this.firestore, 'resources');
+    this.activitiesCollection = collection(this.firestore, 'activities');
   }
 
   /**
@@ -318,5 +321,138 @@ export class FirestoreService {
     });
 
     return resources;
+  }
+
+  /**
+   * Activity Tracking Methods
+   */
+
+  /**
+   * Create a new activity log
+   */
+  async createActivity(activity: Omit<Activity, 'id'>): Promise<string> {
+    const activityData = {
+      ...activity,
+      timestamp: serverTimestamp()
+    };
+
+    const docRef = await addDoc(this.activitiesCollection, activityData);
+    return docRef.id;
+  }
+
+  /**
+   * Get activities with filters
+   */
+  async getActivities(filter?: ActivityFilter): Promise<Activity[]> {
+    const constraints: any[] = [];
+
+    // Apply filters
+    if (filter) {
+      if (filter.type && filter.type.length > 0) {
+        constraints.push(where('type', 'in', filter.type));
+      }
+
+      if (filter.userId) {
+        constraints.push(where('userId', '==', filter.userId));
+      }
+
+      if (filter.resourceId) {
+        constraints.push(where('resourceId', '==', filter.resourceId));
+      }
+
+      if (filter.startDate) {
+        constraints.push(where('timestamp', '>=', filter.startDate));
+      }
+
+      if (filter.endDate) {
+        constraints.push(where('timestamp', '<=', filter.endDate));
+      }
+    }
+
+    // Always order by timestamp descending
+    constraints.push(orderBy('timestamp', 'desc'));
+
+    // Apply limit
+    const limitCount = filter?.limit || 50;
+    constraints.push(limit(limitCount));
+
+    const q = query(this.activitiesCollection, ...constraints);
+    const querySnapshot = await getDocs(q);
+
+    const activities: Activity[] = [];
+    querySnapshot.forEach((doc: any) => {
+      activities.push({ id: doc.id, ...doc.data() } as Activity);
+    });
+
+    return activities;
+  }
+
+  /**
+   * Get activities for a specific resource
+   */
+  async getResourceActivities(resourceId: string, limitCount: number = 20): Promise<Activity[]> {
+    const q = query(
+      this.activitiesCollection,
+      where('resourceId', '==', resourceId),
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const activities: Activity[] = [];
+
+    querySnapshot.forEach((doc: any) => {
+      activities.push({ id: doc.id, ...doc.data() } as Activity);
+    });
+
+    return activities;
+  }
+
+  /**
+   * Get user activities
+   */
+  async getUserActivities(userId: string, limitCount: number = 20): Promise<Activity[]> {
+    const q = query(
+      this.activitiesCollection,
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const activities: Activity[] = [];
+
+    querySnapshot.forEach((doc: any) => {
+      activities.push({ id: doc.id, ...doc.data() } as Activity);
+    });
+
+    return activities;
+  }
+
+  /**
+   * Clean up old activities (older than 30 days)
+   * This should be run periodically via a Cloud Function
+   */
+  async cleanupOldActivities(): Promise<number> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const q = query(
+      this.activitiesCollection,
+      where('timestamp', '<', thirtyDaysAgo),
+      limit(100) // Process in batches
+    );
+
+    const querySnapshot = await getDocs(q);
+    let deletedCount = 0;
+
+    const deletePromises: Promise<void>[] = [];
+    querySnapshot.forEach((doc: any) => {
+      deletePromises.push(deleteDoc(doc.ref));
+      deletedCount++;
+    });
+
+    await Promise.all(deletePromises);
+    return deletedCount;
   }
 }

@@ -6,6 +6,7 @@ import { ResourceCardComponent } from '../../shared/components/resource-card/res
 import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import { ResourceService } from '../../core/services/resource.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { ActivityService } from '../../core/services/activity.service';
 import { Resource } from '../../core/models/resource.model';
 
 @Component({
@@ -31,6 +32,7 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
   constructor(
     private resourceService: ResourceService,
     public i18nService: I18nService,
+    private activityService: ActivityService,
     private route: ActivatedRoute
   ) {}
 
@@ -61,6 +63,8 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (resource) {
             this.loadRelatedResources(resource);
+            // Track resource view
+            this.trackResourceView(resource);
           }
         },
         error: () => {
@@ -133,6 +137,12 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
     const downloadUrl = this.resource.fileLinks?.[currentLang] || this.resource.externalLink;
 
     if (downloadUrl) {
+      // Track download activity
+      this.activityService.trackResourceDownload(
+        this.resource.id,
+        this.getLocalizedTitle(),
+        'pdf' // You could determine the actual format from the URL
+      );
       window.open(downloadUrl, '_blank');
     }
   }
@@ -157,6 +167,12 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
     const downloadUrl = resource.fileLinks?.[currentLang] || resource.externalLink;
 
     if (downloadUrl) {
+      // Track download activity for related resource
+      this.activityService.trackResourceDownload(
+        resource.id,
+        this.getResourceTitle(resource),
+        'pdf'
+      );
       window.open(downloadUrl, '_blank');
     }
   }
@@ -254,6 +270,12 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
                        this.resource.downloadUrl || 
                        this.resource.externalLink;
     if (downloadUrl) {
+      // Track download activity
+      this.activityService.trackResourceDownload(
+        this.resource.id,
+        this.getLocalizedTitle(),
+        'pdf'
+      );
       window.open(downloadUrl, '_blank');
     }
   }
@@ -290,5 +312,13 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
 
   getPrerequisites(): string[] {
     return this.resource?.metadata?.prerequisites || ['Digital Infrastructure', 'Legal Framework'];
+  }
+
+  private trackResourceView(resource: Resource): void {
+    // Track the resource view
+    this.activityService.trackResourceView(
+      resource.id,
+      this.i18nService.getLocalizedText(resource.title)
+    );
   }
 }

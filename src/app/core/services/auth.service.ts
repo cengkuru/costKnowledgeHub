@@ -13,6 +13,7 @@ import {
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActivityService } from './activity.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ import { map } from 'rxjs/operators';
 export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
+  private activityService = inject(ActivityService);
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -87,6 +89,9 @@ export class AuthService {
       const credential = await signInWithEmailAndPassword(this.auth, trimmedEmail, password);
 
       console.log('Sign in successful:', credential.user.email);
+      
+      // Track login activity
+      this.activityService.trackLogin(credential.user.email || trimmedEmail);
 
       // Don't navigate here - let the LoginComponent handle navigation
       // This allows proper handling of returnUrl
@@ -110,6 +115,9 @@ export class AuthService {
   async signUp(email: string, password: string): Promise<UserCredential> {
     try {
       const credential = await createUserWithEmailAndPassword(this.auth, email, password);
+      
+      // Track user registration
+      this.activityService.trackActivity('user_register', { userEmail: email });
 
       // Navigate to admin dashboard on successful signup
       await this.router.navigate(['/admin']);
@@ -126,6 +134,9 @@ export class AuthService {
    */
   async signOut(): Promise<void> {
     try {
+      // Track logout activity before signing out
+      await this.activityService.trackLogout();
+      
       await signOut(this.auth);
       await this.router.navigate(['/login']);
     } catch (error) {

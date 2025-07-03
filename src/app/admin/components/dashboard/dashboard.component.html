@@ -200,9 +200,12 @@
                     </div>
                     <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                       <div>
-                        <p class="text-sm text-gray-500">
-                          {{ activity.resourceTitle }}
-                          <span *ngIf="activity.user" class="text-gray-400">by {{ activity.user }}</span>
+                        <p class="text-sm text-gray-900">
+                          <span class="font-medium">{{ getActivityDescription(activity) }}</span>
+                          <span *ngIf="getActivityDetails(activity)" class="text-gray-600 ml-1">{{ getActivityDetails(activity) }}</span>
+                        </p>
+                        <p *ngIf="activity.userEmail" class="text-xs text-gray-500 mt-0.5">
+                          by {{ activity.userEmail }}
                         </p>
                       </div>
                       <div class="text-right text-sm whitespace-nowrap text-gray-500">

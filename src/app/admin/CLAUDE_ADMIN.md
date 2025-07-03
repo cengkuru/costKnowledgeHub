@@ -604,7 +604,26 @@ try {
 
    e. **IMPORTANT**: After creating the first admin, disable the `createFirstAdmin` function by commenting it out in `functions/src/admin.ts` and redeploying.
 
-3. **Deploy Security Rules**
+3. **Set up AI Features (Optional)**
+
+   a. Get a Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   
+   b. Set the API key as a Firebase secret:
+   ```bash
+   firebase functions:secrets:set GEMINI_API_KEY
+   # Enter your API key when prompted
+   ```
+   
+   c. Deploy the AI functions:
+   ```bash
+   firebase deploy --only functions:generateMultiLanguageSummary,functions:suggestTags,functions:aiHealthCheck
+   ```
+   
+   d. Verify AI is working:
+   - Check the resource form for "Generate Summaries" and "Suggest Tags" buttons
+   - These buttons will only appear if AI is available
+
+4. **Deploy Security Rules**
    ```bash
    # Deploy Firestore rules
    firebase deploy --only firestore:rules

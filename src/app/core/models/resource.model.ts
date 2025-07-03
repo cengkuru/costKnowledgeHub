@@ -12,7 +12,7 @@ export interface MultiLanguageText {
   ar?: string;
 }
 
-export type ResourceType = 'guide' | 'case-study' | 'tool' | 'report' | 'policy' | 'template' | 'dataset' | 'infographic' | 'other';
+export type ResourceType = 'guide' | 'case-study' | 'tool' | 'report' | 'policy' | 'template' | 'dataset' | 'infographic' | 'independent-review' | 'other';
 export type Language = 'en' | 'es' | 'pt' | 'fr' | 'ar';
 export type TopicCategory = 'disclosure' | 'assurance' | 'procurement' | 'monitoring' | 'stakeholder' | 'accountability';
 export type Region = 'africa' | 'asia' | 'latam' | 'europe' | 'global';
@@ -69,6 +69,11 @@ export interface Resource {
     averageCostOverrun?: number; // percentage
     keyFindings?: string[];
     recommendations?: string[];
+  };
+  // Independent Review Report specific fields
+  independentReviewData?: {
+    reportUrl?: string; // URL to the report on CoST website
+    reportPeriod?: string; // e.g., "2023 Annual Review", "Q1 2024"
   };
   // Metadata for C40-style categorization
   metadata?: {

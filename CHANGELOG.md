@@ -4,6 +4,46 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-01-03 22:30:00 UTC
+- **📄 Independent Review Report Resource Type: Streamlined integration for CoST review reports**
+  - Added 'independent-review' as a new resource type (src/app/core/models/resource.model.ts:15)
+  - Minimal additional fields: report URL and report period only (src/app/core/models/resource.model.ts:74-77)
+  - Smart URL import feature for CoST website reports
+    - Auto-extracts title, description, date, and thumbnail
+    - One-click import with friendly UI messaging (src/app/admin/components/resources/resource-form.component.html:261-320)
+    - Focuses on discovery over data entry
+  - Conditional field rendering based on resource type
+  - URL metadata extraction via AI service
+    - Added extractUrlMetadata method to AIService (src/app/core/services/ai.service.ts:186-205)
+    - Created Cloud Function for web scraping and AI analysis (functions/src/ai/extractUrlMetadata.ts)
+    - Uses Cheerio for HTML parsing and Gemini AI for enhanced metadata
+    - Fallback mechanism when AI is unavailable
+  - Implemented importFromUrl() method in resource form (src/app/admin/components/resources/resource-form.component.ts:723-810)
+    - Auto-populates title, description, thumbnail
+    - Suggests report period based on published date
+    - Auto-selects relevant topics and tags
+  - **Design Philosophy**: Knowledge Hub as discovery orchestrator, not data repository
+  - **User Experience**: Import from URL in seconds, minimal manual entry
+  - **Result**: Faster workflow for adding review reports while maintaining link to authoritative source
+
+### Added - 2025-01-03 22:15:00 UTC
+- **📊 Real-Time Activity Logging System: Track user behavior across the platform**
+  - Created activity model with comprehensive activity types (src/app/core/models/activity.model.ts)
+  - Implemented activity service for tracking and storing user actions (src/app/core/services/activity.service.ts)
+  - Added Firestore integration for activity persistence with 30-day retention
+  - Integrated activity tracking across key components:
+    - Resource views in detail component
+    - Search and filter changes in resource list
+    - Authentication events (login/logout)
+    - Admin actions (create, update, publish resources)
+  - Updated admin dashboard to display real user activities instead of mock data
+  - Privacy-conscious implementation:
+    - Anonymized tracking for non-authenticated users
+    - Minimal data collection (only essential activity information)
+    - Automatic cleanup of activities older than 30 days
+  - **Activity Types**: view, search, filter, download, login, logout, resource_add, resource_update, resource_publish
+  - **Result**: Admin dashboard now shows real-time user behavior with proper categorization
+
 ### Added - 2025-01-03 21:00:00 UTC
 - **🤖 AI-Powered Resource Documentation Features: Implemented Gemini AI integration**
   - Created AI service for frontend-backend communication (src/app/core/services/ai.service.ts)

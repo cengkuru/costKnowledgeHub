@@ -17,3 +17,4 @@ export { setAdminClaim, createFirstAdmin } from './admin';
 
 // Export AI functions
 export { generateMultiLanguageSummary, suggestTags, healthCheck as aiHealthCheck } from './ai';
+export { extractUrlMetadata } from './ai/extractUrlMetadata';

@@ -49,6 +49,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   showPreview = false;
   uploadProgress = 0;
   validationMessages: Record<string, string> = {};
+  importingUrl = false;
   
   // Form completion tracking
   formCompletion = 0;
@@ -72,6 +73,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     { value: 'guide', label: 'Implementation Guide' },
     { value: 'case-study', label: 'Case Study' },
     { value: 'report', label: 'Research Report' },
+    { value: 'independent-review', label: 'Independent Review Report' },
     { value: 'dataset', label: 'Dataset' },
     { value: 'tool', label: 'Tool' },
     { value: 'policy', label: 'Policy Brief' },
@@ -191,6 +193,12 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
         projects: [''],
         transparency: [''],
         description: ['']
+      }),
+      
+      // Independent Review Report fields
+      independentReviewData: this.fb.group({
+        reportUrl: ['', [Validators.pattern(urlPattern)]],
+        reportPeriod: ['']
       })
     });
   }
@@ -709,6 +717,95 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       
       // Remove from suggestions
       this.suggestedTags = this.suggestedTags.filter(s => s.tag !== tag);
+    }
+  }
+
+  async importFromUrl(): Promise<void> {
+    const url = this.resourceForm.get('independentReviewData.reportUrl')?.value;
+    if (!url) return;
+
+    this.importingUrl = true;
+    
+    try {
+      // Call AI service to extract metadata from the URL
+      const metadata = await this.aiService.extractUrlMetadata({
+        url: url,
+        resourceType: 'independent-review'
+      }).toPromise();
+
+      if (metadata) {
+        // Update form with extracted data
+        if (metadata.title) {
+          this.resourceForm.patchValue({
+            title: {
+              en: metadata.title.en || metadata.title.toString(),
+              es: metadata.title.es || '',
+              pt: metadata.title.pt || ''
+            }
+          });
+        }
+
+        if (metadata.description) {
+          this.resourceForm.patchValue({
+            description: {
+              en: metadata.description.en || metadata.description.toString(),
+              es: metadata.description.es || '',
+              pt: metadata.description.pt || ''
+            }
+          });
+        }
+
+        if (metadata.thumbnailUrl) {
+          this.thumbnailUrl = metadata.thumbnailUrl;
+          this.resourceForm.patchValue({ thumbnailUrl: metadata.thumbnailUrl });
+        }
+
+        if (metadata.publishedDate) {
+          // Extract report period from date if possible
+          const date = new Date(metadata.publishedDate);
+          const year = date.getFullYear();
+          const quarter = Math.floor((date.getMonth() / 3)) + 1;
+          
+          // Suggest a report period based on the date
+          const suggestedPeriod = `${year} Q${quarter} Review`;
+          const currentPeriod = this.resourceForm.get('independentReviewData.reportPeriod')?.value;
+          
+          if (!currentPeriod) {
+            this.resourceForm.patchValue({
+              independentReviewData: {
+                ...this.resourceForm.get('independentReviewData')?.value,
+                reportPeriod: suggestedPeriod
+              }
+            });
+          }
+        }
+
+        // Set external link to the CoST website URL
+        this.resourceForm.patchValue({ externalLink: url });
+
+        // Auto-select relevant topics based on content
+        if (metadata.suggestedTopics && metadata.suggestedTopics.length > 0) {
+          this.resourceForm.patchValue({ topics: metadata.suggestedTopics });
+        }
+
+        // Add suggested tags
+        if (metadata.suggestedTags && metadata.suggestedTags.length > 0) {
+          this.resourceForm.patchValue({ tags: metadata.suggestedTags });
+        }
+
+        this.showSuccess('Report details imported successfully! 🎉 You can now review and edit the information.');
+        
+        // Mark form as dirty to enable save
+        this.resourceForm.markAsDirty();
+        
+        // Update form completion
+        this.updateFormCompletion();
+      }
+    } catch (error) {
+      console.error('Error importing from URL:', error);
+      this.showError('Could not import from this URL. Please check the URL and try again, or enter the details manually.');
+    } finally {
+      this.importingUrl = false;
     }
   }
 

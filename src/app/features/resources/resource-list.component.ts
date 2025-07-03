@@ -7,6 +7,7 @@ import { ResourceCardComponent } from '../../shared/components/resource-card/res
 import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import { ResourceService } from '../../core/services/resource.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { ActivityService } from '../../core/services/activity.service';
 import { Resource, ResourceSearchResult } from '../../core/models/resource.model';
 import { FilterGroup, ActiveFilters } from '../../core/models/filter.model';
 
@@ -49,6 +50,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   constructor(
     private resourceService: ResourceService,
     public i18nService: I18nService,
+    private activityService: ActivityService,
     private route: ActivatedRoute
   ) {}
 
@@ -131,6 +133,14 @@ export class ResourceListComponent implements OnInit, OnDestroy {
 
   onSearch(query: string): void {
     this.resourceService.updateFilters({ searchQuery: query });
+    
+    // Track search activity (only if query is not empty)
+    if (query.trim()) {
+      // Wait a bit to get the result count
+      setTimeout(() => {
+        this.activityService.trackSearch(query, this.searchResult.total);
+      }, 500);
+    }
   }
 
   onToggleMobileFilters(): void {
@@ -157,6 +167,25 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     }
 
     this.resourceService.updateFilters(currentFilters);
+    
+    // Track filter change activity
+    const activeFilterTypes = Object.keys(currentFilters)
+      .filter(key => {
+        const value = currentFilters[key as keyof ActiveFilters];
+        return value && (Array.isArray(value) ? value.length > 0 : value !== '');
+      });
+    
+    if (activeFilterTypes.length > 0) {
+      const filterSummary: any = {};
+      activeFilterTypes.forEach(key => {
+        const value = currentFilters[key as keyof ActiveFilters];
+        if (value && (Array.isArray(value) ? value.length > 0 : value !== '')) {
+          filterSummary[key] = value;
+        }
+      });
+      
+      this.activityService.trackFilterChange(filterSummary);
+    }
   }
 
   onClearFilters(): void {
