@@ -41,7 +41,7 @@ export const COST_TOPICS: Topic[] = [
   },
   {
     id: 'assurance',
-    name: 'Independent Assurance',
+    name: 'Independent Review',
     icon: 'shield-check',
     color: '#0AAEA0', // CoST Cyan
     description: 'Third-party verification and validation processes',

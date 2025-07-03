@@ -338,7 +338,7 @@ export class FilterService {
   private formatTopicLabel(topic: string): string {
     const labels: Record<string, string> = {
       'disclosure': 'Data Disclosure',
-      'assurance': 'Independent Assurance',
+      'assurance': 'Independent Review',
       'procurement': 'Public Procurement',
       'monitoring': 'Project Monitoring',
       'stakeholder': 'Multi-stakeholder Working',

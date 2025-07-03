@@ -12,7 +12,8 @@ export type ActivityType =
   | 'resource_delete'
   | 'user_login'
   | 'user_logout'
-  | 'user_register';
+  | 'user_register'
+  | 'user_signup';
 
 export interface Activity {
   id: string;
@@ -47,6 +48,10 @@ export interface ActivityMetadata {
   previousStatus?: string;
   newStatus?: string;
   changedFields?: string[];
+  
+  // For user signup activities
+  autoCreated?: boolean; // Whether profile was auto-created by trigger
+  signupMethod?: 'email' | 'google' | 'social';
   
   // General metadata
   userAgent?: string;

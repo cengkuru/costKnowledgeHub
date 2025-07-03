@@ -4,6 +4,29 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 05:45:00 UTC
+- **📝 Topic Naming: Updated "Independent Assurance" to "Independent Review" across all components**
+  - Updated topic model in src/app/core/models/topic.model.ts (line 44)
+  - Updated resource form component topics list (src/app/admin/components/resources/resource-form.component.ts:91)
+  - Updated all i18n translation files (en.json, es.json, pt.json) for consistent multilingual display
+  - Updated home component topic definitions (src/app/features/home/home.component.ts:59-61)
+  - Updated header navigation labels (src/app/shared/components/header/header.component.ts:109,263)
+  - Updated detail component and filter service topic mappings
+  - **Problem Solved**: Consistent terminology across all app components and languages
+  - **Result**: "Independent Review" displayed uniformly throughout the application
+
+### Added - 2025-07-04 05:40:00 UTC
+- **🔄 Automatic User Profile Creation: Implemented Firebase Auth trigger for seamless user onboarding**
+  - Created onUserCreate Cloud Function trigger to automatically create Firestore user profiles (functions/src/userSync.ts)
+  - Triggers immediately when new users sign up via Firebase Auth
+  - Auto-creates user document in Firestore 'users' collection with default metadata
+  - Prevents future sync issues by maintaining Auth + Firestore consistency from signup
+  - Logs user profile creation for audit trail and debugging
+  - Uses Firebase Admin SDK for secure server-side user profile management
+  - Ensures all new users have complete profiles without manual intervention
+  - **Problem Solved**: New signups automatically get Firestore profiles, eliminating sync gaps
+  - **Result**: Seamless user onboarding with zero manual sync required for new users
+
 ### Fixed - 2025-07-04 05:35:00 UTC
 - **🎯 Create Resource Layout: Fixed section alignment and spacing consistency**
   - Fixed misaligned header, tabs, and form content sections (src/app/admin/components/resources/resource-form.component.scss:3-11)

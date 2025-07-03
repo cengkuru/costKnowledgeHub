@@ -106,7 +106,7 @@ import { map } from 'rxjs/operators';
                       </svg>
                     </div>
                     <div>
-                      <div class="font-medium text-neutral-800">Independent Assurance</div>
+                      <div class="font-medium text-neutral-800">Independent Review</div>
                       <div class="text-sm text-neutral-500">Third-party verification</div>
                     </div>
                   </a>
@@ -260,7 +260,7 @@ import { map } from 'rxjs/operators';
                   (click)="applyTopicFilter('assurance'); closeMobileMenu()"
                   class="block text-sm text-neutral-600 hover:text-cost-teal transition-colors duration-200 py-1"
                 >
-                  Independent Assurance
+                  Independent Review
                 </a>
               </div>
             </div>

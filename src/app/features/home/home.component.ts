@@ -56,9 +56,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     {
       id: 'assurance',
       name: {
-        en: 'Independent Assurance',
-        es: 'Aseguramiento Independiente',
-        pt: 'Garantia Independente'
+        en: 'Independent Review',
+        es: 'Revisión Independiente',
+        pt: 'Revisão Independente'
       },
       icon: 'shield-check',
       color: 'bg-cost-cyan',

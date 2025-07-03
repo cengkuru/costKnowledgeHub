@@ -88,7 +88,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   // Topics
   topics: { value: TopicCategory; label: string }[] = [
     { value: 'disclosure', label: 'Data Disclosure' },
-    { value: 'assurance', label: 'Independent Assurance' },
+    { value: 'assurance', label: 'Independent Review' },
     { value: 'procurement', label: 'Public Procurement' },
     { value: 'monitoring', label: 'Project Monitoring' },
     { value: 'stakeholder', label: 'Multi-stakeholder Working' },

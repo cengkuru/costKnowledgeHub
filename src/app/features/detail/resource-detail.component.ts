@@ -249,7 +249,7 @@ export class ResourceDetailComponent implements OnInit, OnDestroy {
   formatTopic(topic: string): string {
     const topicLabels: Record<string, string> = {
       disclosure: 'Data Disclosure',
-      assurance: 'Independent Assurance',
+      assurance: 'Independent Review',
       procurement: 'Public Procurement',
       monitoring: 'Project Monitoring',
       stakeholder: 'Multi-stakeholder Working',
