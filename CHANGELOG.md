@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-07-04 06:40:00 UTC
+- **🔧 Cloud Functions URL: Fixed AI service to use production endpoints consistently**
+  - Removed conditional URL logic that was causing connection refused errors (src/app/core/services/ai.service.ts:67-69)
+  - Set functionsUrl to always use production endpoint: https://us-central1-knowledgehub-2ed2f.cloudfunctions.net
+  - Eliminated dependency on local Firebase emulator for development
+  - **Problem Solved**: Import from CoST website feature now works in development environment
+  - **Result**: Consistent Cloud Functions behavior between development and production
+
 ### Fixed - 2025-07-04 06:35:00 UTC
 - **🎨 Files & Media Tab Simplification: Applied EMOTIONAL_DESIGN_SYSTEM principles for intuitive design**
   - Simplified complex multi-section layout into single progressive flow (src/app/admin/components/resources/resource-form.component.html:364-523)
