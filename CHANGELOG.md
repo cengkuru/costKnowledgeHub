@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-04 23:45:00 UTC
+- **🔧 Admin Layout: Fixed profile menu item showing [object Object]**
+  - Renamed conflicting profile translation key from admin.profile to admin.profilePage (src/assets/i18n/*.json)
+  - Updated profile component template to use admin.profilePage prefix
+  - **Problem**: Profile menu item displayed [object Object] due to translation key conflict
+  - **Solution**: Renamed the profile page object to avoid conflict with the menu item translation
+  - **Result**: Profile menu item now correctly displays "Profile" text
+
 ### Fixed - 2025-01-04 23:26:00 UTC
 - **🛠️ Build Errors: Fixed profile component and ResourceFilter type issues**
   - Moved profile component files from phantom directory to correct location (src/app/admin/components/profile/)

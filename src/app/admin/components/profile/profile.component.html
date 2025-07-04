@@ -2,8 +2,8 @@
   <!-- Header -->
   <div class="bg-white shadow-sm rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <h1 class="text-2xl font-bold text-gray-900">{{ i18nService.t('admin.profile.title') }}</h1>
-      <p class="mt-1 text-sm text-gray-600">{{ i18nService.t('admin.profile.subtitle') }}</p>
+      <h1 class="text-2xl font-bold text-gray-900">{{ i18nService.t('admin.profilePage.title') }}</h1>
+      <p class="mt-1 text-sm text-gray-600">{{ i18nService.t('admin.profilePage.subtitle') }}</p>
     </div>
   </div>
 
@@ -46,20 +46,20 @@
         <form (ngSubmit)="saveProfile()" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">
-              {{ i18nService.t('admin.profile.displayName') }}
+              {{ i18nService.t('admin.profilePage.displayName') }}
             </label>
             <input
               type="text"
               [(ngModel)]="displayName"
               name="displayName"
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cost-teal focus:ring-cost-teal sm:text-sm"
-              [placeholder]="i18nService.t('admin.profile.displayNamePlaceholder')"
+              [placeholder]="i18nService.t('admin.profilePage.displayNamePlaceholder')"
             />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">
-              {{ i18nService.t('admin.profile.email') }}
+              {{ i18nService.t('admin.profilePage.email') }}
             </label>
             <input
               type="email"
@@ -67,36 +67,36 @@
               disabled
               class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm"
             />
-            <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.profile.emailNote') }}</p>
+            <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.profilePage.emailNote') }}</p>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">
-              {{ i18nService.t('admin.profile.photoURL') }}
+              {{ i18nService.t('admin.profilePage.photoURL') }}
             </label>
             <input
               type="url"
               [(ngModel)]="photoURL"
               name="photoURL"
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cost-teal focus:ring-cost-teal sm:text-sm"
-              [placeholder]="i18nService.t('admin.profile.photoURLPlaceholder')"
+              [placeholder]="i18nService.t('admin.profilePage.photoURLPlaceholder')"
             />
           </div>
 
           <!-- Account Info -->
           <div class="border-t border-gray-200 pt-6">
-            <h3 class="text-lg font-medium text-gray-900">{{ i18nService.t('admin.profile.accountInfo') }}</h3>
+            <h3 class="text-lg font-medium text-gray-900">{{ i18nService.t('admin.profilePage.accountInfo') }}</h3>
             <dl class="mt-4 space-y-4">
               <div>
-                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profile.userId') }}</dt>
+                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profilePage.userId') }}</dt>
                 <dd class="mt-1 text-sm text-gray-900 font-mono">{{ user.uid }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profile.createdAt') }}</dt>
+                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profilePage.createdAt') }}</dt>
                 <dd class="mt-1 text-sm text-gray-900">{{ formatDate(user.createdAt) }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profile.lastLogin') }}</dt>
+                <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profilePage.lastLogin') }}</dt>
                 <dd class="mt-1 text-sm text-gray-900">{{ formatDate(user.lastLoginAt) }}</dd>
               </div>
             </dl>

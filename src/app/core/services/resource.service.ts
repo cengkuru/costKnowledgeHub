@@ -42,23 +42,41 @@ export class ResourceService {
   public loading$ = this.loadingSubject.asObservable();
 
   constructor() {
-    // Load resources from Firestore
-    this.loadResources();
+    // Wait for auth state to be ready before loading resources
+    this.initializeService();
+  }
+
+  private async initializeService(): Promise<void> {
+    console.log('=== INITIALIZING RESOURCE SERVICE ===');
+    
+    // Wait for auth state to be ready
+    await this.authService.waitForAuthState();
+    console.log('Auth state is ready');
+    
+    // Now load resources
+    await this.loadResources();
   }
 
     private async loadResources(): Promise<void> {
     try {
       this.loadingSubject.next(true);
-      
+      console.log('=== RESOURCE SERVICE LOAD RESOURCES ===');
+
       // Check if the current user is an admin
       const isAdmin = await this.authService.isAdmin();
       console.log('ResourceService - Loading resources as admin:', isAdmin);
-      
+      console.log('Current auth user:', this.authService.currentUser);
+
       const result = await this.firestoreService.getResources(undefined, 1000, undefined, isAdmin);
+      console.log('Firestore result:', result);
+      console.log('Number of resources from Firestore:', result.resources.length);
+      
       this.resourcesSubject.next(result.resources);
+      console.log('Resources pushed to subject:', result.resources);
 
       // Build filters from loaded resources
       this.buildFilters(result.resources);
+      console.log('======================================');
     } catch (error) {
       console.error('Error loading resources:', error);
       this.resourcesSubject.next([]);
@@ -162,6 +180,7 @@ export class ResourceService {
     const currentFilters = this.activeFiltersSubject.value;
     this.activeFiltersSubject.next({ ...currentFilters, ...filters });
   }
+  
 
   // Clear all filters
   clearFilters(): void {

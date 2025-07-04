@@ -396,7 +396,7 @@
         "max": "O valor deve ser no máximo {{max}}"
       }
     },
-    "profile": {
+    "profilePage": {
       "title": "Meu Perfil",
       "subtitle": "Gerencie suas informações pessoais e preferências",
       "displayName": "Nome de Exibição",

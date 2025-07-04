@@ -35,6 +35,31 @@ export class FirestoreService {
   }
 
   /**
+   * Test method to get all resources without any filters
+   */
+  async getAllResourcesTest(): Promise<Resource[]> {
+    console.log('=== TEST: Getting ALL resources without filters ===');
+    try {
+      const querySnapshot = await getDocs(this.resourcesCollection);
+      console.log('Total documents in resources collection:', querySnapshot.size);
+      
+      const resources: Resource[] = [];
+      querySnapshot.forEach((doc: any) => {
+        const data = doc.data();
+        console.log('Document ID:', doc.id);
+        console.log('Document data:', data);
+        resources.push({ id: doc.id, ...data } as Resource);
+      });
+      
+      console.log('Resources array:', resources);
+      return resources;
+    } catch (error) {
+      console.error('Error in getAllResourcesTest:', error);
+      return [];
+    }
+  }
+
+  /**
    * Create a new resource
    */
   async createResource(resource: Partial<Resource>, userId: string): Promise<string> {
@@ -135,7 +160,13 @@ export class FirestoreService {
       }
 
       // Add ordering and pagination
-      constraints.push(orderBy('datePublished', 'desc'));
+      // Only add orderBy if we have a datePublished field
+      if (constraints.length === 0 || !constraints.some(c => c.toString().includes('where'))) {
+        // Simple query without ordering for testing
+        console.log('Using simple query without ordering');
+      } else {
+        constraints.push(orderBy('datePublished', 'desc'));
+      }
       constraints.push(limit(pageSize + 1)); // Get one extra to check if there are more
 
       if (lastDoc) {

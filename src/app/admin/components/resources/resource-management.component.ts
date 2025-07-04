@@ -51,11 +51,40 @@ export class ResourceManagementComponent implements OnInit {
   rowAnimationStates: Record<string, boolean> = {};
   filterAnimating = false;
 
-  constructor(public i18nService: I18nService) {}
+  constructor(
+    public i18nService: I18nService,
+    private firestoreService: FirestoreService
+  ) {}
 
   ngOnInit(): void {
     this.checkAdminStatus();
     this.loadResources();
+    // Test direct Firestore query
+    this.testDirectFirestoreQuery();
+  }
+
+  async testDirectFirestoreQuery(): Promise<void> {
+    console.log('=== TESTING DIRECT FIRESTORE QUERY ===');
+    try {
+      const isAdmin = await this.authService.isAdmin();
+      console.log('Testing as admin:', isAdmin);
+      
+      // Test 1: Simple query without filters
+      const allResources = await this.firestoreService.getAllResourcesTest();
+      console.log('Test 1 - All resources without filters:', allResources.length);
+      
+      // Test 2: Regular query with admin flag
+      const result = await this.firestoreService.getResources(undefined, 50, undefined, isAdmin);
+      console.log('Test 2 - Regular query result:', result);
+      console.log('Resources found:', result.resources.length);
+      
+      if (result.resources.length > 0) {
+        console.log('First resource:', result.resources[0]);
+      }
+    } catch (error) {
+      console.error('Direct Firestore query error:', error);
+    }
+    console.log('=====================================');
   }
 
   async checkAdminStatus(): Promise<void> {
@@ -91,18 +120,31 @@ export class ResourceManagementComponent implements OnInit {
     this.loading = true;
 
     try {
+      console.log('=== LOADING RESOURCES IN ADMIN COMPONENT ===');
+      console.log('Current user:', this.authService.currentUser);
+      console.log('Is authenticated:', this.authService.isAuthenticated);
+      
       // First, manually trigger a refresh to ensure we get latest data
       await this.resourceService.refreshResources();
       
       // Subscribe to resources from ResourceService
       this.resourceService.resources$.subscribe(resources => {
+        console.log('=== RESOURCES SUBSCRIPTION UPDATE ===');
         console.log('Resources received in component:', resources.length);
+        console.log('Resources data:', resources);
+        
         this.resources = resources as AnimatedResource[];
         this.applyFilters();
         
         if (resources.length === 0) {
-          console.warn('No resources loaded. Check console for Firestore errors.');
+          console.warn('No resources loaded. Possible issues:');
+          console.warn('1. Check Firestore security rules');
+          console.warn('2. Verify admin custom claims');
+          console.warn('3. Check network/Firestore connection');
+        } else {
+          console.log('Resources loaded successfully:', this.resources);
         }
+        console.log('=============================');
       });
     } catch (error) {
       console.error('Error loading resources:', error);
