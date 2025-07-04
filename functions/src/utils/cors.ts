@@ -97,6 +97,7 @@ export function extractIdToken(req: Request): string | null {
 
 /**
  * Send JSON error response with CORS headers
+ * Enhanced with comprehensive logging
  */
 export function sendErrorResponse(
   res: Response, 
@@ -104,24 +105,43 @@ export function sendErrorResponse(
   error: string, 
   details?: any
 ): void {
+  // Log error details for debugging
+  console.error('=== ERROR RESPONSE ===');
+  console.error('Status Code:', statusCode);
+  console.error('Error Message:', error);
+  console.error('Error Details:', details);
+  console.error('Timestamp:', new Date().toISOString());
+  console.error('====================');
+  
   res.status(statusCode).json({
     success: false,
     error,
-    details: details || undefined
+    details: details || undefined,
+    timestamp: new Date().toISOString()
   });
 }
 
 /**
  * Send JSON success response with CORS headers
+ * Enhanced with comprehensive logging
  */
 export function sendSuccessResponse(
   res: Response, 
   data: any, 
   message?: string
 ): void {
+  // Log success for debugging
+  console.log('=== SUCCESS RESPONSE ===');
+  console.log('Message:', message || 'Operation completed successfully');
+  console.log('Data type:', typeof data);
+  console.log('Data keys:', typeof data === 'object' ? Object.keys(data) : 'N/A');
+  console.log('Timestamp:', new Date().toISOString());
+  console.log('=======================');
+  
   res.status(200).json({
     success: true,
     data,
-    message: message || undefined
+    message: message || undefined,
+    timestamp: new Date().toISOString()
   });
 }

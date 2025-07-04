@@ -24,6 +24,7 @@ import {
 } from '@angular/fire/auth';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { AuthService } from './auth.service';
+import { HttpService } from './http.service';
 import { Observable, from, BehaviorSubject, firstValueFrom } from 'rxjs';
 
 export interface User {
@@ -90,10 +91,7 @@ export class UserService {
   private auth = inject(Auth);
   private functions = inject(Functions);
   private authService = inject(AuthService);
-  private http = inject(HttpClient);
-
-  // Firebase Functions base URL
-  private readonly functionsBaseUrl = 'https://us-central1-knowledgehub-2ed2f.cloudfunctions.net';
+  private httpService = inject(HttpService);
 
   // Cache for user data to avoid excessive Cloud Function calls
   private userCache = new BehaviorSubject<ExtendedUser[]>([]);
@@ -102,40 +100,31 @@ export class UserService {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   /**
-   * Create HTTP headers with Firebase ID token for authentication
-   */
-  private async createAuthHeaders(): Promise<HttpHeaders> {
-    const currentUser = this.auth.currentUser;
-    if (!currentUser) {
-      throw new Error('User must be authenticated to call this function');
-    }
-
-    const idToken = await currentUser.getIdToken();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
-    });
-  }
-
-  /**
-   * Make authenticated HTTP request to Cloud Function
+   * Make authenticated HTTP request to Cloud Function using HttpService
+   * This automatically handles authentication headers and error handling
    */
   private async callCloudFunction<T>(functionName: string, data?: any): Promise<T> {
-    const headers = await this.createAuthHeaders();
-    const url = `${this.functionsBaseUrl}/${functionName}`;
-    
     try {
+      console.log(`UserService: Calling ${functionName} with data:`, data);
+      
       const response = await firstValueFrom(
-        this.http.post<{success: boolean, data: T, error?: string}>(url, data, { headers })
+        this.httpService.postFunction<{success: boolean, data: T, error?: string}>(functionName, data)
       );
       
       if (response.success) {
+        console.log(`UserService: ${functionName} response:`, response.data);
         return response.data;
       } else {
         throw new Error(response.error || 'Cloud function call failed');
       }
     } catch (error: any) {
-      console.error(`Error calling ${functionName}:`, error);
+      console.error(`UserService: Error calling ${functionName}:`, error);
+      
+      // Re-throw with user-friendly message if available
+      if (error.userMessage) {
+        throw new Error(error.userMessage);
+      }
+      
       throw error;
     }
   }
