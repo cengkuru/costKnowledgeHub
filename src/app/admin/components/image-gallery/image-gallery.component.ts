@@ -21,8 +21,8 @@ export interface ImageSelectionEvent {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageGalleryComponent implements OnInit {
-  @Input() searchContext?: ImageSearchContext | null;
-  @Input() selectedImageUrl?: string | null;
+  @Input() searchContext: ImageSearchContext | null | undefined = undefined;
+  @Input() selectedImageUrl: string | null | undefined = undefined;
   @Input() allowManualUpload = true;
   @Input() maxImages = 9;
   
