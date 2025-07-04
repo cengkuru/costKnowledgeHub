@@ -109,6 +109,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     }
   }
   
+  isRouteActive(path: string): boolean {
+    return this.router.url === path;
+  }
+  
   get currentLanguage(): Language {
     return this.i18nService.getCurrentLanguage();
   }

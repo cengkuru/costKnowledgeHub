@@ -31,7 +31,7 @@
       <!-- Reset Password Form -->
       <form *ngIf="showResetPassword" (ngSubmit)="onResetPassword()" #resetForm="ngForm" class="space-y-6">
         <div>
-          <label for="reset-email" class="block text-sm font-medium text-gray-700">
+          <label for="reset-email" class="form-label">
             {{ i18nService.t('auth.emailLabel') }}
           </label>
           <div class="mt-1">
@@ -42,7 +42,7 @@
               [(ngModel)]="resetEmail"
               required
               autocomplete="email"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-cost-teal focus:border-cost-teal sm:text-sm"
+              class="form-input"
               [placeholder]="i18nService.t('auth.emailPlaceholder')">
           </div>
         </div>
@@ -70,39 +70,35 @@
       <form *ngIf="!showResetPassword" (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
 
         <!-- Email Field -->
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">
+        <div class="form-group">
+          <label for="email" class="form-label">
             {{ i18nService.t('auth.emailLabel') }}
           </label>
-          <div class="mt-1">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              [(ngModel)]="email"
-              required
-              autocomplete="email"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-cost-teal focus:border-cost-teal sm:text-sm"
-              [placeholder]="i18nService.t('auth.emailPlaceholder')">
-          </div>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            autocomplete="email"
+            class="form-input"
+            [placeholder]="i18nService.t('auth.emailPlaceholder')">
         </div>
 
         <!-- Password Field -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">
+        <div class="form-group">
+          <label for="password" class="form-label">
             {{ i18nService.t('auth.passwordLabel') }}
           </label>
-          <div class="mt-1">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              [(ngModel)]="password"
-              required
-              autocomplete="current-password"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-cost-teal focus:border-cost-teal sm:text-sm"
-              [placeholder]="i18nService.t('auth.passwordPlaceholder')">
-          </div>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password"
+            class="form-input"
+            [placeholder]="i18nService.t('auth.passwordPlaceholder')">
         </div>
 
         <!-- Remember Me -->
@@ -113,7 +109,7 @@
               name="remember-me"
               type="checkbox"
               [(ngModel)]="rememberMe"
-              class="h-4 w-4 text-cost-teal focus:ring-cost-teal border-gray-300 rounded">
+              class="form-checkbox">
             <label for="remember-me" class="ml-2 block text-sm text-gray-900">
               {{ i18nService.t('auth.rememberMe') }}
             </label>

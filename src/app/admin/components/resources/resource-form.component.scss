@@ -493,26 +493,19 @@
   gap: 0.25rem;
 }
 
-// Input Styles
+// Input Styles - Using global form design system
 .input-wrapper {
   position: relative;
   
   .form-input,
   .form-textarea,
   .form-select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: white;
+    // Inherit from global form design system
+    @extend .form-input !optional;
     
+    // Remove transform on focus for professional feel
     &:focus {
-      outline: none;
-      border-color: #0AAEA0;
-      box-shadow: 0 0 0 3px rgba(10, 174, 160, 0.1);
-      transform: translateY(-1px);
+      transform: none;
     }
     
     &.valid {
@@ -522,15 +515,16 @@
     
     &.invalid {
       border-color: #ef4444;
-      background: #fef2f2;
     }
   }
   
   .form-textarea {
-    resize: vertical;
     min-height: 120px;
-    font-family: inherit;
     line-height: 1.5;
+  }
+  
+  .form-select {
+    @extend .form-select !optional;
   }
   
   .textarea-wrapper {
@@ -543,6 +537,7 @@
     right: 1rem;
     top: 50%;
     transform: translateY(-50%);
+    pointer-events: none;
     
     .success-checkmark {
       color: #10b981;

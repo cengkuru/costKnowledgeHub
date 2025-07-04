@@ -72,14 +72,259 @@ body {
     transform: translateY(-1px);
   }
 
-  /* Input Fields - Clean & Professional */
+  /* ========== FORM DESIGN SYSTEM ========== */
+  /* Following EMOTIONAL_DESIGN_SYSTEM.md principles:
+     - Simplicity first
+     - Function drives form
+     - Clear state communication
+     - Professional and polished appearance
+  */
+
+  /* Base Form Elements - Unified Design Language */
+  .form-input,
+  .form-select,
+  .form-textarea,
   .input-field {
-    @apply w-full px-4 py-3 border border-neutral-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:border-transparent transition-colors duration-200;
-    font-size: 16px; /* Prevent zoom on iOS */
+    @apply w-full bg-white border border-gray-300 rounded-lg transition-all duration-200;
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* Prevent iOS zoom */
+    line-height: 1.5;
+    color: var(--cost-charcoal);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
+  /* Hover State - Subtle acknowledgment */
+  .form-input:hover:not(:focus):not(:disabled),
+  .form-select:hover:not(:focus):not(:disabled),
+  .form-textarea:hover:not(:focus):not(:disabled),
+  .input-field:hover:not(:focus):not(:disabled) {
+    @apply border-gray-400;
+    background-color: #fafafa;
+  }
+
+  /* Focus State - Clear and accessible */
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus,
   .input-field:focus {
-    @apply bg-white border-cost-cyan;
+    @apply outline-none border-cost-cyan;
+    box-shadow: 0 0 0 3px rgba(10, 174, 160, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+  }
+
+  /* Select Specific Styling */
+  .form-select {
+    @apply cursor-pointer pr-10;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    appearance: none;
+  }
+
+  .form-select:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230AAEA0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  /* Textarea Specific Styling */
+  .form-textarea {
+    @apply resize-y;
+    min-height: 100px;
+  }
+
+  /* Disabled State - Clear prevention */
+  .form-input:disabled,
+  .form-select:disabled,
+  .form-textarea:disabled,
+  .input-field:disabled {
+    @apply bg-gray-50 text-gray-500 cursor-not-allowed;
+    opacity: 0.7;
+  }
+
+  /* Error State - Gentle but clear */
+  .form-input.error,
+  .form-select.error,
+  .form-textarea.error,
+  .input-field.error {
+    @apply border-red-400;
+    background-color: #fef2f2;
+  }
+
+  .form-input.error:focus,
+  .form-select.error:focus,
+  .form-textarea.error:focus,
+  .input-field.error:focus {
+    @apply border-red-500;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Success State - Brief confirmation */
+  .form-input.success,
+  .form-select.success,
+  .form-textarea.success,
+  .input-field.success {
+    @apply border-green-400;
+    background-color: #f0fdf4;
+  }
+
+  .form-input.success:focus,
+  .form-select.success:focus,
+  .form-textarea.success:focus,
+  .input-field.success:focus {
+    @apply border-green-500;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Form Labels - Clear hierarchy */
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .form-label.required::after {
+    content: ' *';
+    @apply text-red-500;
+  }
+
+  /* Form Help Text */
+  .form-help {
+    @apply text-sm text-gray-600 mt-1;
+  }
+
+  .form-help.error {
+    @apply text-red-600;
+  }
+
+  /* Form Group - Consistent spacing */
+  .form-group {
+    @apply mb-4;
+  }
+
+  /* Input Group - For inputs with addons */
+  .input-group {
+    @apply flex;
+  }
+
+  .input-group .form-input {
+    @apply rounded-r-none;
+  }
+
+  .input-group-addon {
+    @apply px-4 py-3 bg-gray-50 border border-l-0 border-gray-300 rounded-r-lg text-gray-600 text-sm;
+  }
+
+  /* Checkbox and Radio - Custom styling */
+  .form-checkbox,
+  .form-radio {
+    @apply w-4 h-4 border-gray-300 text-cost-cyan focus:ring-2 focus:ring-cost-cyan focus:ring-offset-0 transition-colors duration-200;
+  }
+
+  .form-checkbox {
+    @apply rounded;
+  }
+
+  /* Switch Toggle */
+  .form-switch {
+    @apply relative inline-flex items-center cursor-pointer;
+  }
+
+  .form-switch input {
+    @apply sr-only;
+  }
+
+  .form-switch-track {
+    @apply w-11 h-6 bg-gray-200 rounded-full transition-colors duration-200;
+  }
+
+  .form-switch input:checked ~ .form-switch-track {
+    @apply bg-cost-cyan;
+  }
+
+  .form-switch-thumb {
+    @apply absolute left-0 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200;
+    transform: translateX(0.125rem);
+  }
+
+  .form-switch input:checked ~ .form-switch-track .form-switch-thumb {
+    transform: translateX(1.375rem);
+  }
+
+  /* File Input - Custom styling */
+  .form-file {
+    @apply block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-cost-teal file:text-white hover:file:bg-cost-teal-600 file:transition-colors file:duration-200;
+  }
+
+  /* Form Actions - Button group */
+  .form-actions {
+    @apply flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-gray-200;
+  }
+
+  /* Inline Form Elements */
+  .form-inline {
+    @apply flex flex-wrap items-center space-x-4;
+  }
+
+  .form-inline .form-group {
+    @apply mb-0;
+  }
+
+  /* Small Form Variant */
+  .form-input-sm,
+  .form-select-sm {
+    @apply py-2 px-3 text-sm;
+  }
+
+  /* Large Form Variant */
+  .form-input-lg,
+  .form-select-lg {
+    @apply py-4 px-5 text-lg;
+  }
+
+  /* Search Input with Icon */
+  .search-input-wrapper {
+    @apply relative;
+  }
+
+  .search-input-wrapper .search-icon {
+    @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none;
+  }
+
+  .search-input-wrapper .form-input {
+    @apply pl-10;
+  }
+
+  /* Date/Time Input Enhancement */
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    @apply form-input;
+  }
+
+  /* Number Input - Remove spinners for cleaner look */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Placeholder Styling */
+  .form-input::placeholder,
+  .form-select::placeholder,
+  .form-textarea::placeholder,
+  .input-field::placeholder {
+    @apply text-gray-400;
+  }
+
+  /* Autofill Styling */
+  .form-input:-webkit-autofill,
+  .form-select:-webkit-autofill,
+  .form-textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: var(--cost-charcoal) !important;
+    transition: background-color 5000s ease-in-out 0s;
   }
 
   /* Search Bar - Professional Style */
