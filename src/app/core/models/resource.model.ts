@@ -105,6 +105,7 @@ export interface ResourceFilter {
   difficulty?: string[];
   format?: string[];
   searchQuery?: string;
+  status?: 'draft' | 'published' | 'unpublished';
   dateRange?: {
     start?: Date;
     end?: Date;

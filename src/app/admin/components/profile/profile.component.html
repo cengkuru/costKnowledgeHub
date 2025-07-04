@@ -93,11 +93,11 @@
               </div>
               <div>
                 <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profile.createdAt') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString() : 'N/A' }}</dd>
+                <dd class="mt-1 text-sm text-gray-900">{{ formatDate(user.createdAt) }}</dd>
               </div>
               <div>
                 <dt class="text-sm font-medium text-gray-500">{{ i18nService.t('admin.profile.lastLogin') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ user.lastLoginAt?.toDate ? user.lastLoginAt.toDate().toLocaleDateString() : 'N/A' }}</dd>
+                <dd class="mt-1 text-sm text-gray-900">{{ formatDate(user.lastLoginAt) }}</dd>
               </div>
             </dl>
           </div>

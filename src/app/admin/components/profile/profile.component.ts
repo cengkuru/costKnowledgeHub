@@ -58,8 +58,7 @@ export class ProfileComponent implements OnInit {
       // Update Firestore user document
       await this.userService.updateUser(this.authService.currentUser.uid, {
         displayName: this.displayName,
-        photoURL: this.photoURL,
-        updatedAt: new Date()
+        photoURL: this.photoURL
       });
       
       // Reload user data
@@ -72,5 +71,26 @@ export class ProfileComponent implements OnInit {
     } finally {
       this.isSaving = false;
     }
+  }
+  
+  formatDate(date: any): string {
+    if (!date) return 'N/A';
+    
+    // Handle Firebase Timestamp
+    if (date && typeof date.toDate === 'function') {
+      return date.toDate().toLocaleDateString();
+    }
+    
+    // Handle regular Date object
+    if (date instanceof Date) {
+      return date.toLocaleDateString();
+    }
+    
+    // Handle timestamp with seconds property
+    if (date && date.seconds) {
+      return new Date(date.seconds * 1000).toLocaleDateString();
+    }
+    
+    return 'N/A';
   }
 }
