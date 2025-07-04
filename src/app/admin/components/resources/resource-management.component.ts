@@ -54,20 +54,44 @@ export class ResourceManagementComponent implements OnInit {
   constructor(public i18nService: I18nService) {}
 
   ngOnInit(): void {
+    this.checkAdminStatus();
     this.loadResources();
+  }
+
+  async checkAdminStatus(): Promise<void> {
+    try {
+      const isAdmin = await this.authService.isAdmin();
+      console.log('User admin status:', isAdmin);
+      
+      if (!isAdmin) {
+        console.warn('User is not an admin. They may only see published resources.');
+        this.showToast('Limited access: You can only view published resources', true);
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
   }
 
   async loadResources(): Promise<void> {
     this.loading = true;
 
     try {
+      // First, manually trigger a refresh to ensure we get latest data
+      await this.resourceService.refreshResources();
+      
       // Subscribe to resources from ResourceService
       this.resourceService.resources$.subscribe(resources => {
+        console.log('Resources received in component:', resources.length);
         this.resources = resources as AnimatedResource[];
         this.applyFilters();
+        
+        if (resources.length === 0) {
+          console.warn('No resources loaded. Check console for Firestore errors.');
+        }
       });
     } catch (error) {
       console.error('Error loading resources:', error);
+      this.showToast('Failed to load resources. Check console for details.', true);
     } finally {
       this.loading = false;
     }

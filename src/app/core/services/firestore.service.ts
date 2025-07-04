@@ -102,55 +102,94 @@ export class FirestoreService {
     hasMore: boolean;
     lastDocument?: any;
   }> {
-    const constraints: any[] = [];
+    try {
+      console.log('=== FIRESTORE GET RESOURCES DEBUG ===');
+      console.log('Filter:', filter);
+      console.log('Page size:', pageSize);
+      
+      const constraints: any[] = [];
 
-    // Apply filters
-    if (filter) {
-      if (filter.type && filter.type.length > 0) {
-        constraints.push(where('type', 'in', filter.type));
+      // Apply filters
+      if (filter) {
+        if (filter.type && filter.type.length > 0) {
+          constraints.push(where('type', 'in', filter.type));
+        }
+
+        if (filter.featured !== undefined) {
+          constraints.push(where('featured', '==', filter.featured));
+        }
+
+        if (filter.language && filter.language.length > 0) {
+          constraints.push(where('language', 'in', filter.language));
+        }
+
+        if (filter.country && filter.country.length > 0) {
+          constraints.push(where('country', 'in', filter.country));
+        }
       }
 
-      if (filter.featured !== undefined) {
-        constraints.push(where('featured', '==', filter.featured));
+      // Add ordering and pagination
+      constraints.push(orderBy('datePublished', 'desc'));
+      constraints.push(limit(pageSize + 1)); // Get one extra to check if there are more
+
+      if (lastDoc) {
+        constraints.push(startAfter(lastDoc));
       }
 
-      if (filter.language && filter.language.length > 0) {
-        constraints.push(where('language', 'in', filter.language));
-      }
+      console.log('Query constraints:', constraints.length);
+      const q = query(this.resourcesCollection, ...constraints);
+      
+      console.log('Executing Firestore query...');
+      const querySnapshot = await getDocs(q);
+      console.log('Query completed. Docs found:', querySnapshot.size);
 
-      if (filter.country && filter.country.length > 0) {
-        constraints.push(where('country', 'in', filter.country));
+      const resources: Resource[] = [];
+      let lastDocument: any | undefined;
+
+      let index = 0;
+      querySnapshot.forEach((doc: any) => {
+        if (index < pageSize) {
+          const data = doc.data();
+          console.log(`Resource ${index + 1}:`, {
+            id: doc.id,
+            title: data.title?.en || 'No title',
+            status: data.status,
+            type: data.type
+          });
+          resources.push({ id: doc.id, ...data } as Resource);
+          lastDocument = doc;
+        }
+        index++;
+      });
+
+      console.log('Resources returned:', resources.length);
+      console.log('=================================');
+
+      return {
+        resources,
+        hasMore: querySnapshot.size > pageSize,
+        lastDocument
+      };
+    } catch (error: any) {
+      console.error('=== FIRESTORE ERROR ===');
+      console.error('Error getting resources:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      
+      // Check if it's a permission error
+      if (error.code === 'permission-denied') {
+        console.error('PERMISSION DENIED: User may not have admin privileges or resources may not be published');
+        console.error('Check if the user has admin custom claims in their token');
       }
+      console.error('====================');
+      
+      // Return empty array instead of throwing to prevent UI crash
+      return {
+        resources: [],
+        hasMore: false,
+        lastDocument: undefined
+      };
     }
-
-    // Add ordering and pagination
-    constraints.push(orderBy('datePublished', 'desc'));
-    constraints.push(limit(pageSize + 1)); // Get one extra to check if there are more
-
-    if (lastDoc) {
-      constraints.push(startAfter(lastDoc));
-    }
-
-    const q = query(this.resourcesCollection, ...constraints);
-    const querySnapshot = await getDocs(q);
-
-        const resources: Resource[] = [];
-    let lastDocument: any | undefined;
-
-    let index = 0;
-    querySnapshot.forEach((doc: any) => {
-      if (index < pageSize) {
-        resources.push({ id: doc.id, ...doc.data() } as Resource);
-        lastDocument = doc;
-      }
-      index++;
-    });
-
-    return {
-      resources,
-      hasMore: querySnapshot.size > pageSize,
-      lastDocument
-    };
   }
 
   /**

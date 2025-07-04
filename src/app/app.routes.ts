@@ -26,6 +26,11 @@ export const routes: Routes = [
     canActivate: [publicGuard]
   },
   {
+    path: 'register',
+    loadComponent: () => import('./features/auth/register.component').then(m => m.RegisterComponent),
+    canActivate: [publicGuard]
+  },
+  {
     path: 'test-auth',
     loadComponent: () => import('./features/auth/test-auth.component').then(m => m.TestAuthComponent)
   },

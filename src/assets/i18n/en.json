@@ -9,6 +9,7 @@
     "error": "Error occurred",
     "noResults": "No results found",
     "featured": "Featured",
+    "logo": "CoST Logo",
     "global": "Global",
     "resources": "resources",
     "getStarted": "Get Started",
@@ -147,7 +148,46 @@
     "demoMode": "Demo Mode:",
     "demoDescription": "Use any email and password to sign in and explore the platform.",
     "backToHub": "← Back to Knowledge Hub",
-    "copyrightFooter": "© 2025 CoST Knowledge Hub. Leading insight for infrastructure transparency."
+    "copyrightFooter": "© 2025 CoST Knowledge Hub. Leading insight for infrastructure transparency.",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create Account"
+  },
+  "register": {
+    "title": "Create Your Account",
+    "subtitle": "Already have an account?",
+    "signInLink": "Sign in",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your name",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Create a password (min. 6 characters)",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "passwordStrength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "terms": {
+      "prefix": "I agree to the",
+      "link": "Terms and Conditions",
+      "suffix": "and Privacy Policy"
+    },
+    "submitButton": "Create Account",
+    "loading": "Creating account...",
+    "success": "Account created successfully! Redirecting...",
+    "backToHome": "← Back to Home",
+    "errors": {
+      "requiredFields": "Please fill in all required fields",
+      "passwordsDontMatch": "Passwords do not match",
+      "acceptTerms": "Please accept the terms and conditions",
+      "emailInUse": "This email is already registered. Please sign in instead.",
+      "invalidEmail": "Please enter a valid email address",
+      "weakPassword": "Password is too weak. Please use at least 6 characters.",
+      "operationNotAllowed": "Registration is currently disabled. Please contact support.",
+      "genericError": "An error occurred during registration"
+    }
   },
   "home": {
     "title": "CoST Knowledge Hub",

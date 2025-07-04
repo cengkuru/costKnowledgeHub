@@ -4,6 +4,36 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-01-04 20:45:00 UTC
+- **User Registration System: Implemented self-service registration functionality**
+  - Created RegisterComponent with email/password registration form (src/app/features/auth/register.component.ts)
+  - Added password strength validation and confirmation matching
+  - Integrated with existing Firebase authentication flow
+  - Added registration route with public guard protection (src/app/app.routes.ts:29-33)
+  - Updated login page with "Create Account" link (src/app/features/auth/login.component.html)
+  - Added comprehensive i18n translations for registration in EN/ES/PT
+  - Follows CoST brand theme with professional UI design
+  - Registration flow: Register → Auto-login → Profile Setup → Admin Dashboard
+
+### Fixed - 2025-01-04 01:30:00 UTC
+- **🐛 Activity Service Timestamp Error: Fixed null timestamp handling in admin activities**
+  - Added null checks for timestamp fields before calling toDate() (src/app/core/services/activity.service.ts:213-226)
+  - Activities without timestamps are now sorted to the end of the list
+  - Prevents "Cannot read properties of null (reading 'toDate')" error on login
+  - **Problem**: Some activities in Firestore have null timestamps causing runtime errors
+  - **Solution**: Added defensive checks and fallback to epoch date (new Date(0)) for invalid timestamps
+  - **Result**: Admin dashboard loads without errors even with incomplete activity data
+
+### Fixed - 2025-01-04 01:15:00 UTC
+- **🔍 Resources List Empty Debug: Added comprehensive logging and permission checking**
+  - Enhanced FirestoreService with detailed query logging and permission error handling (src/app/core/services/firestore.service.ts:105-193)
+  - Added isAdmin() method to AuthService to check user admin privileges (src/app/core/services/auth.service.ts:265-287)
+  - Updated resource management component to check and display admin status (src/app/admin/components/resources/resource-management.component.ts:61-73)
+  - Created Cloud Function template for setting admin privileges (functions/src/admin/setAdminRole.ts)
+  - **Problem**: Resources list shows empty even though resources exist in Firestore
+  - **Solution**: Added debugging to identify Firestore security rule restrictions (only published resources or admin access)
+  - **Result**: Clear error messages and admin status checking to help diagnose permission issues
+
 ### Fixed - 2025-01-03 20:25:00 UTC
 - **🎨 Skip Links Accessibility Design: Made skip links invisible until focused**
   - Updated skip links CSS to position off-screen by default (src/app/admin/components/resources/resource-form.component.scss:21-47)

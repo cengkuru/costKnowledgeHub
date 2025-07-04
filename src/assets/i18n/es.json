@@ -9,6 +9,7 @@
     "error": "Ocurrió un error",
     "noResults": "No se encontraron resultados",
     "featured": "Destacado",
+    "logo": "Logo de CoST",
     "global": "Global",
     "resources": "recursos",
     "getStarted": "Comenzar",
@@ -147,7 +148,46 @@
     "demoMode": "Modo Demo:",
     "demoDescription": "Usa cualquier correo electrónico y contraseña para iniciar sesión y explorar la plataforma.",
     "backToHub": "← Volver al Knowledge Hub",
-    "copyrightFooter": "© 2025 CoST Knowledge Hub. Perspectivas líderes para transparencia en infraestructura."
+    "copyrightFooter": "© 2025 CoST Knowledge Hub. Perspectivas líderes para transparencia en infraestructura.",
+    "noAccount": "¿No tienes una cuenta?",
+    "createAccount": "Crear Cuenta"
+  },
+  "register": {
+    "title": "Crea Tu Cuenta",
+    "subtitle": "¿Ya tienes una cuenta?",
+    "signInLink": "Iniciar sesión",
+    "displayName": "Nombre de Usuario",
+    "displayNamePlaceholder": "Ingresa tu nombre",
+    "email": "Dirección de Correo Electrónico",
+    "emailPlaceholder": "Ingresa tu correo electrónico",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Crea una contraseña (mín. 6 caracteres)",
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Vuelve a ingresar tu contraseña",
+    "passwordStrength": {
+      "weak": "Débil",
+      "medium": "Media",
+      "strong": "Fuerte"
+    },
+    "terms": {
+      "prefix": "Acepto los",
+      "link": "Términos y Condiciones",
+      "suffix": "y la Política de Privacidad"
+    },
+    "submitButton": "Crear Cuenta",
+    "loading": "Creando cuenta...",
+    "success": "¡Cuenta creada exitosamente! Redirigiendo...",
+    "backToHome": "← Volver al Inicio",
+    "errors": {
+      "requiredFields": "Por favor completa todos los campos requeridos",
+      "passwordsDontMatch": "Las contraseñas no coinciden",
+      "acceptTerms": "Por favor acepta los términos y condiciones",
+      "emailInUse": "Este correo ya está registrado. Por favor inicia sesión.",
+      "invalidEmail": "Por favor ingresa un correo electrónico válido",
+      "weakPassword": "La contraseña es muy débil. Usa al menos 6 caracteres.",
+      "operationNotAllowed": "El registro está deshabilitado actualmente. Contacta al soporte.",
+      "genericError": "Ocurrió un error durante el registro"
+    }
   },
   "home": {
     "title": "CoST Knowledge Hub",

@@ -149,6 +149,16 @@
         </div>
       </form>
 
+      <!-- Create Account Link -->
+      <div class="mt-6 text-center">
+        <span class="text-sm text-gray-600">
+          {{ i18nService.t('auth.noAccount') }}
+        </span>
+        <a [routerLink]="['/register']" class="ml-1 font-medium text-cost-cyan hover:text-cost-teal transition-colors">
+          {{ i18nService.t('auth.createAccount') }}
+        </a>
+      </div>
+
       <!-- Demo Notice -->
       <div class="mt-6 p-4 bg-cost-gray rounded-md">
         <div class="flex">

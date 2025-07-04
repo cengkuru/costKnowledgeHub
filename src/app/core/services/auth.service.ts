@@ -258,4 +258,45 @@ export class AuthService {
       throw error;
     }
   }
+
+  /**
+   * Check if current user has admin privileges
+   */
+  async isAdmin(): Promise<boolean> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      console.log('isAdmin: No user logged in');
+      return false;
+    }
+
+    try {
+      // Get the ID token with custom claims
+      const idTokenResult = await user.getIdTokenResult();
+      console.log('=== ADMIN CHECK ===');
+      console.log('User UID:', user.uid);
+      console.log('User email:', user.email);
+      console.log('Custom claims:', idTokenResult.claims);
+      console.log('Has admin claim:', idTokenResult.claims['admin'] === true);
+      console.log('==================');
+      
+      return idTokenResult.claims['admin'] === true;
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Set admin privileges for a user (must be called from Cloud Function)
+   */
+  async setAdminPrivilege(userId: string, isAdmin: boolean): Promise<void> {
+    try {
+      const setAdminRole = httpsCallable(this.functions, 'setAdminRole');
+      const result = await setAdminRole({ userId, isAdmin });
+      console.log('Admin privilege set:', result);
+    } catch (error) {
+      console.error('Error setting admin privilege:', error);
+      throw error;
+    }
+  }
 }

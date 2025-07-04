@@ -210,8 +210,19 @@ export class ActivityService {
   getAdminActivities(limit: number = 20): Observable<Activity[]> {
     return from(this.firestoreService.getActivities({ limit })).pipe(
       map(activities => activities.sort((a, b) => {
-        const dateA = a.timestamp instanceof Date ? a.timestamp : a.timestamp.toDate();
-        const dateB = b.timestamp instanceof Date ? b.timestamp : b.timestamp.toDate();
+        // Handle null timestamps
+        if (!a.timestamp && !b.timestamp) return 0;
+        if (!a.timestamp) return 1; // Put items without timestamp at the end
+        if (!b.timestamp) return -1;
+        
+        // Convert timestamps to Date objects
+        const dateA = a.timestamp instanceof Date 
+          ? a.timestamp 
+          : (a.timestamp && typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate() : new Date(0));
+        const dateB = b.timestamp instanceof Date 
+          ? b.timestamp 
+          : (b.timestamp && typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate() : new Date(0));
+        
         return dateB.getTime() - dateA.getTime();
       })),
       catchError(error => {

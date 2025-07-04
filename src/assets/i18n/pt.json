@@ -9,6 +9,7 @@
     "error": "Ocorreu um erro",
     "noResults": "Nenhum resultado encontrado",
     "featured": "Destaque",
+    "logo": "Logo do CoST",
     "global": "Global",
     "resources": "recursos",
     "getStarted": "Começar",
@@ -147,7 +148,46 @@
     "demoMode": "Modo Demo:",
     "demoDescription": "Use qualquer e-mail e senha para entrar e explorar a plataforma.",
     "backToHub": "← Voltar ao Knowledge Hub",
-    "copyrightFooter": "© 2025 CoST Knowledge Hub. Insights líderes para transparência em infraestrutura."
+    "copyrightFooter": "© 2025 CoST Knowledge Hub. Insights líderes para transparência em infraestrutura.",
+    "noAccount": "Não tem uma conta?",
+    "createAccount": "Criar Conta"
+  },
+  "register": {
+    "title": "Crie Sua Conta",
+    "subtitle": "Já tem uma conta?",
+    "signInLink": "Entrar",
+    "displayName": "Nome de Exibição",
+    "displayNamePlaceholder": "Digite seu nome",
+    "email": "Endereço de E-mail",
+    "emailPlaceholder": "Digite seu e-mail",
+    "password": "Senha",
+    "passwordPlaceholder": "Crie uma senha (mín. 6 caracteres)",
+    "confirmPassword": "Confirmar Senha",
+    "confirmPasswordPlaceholder": "Digite novamente sua senha",
+    "passwordStrength": {
+      "weak": "Fraca",
+      "medium": "Média",
+      "strong": "Forte"
+    },
+    "terms": {
+      "prefix": "Eu concordo com os",
+      "link": "Termos e Condições",
+      "suffix": "e a Política de Privacidade"
+    },
+    "submitButton": "Criar Conta",
+    "loading": "Criando conta...",
+    "success": "Conta criada com sucesso! Redirecionando...",
+    "backToHome": "← Voltar ao Início",
+    "errors": {
+      "requiredFields": "Por favor preencha todos os campos obrigatórios",
+      "passwordsDontMatch": "As senhas não coincidem",
+      "acceptTerms": "Por favor aceite os termos e condições",
+      "emailInUse": "Este e-mail já está registrado. Por favor faça login.",
+      "invalidEmail": "Por favor digite um endereço de e-mail válido",
+      "weakPassword": "A senha é muito fraca. Use pelo menos 6 caracteres.",
+      "operationNotAllowed": "O registro está desabilitado no momento. Entre em contato com o suporte.",
+      "genericError": "Ocorreu um erro durante o registro"
+    }
   },
   "home": {
     "title": "CoST Knowledge Hub",
