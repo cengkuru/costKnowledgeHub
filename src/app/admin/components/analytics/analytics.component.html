@@ -101,13 +101,13 @@
     <!-- Page Views Chart -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.pageViewsOverTime') }}</h2>
-      <canvas #viewsChart height="300"></canvas>
+      <canvas #viewsChart id="viewsChart" height="300"></canvas>
     </div>
 
     <!-- Resource Type Distribution -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('admin.analytics.resourceTypeDistribution') }}</h2>
-      <canvas #typeChart height="300"></canvas>
+      <canvas #typeChart id="typeChart" height="300"></canvas>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { FirestoreService } from '../../../core/services/firestore.service';
@@ -27,7 +27,7 @@ interface DashboardStats {
   templateUrl: './analytics.component.html',
   styleUrls: ['./analytics.component.scss']
 })
-export class AnalyticsComponent implements OnInit {
+export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   private analyticsService = inject(AnalyticsService);
   private firestoreService = inject(FirestoreService);
   public i18nService = inject(I18nService);
@@ -36,11 +36,21 @@ export class AnalyticsComponent implements OnInit {
   error: string | null = null;
   stats: DashboardStats | null = null;
 
+  @ViewChild('viewsChart') viewsChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('typeChart') typeChartRef!: ElementRef<HTMLCanvasElement>;
+
   private viewsChartInstance: Chart | null = null;
   private typeChartInstance: Chart | null = null;
 
   ngOnInit() {
     this.loadAnalytics();
+  }
+
+  ngAfterViewInit() {
+    // Render charts if data is already loaded
+    if (this.stats && !this.loading) {
+      this.renderCharts();
+    }
   }
 
   async loadAnalytics() {
@@ -100,10 +110,10 @@ export class AnalyticsComponent implements OnInit {
         resourceTypeDistribution: typeDistribution
       };
 
-      // Render charts after view updates
-      setTimeout(() => {
+      // Charts will be rendered in ngAfterViewInit or when data updates
+      if (this.viewsChartRef && this.typeChartRef) {
         this.renderCharts();
-      }, 100);
+      }
 
     } catch (error) {
       console.error('Error loading analytics:', error);
@@ -149,7 +159,7 @@ export class AnalyticsComponent implements OnInit {
     if (!this.stats) return;
 
     // Render views chart
-    const viewsCanvas = document.querySelector('#viewsChart') as HTMLCanvasElement;
+    const viewsCanvas = this.viewsChartRef?.nativeElement;
     if (viewsCanvas) {
       if (this.viewsChartInstance) {
         this.viewsChartInstance.destroy();
@@ -189,7 +199,7 @@ export class AnalyticsComponent implements OnInit {
     }
 
     // Render type distribution chart
-    const typeCanvas = document.querySelector('#typeChart') as HTMLCanvasElement;
+    const typeCanvas = this.typeChartRef?.nativeElement;
     if (typeCanvas) {
       if (this.typeChartInstance) {
         this.typeChartInstance.destroy();
