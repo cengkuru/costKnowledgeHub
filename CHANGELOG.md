@@ -2,7 +2,33 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-07-04 10:45:00 UTC
+## [Unreleased] - 2025-07-04 15:30:00 UTC
+
+### Fixed - 2025-07-04 15:30:00 UTC
+- **🔑 User Creation Authentication Issue: Fixed admin session being overridden when creating new users**
+  - Fixed UserService.createUser() method that used createUserWithEmailAndPassword() which logs in the newly created user
+  - Replaced client-side user creation with Cloud Function createAdminUser that uses Firebase Admin SDK
+  - Updated user-management.component.ts to call new cloud function instead of direct auth creation
+  - Added proper error handling and validation for admin user creation via Cloud Function
+  - **Problem**: When admin creates a user, createUserWithEmailAndPassword() automatically signs in the new user, logging out the admin
+  - **Root Cause**: Firebase client SDK createUserWithEmailAndPassword() always signs in the newly created user account
+  - **Solution**: Moved user creation to Cloud Function using Admin SDK which doesn't affect current authentication state
+  - **Result**: Admins can now create users while maintaining their own authenticated session and permissions
+
+## [Previous] - 2025-07-04 11:15:00 UTC
+
+### Fixed - 2025-07-04 11:15:00 UTC
+- **⚙️ Settings Component Loading Issue: Fixed infinite loading spinner in admin settings panel**
+  - Fixed service constructor calling loadSettings() without subscription causing loading state to never complete
+  - Replaced deprecated .toPromise() calls with modern firstValueFrom() pattern (src/app/admin/components/settings/settings.component.ts)
+  - Added proper error handling to ensure loading spinner is always dismissed on error or success
+  - Enhanced authentication checks for settings access and modification
+  - Fixed circular dependency in default settings creation by removing nested saveSettings() call
+  - Added comprehensive logging for debugging settings load/save operations
+  - **Problem**: Settings page showed perpetual "Loading settings..." spinner due to unsubscribed Observable in service constructor
+  - **Root Cause**: Constructor called this.loadSettings() but never subscribed, leaving loadingSubject stuck at true
+  - **Solution**: Added proper subscription with error handling and modernized RxJS patterns throughout
+  - **Result**: Settings component now loads immediately and displays functional configuration interface
 
 ### Fixed - 2025-07-04 10:45:00 UTC
 - **🎨 User Management Design: Aligned user management component with EMOTIONAL_DESIGN_SYSTEM.md principles**

@@ -13,7 +13,7 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 
 // Export admin functions
-export { setAdminClaim, createFirstAdmin } from './admin';
+export { setAdminClaim, createAdminUser, createFirstAdmin } from './admin';
 export { setFirstAdmin } from './admin/setFirstAdmin';
 export { makeFirstAdminHTTP } from './admin/makeFirstAdminHTTP';
 

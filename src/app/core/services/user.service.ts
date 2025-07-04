@@ -106,11 +106,11 @@ export class UserService {
   private async callCloudFunction<T>(functionName: string, data?: any): Promise<T> {
     try {
       console.log(`UserService: Calling ${functionName} with data:`, data);
-      
+
       const response = await firstValueFrom(
         this.httpService.postFunction<{success: boolean, data: T, error?: string}>(functionName, data)
       );
-      
+
       if (response.success) {
         console.log(`UserService: ${functionName} response:`, response.data);
         return response.data;
@@ -119,30 +119,37 @@ export class UserService {
       }
     } catch (error: any) {
       console.error(`UserService: Error calling ${functionName}:`, error);
-      
+
       // Re-throw with user-friendly message if available
       if (error.userMessage) {
         throw new Error(error.userMessage);
       }
-      
+
       throw error;
     }
   }
 
-  /**
+    /**
    * Get all users (Firestore only - legacy method)
    */
   async getUsers(): Promise<User[]> {
     try {
       const usersCollection = collection(this.firestore, 'users');
-      const q = query(usersCollection, orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
+      // Remove ordering to avoid issues with missing fields
+      const snapshot = await getDocs(usersCollection);
 
       const users: User[] = [];
       snapshot.forEach((doc: any) => {
-        users.push({ uid: doc.id, ...doc.data() } as User);
+        const data = doc.data();
+        users.push({
+          uid: doc.id,
+          ...data,
+          // Ensure we have a createdAt field for the interface
+          createdAt: data.createdAt || data.updatedAt || new Date()
+        } as User);
       });
 
+      console.log('Retrieved users from Firestore:', users);
       return users;
     } catch (error) {
       console.error('Error getting users:', error);
@@ -170,9 +177,9 @@ export class UserService {
         'listAllAuthUsers',
         { maxResults: 1000 }
       );
-      
+
       const { users } = result;
-      
+
       // Transform to ExtendedUser format
       const extendedUsers: ExtendedUser[] = users.map(user => ({
         uid: user.uid,
@@ -221,14 +228,14 @@ export class UserService {
       }
 
       const status = await this.callCloudFunction<MigrationStatus>('getMigrationStatus');
-      
+
       // Update cache
       this.migrationStatusCache.next(status);
-      
+
       return status;
     } catch (error) {
       console.error('Error getting migration status:', error);
-      
+
       // Fallback: count Firestore users only
       const firestoreUsers = await this.getUsers();
       return {
@@ -253,10 +260,10 @@ export class UserService {
         wasExisting: boolean;
         syncedAt: any;
       }>('syncAuthUserToFirestore', { uid });
-      
+
       // Clear cache to force refresh on next request
       this.clearCache();
-      
+
       return {
         success: true,
         message: `User ${uid} synced successfully`
@@ -289,10 +296,10 @@ export class UserService {
         hasMoreUsers: boolean;
         nextPageToken?: string;
       }>('migrateAllUsers', { batchSize });
-      
+
       // Clear cache to force refresh on next request
       this.clearCache();
-      
+
       return {
         success: true,
         totalProcessed: result.totalProcessed,
@@ -349,7 +356,8 @@ export class UserService {
   }
 
   /**
-   * Create a new user
+   * Create a new user using Cloud Function (Admin SDK)
+   * This method preserves the current admin's authentication state
    */
   async createUser(
     email: string,
@@ -358,7 +366,58 @@ export class UserService {
     role: 'admin' | 'editor' | 'viewer' = 'viewer'
   ): Promise<User> {
     try {
-      // Create auth user
+      console.log('UserService: Creating user via Cloud Function with data:', {
+        email,
+        displayName,
+        role,
+        passwordLength: password.length
+      });
+
+      // Call the Cloud Function using our standardized method
+      const result = await this.callCloudFunction<{
+        user: User;
+        message: string;
+      }>('createAdminUser', {
+        email,
+        password,
+        displayName,
+        role
+      });
+
+      console.log('UserService: User created successfully via Cloud Function:', result.user);
+
+      // Clear cache to ensure fresh data on next request
+      this.clearCache();
+
+      return result.user;
+    } catch (error: any) {
+      console.error('UserService: Error creating user via Cloud Function:', error);
+      
+      // Extract user-friendly error messages from Cloud Function errors
+      if (error.message) {
+        throw new Error(error.message);
+      }
+      
+      throw new Error('Failed to create user. Please try again.');
+    }
+  }
+
+  /**
+   * Legacy method: Create a new user using client-side Firebase Auth
+   * ⚠️ WARNING: This method logs in the newly created user, overriding current session
+   * Use createUser() instead which calls the Cloud Function
+   * @deprecated Use createUser() method instead
+   */
+  async createUserLegacy(
+    email: string,
+    password: string,
+    displayName: string,
+    role: 'admin' | 'editor' | 'viewer' = 'viewer'
+  ): Promise<User> {
+    try {
+      console.warn('⚠️ Using legacy createUserLegacy method - this will log in the new user!');
+      
+      // Create auth user (THIS LOGS IN THE NEW USER!)
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       const { user } = userCredential;
 
@@ -379,7 +438,7 @@ export class UserService {
 
       return { uid: user.uid, ...userData };
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Error creating user with legacy method:', error);
       throw error;
     }
   }
@@ -503,13 +562,21 @@ export class UserService {
    */
   async logActivity(userId: string, action: string, resourceId?: string, metadata?: any): Promise<void> {
     try {
-      const activity: UserActivity = {
+      const activity: any = {
         userId,
         action,
-        resourceId,
-        timestamp: serverTimestamp() as any,
-        metadata
+        timestamp: serverTimestamp()
       };
+
+      // Only include resourceId if it's provided
+      if (resourceId !== undefined) {
+        activity.resourceId = resourceId;
+      }
+
+      // Only include metadata if it's provided
+      if (metadata !== undefined) {
+        activity.metadata = metadata;
+      }
 
       await setDoc(doc(collection(this.firestore, 'user_activity')), activity);
     } catch (error) {

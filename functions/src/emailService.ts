@@ -15,6 +15,7 @@ const geminiApiKey = process.env.GEMINI_API_KEY;
 // Email templates and types
 export type EmailType =
   | 'user_welcome'
+  | 'user_created_by_admin'
   | 'admin_role_assigned'
   | 'admin_role_removed'
   | 'resource_submitted'
@@ -166,6 +167,36 @@ export class EmailService {
         `,
         textTemplate: `Welcome to Knowledge Hub\n\nDear {{userName}},\n\nWelcome to Knowledge Hub, the Infrastructure Transparency Initiative (CoST) platform.\n\nYour account has been successfully created. Access the platform at: {{platformUrl}}\n\nBest regards,\nKnowledge Hub Team`,
         variables: ['userName', 'platformUrl']
+      },
+
+      user_created_by_admin: {
+        subject: 'Your Knowledge Hub Account Has Been Created',
+        htmlTemplate: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #355E69; padding: 20px; text-align: center;">
+              <h1 style="color: white; margin: 0;">Account Created</h1>
+            </div>
+            <div style="padding: 20px;">
+              <p>Dear {{userName}},</p>
+              <p>An administrator has created a Knowledge Hub account for you.</p>
+              <p><strong>Account Details:</strong></p>
+              <ul>
+                <li>Email: {{email}}</li>
+                <li>Role: {{role}}</li>
+                <li>Temporary Password: <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{{tempPassword}}</code></li>
+              </ul>
+              <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p style="margin: 0; color: #856404;"><strong>Important:</strong> Please change your password after your first login for security.</p>
+              </div>
+              <p>You can now access Knowledge Hub and start contributing to infrastructure transparency:</p>
+              <p><a href="{{loginUrl}}" style="background: #355E69; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Login to Knowledge Hub</a></p>
+              <p>If you have any questions, please contact {{adminEmail}}.</p>
+              <p>Best regards,<br>Knowledge Hub Team</p>
+            </div>
+          </div>
+        `,
+        textTemplate: `Account Created\n\nDear {{userName}},\n\nAn administrator has created a Knowledge Hub account for you.\n\nEmail: {{email}}\nRole: {{role}}\nTemporary Password: {{tempPassword}}\n\nIMPORTANT: Please change your password after your first login.\n\nLogin at: {{loginUrl}}\n\nContact: {{adminEmail}}\n\nBest regards,\nKnowledge Hub Team`,
+        variables: ['userName', 'email', 'role', 'tempPassword', 'loginUrl', 'adminEmail']
       },
 
       admin_role_assigned: {

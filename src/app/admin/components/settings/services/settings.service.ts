@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, BehaviorSubject, throwError, of, from } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { 
   Firestore, 
   doc, 
@@ -39,7 +39,15 @@ export class SettingsService {
   private readonly SETTINGS_DOC_ID = 'main_config';
 
   constructor() {
-    this.loadSettings();
+    // Load settings on service initialization
+    this.loadSettings().subscribe({
+      next: () => {
+        console.log('Settings loaded successfully');
+      },
+      error: (error) => {
+        console.error('Failed to load settings on init:', error);
+      }
+    });
   }
 
   /**
@@ -47,6 +55,12 @@ export class SettingsService {
    */
   loadSettings(): Observable<SettingsData> {
     this.loadingSubject.next(true);
+    
+    // Check if user is authenticated (basic check)
+    const currentUser = this.authService.currentUser;
+    if (!currentUser) {
+      console.warn('Settings accessed without authentication - loading defaults');
+    }
     
     const docRef = doc(this.firestore, this.SETTINGS_COLLECTION, this.SETTINGS_DOC_ID);
     
@@ -59,12 +73,20 @@ export class SettingsService {
         } else {
           // Create default settings if none exist
           const defaultSettings = this.getDefaultSettings();
-          this.saveSettings(defaultSettings).subscribe();
+          this.settingsSubject.next(defaultSettings);
+          
+          // Save default settings asynchronously without blocking the current observable
+          this.saveSettings(defaultSettings).subscribe({
+            next: () => console.log('Default settings saved'),
+            error: (error) => console.error('Failed to save default settings:', error)
+          });
+          
           return defaultSettings;
         }
       }),
       catchError(error => {
         console.error('Error loading settings:', error);
+        this.loadingSubject.next(false); // Ensure loading is stopped on error
         const defaultSettings = this.getDefaultSettings();
         this.settingsSubject.next(defaultSettings);
         return of(defaultSettings);
@@ -80,6 +102,39 @@ export class SettingsService {
     this.loadingSubject.next(true);
     
     const currentUser = this.authService.currentUser;
+    if (!currentUser) {
+      this.loadingSubject.next(false);
+      return throwError(() => new Error('Authentication required to save settings'));
+    }
+
+    // Log user info for debugging
+    console.log('Current user:', {
+      uid: currentUser.uid,
+      email: currentUser.email,
+      customClaims: currentUser
+    });
+
+    // Check if user has admin claim
+    return from(currentUser.getIdTokenResult()).pipe(
+      switchMap(tokenResult => {
+        console.log('User token claims:', tokenResult.claims);
+        
+        if (!tokenResult.claims['admin']) {
+          this.loadingSubject.next(false);
+          return throwError(() => new Error('Admin privileges required to save settings'));
+        }
+
+        return this.performSave(settings, currentUser);
+      }),
+      catchError(error => {
+        console.error('Error in saveSettings:', error);
+        this.loadingSubject.next(false);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private performSave(settings: SettingsData, currentUser: any): Observable<void> {
     const updatedSettings: SettingsData = {
       ...settings,
       lastUpdated: new Date(),
@@ -96,6 +151,7 @@ export class SettingsService {
       }),
       catchError(error => {
         console.error('Error saving settings:', error);
+        this.loadingSubject.next(false); // Ensure loading is stopped on error
         return throwError(() => new Error('Failed to save settings: ' + error.message));
       }),
       tap(() => this.loadingSubject.next(false))

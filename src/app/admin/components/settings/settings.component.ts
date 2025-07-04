@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, combineLatest } from 'rxjs';
+import { Subject, combineLatest, firstValueFrom } from 'rxjs';
 import { takeUntil, map, startWith } from 'rxjs/operators';
 
 import { SettingsService } from './services/settings.service';
@@ -964,7 +964,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const settings: ApplicationSettings = this.applicationForm.value;
 
     try {
-      await this.settingsService.updateApplicationSettings(settings).toPromise();
+      await firstValueFrom(this.settingsService.updateApplicationSettings(settings));
       this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.applicationForm.markAsPristine();
     } catch (error) {
@@ -981,7 +981,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const settings: UserSecuritySettings = this.userSecurityForm.value;
 
     try {
-      await this.settingsService.updateUserSecuritySettings(settings).toPromise();
+      await firstValueFrom(this.settingsService.updateUserSecuritySettings(settings));
       this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.userSecurityForm.markAsPristine();
     } catch (error) {
@@ -998,7 +998,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const settings: ContentManagementSettings = this.contentManagementForm.value;
 
     try {
-      await this.settingsService.updateContentManagementSettings(settings).toPromise();
+      await firstValueFrom(this.settingsService.updateContentManagementSettings(settings));
       this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.contentManagementForm.markAsPristine();
     } catch (error) {
@@ -1015,7 +1015,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const settings: SystemAdministrationSettings = this.systemAdministrationForm.value;
 
     try {
-      await this.settingsService.updateSystemAdministrationSettings(settings).toPromise();
+      await firstValueFrom(this.settingsService.updateSystemAdministrationSettings(settings));
       this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.systemAdministrationForm.markAsPristine();
     } catch (error) {
@@ -1049,7 +1049,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   async exportSettings(): Promise<void> {
     try {
-      const exportData = await this.settingsService.exportSettings().toPromise();
+      const exportData = await firstValueFrom(this.settingsService.exportSettings());
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -1072,7 +1072,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     reader.onload = async (e) => {
       try {
         const importData = JSON.parse(e.target?.result as string);
-        await this.settingsService.importSettings(importData).toPromise();
+        await firstValueFrom(this.settingsService.importSettings(importData));
         this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsImported'));
         this.loadSettings();
       } catch (error) {
@@ -1087,7 +1087,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (!confirmed) return;
 
     try {
-      await this.settingsService.resetToDefaults().toPromise();
+      await firstValueFrom(this.settingsService.resetToDefaults());
       this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsReset'));
       this.loadSettings();
     } catch (error) {
