@@ -1435,6 +1435,167 @@
   }
 }
 
+// Cover Image Section
+.cover-image-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.cover-image-preview {
+  @apply mt-4;
+}
+
+.preview-container {
+  @apply relative aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200;
+  max-width: 300px;
+}
+
+.preview-image {
+  @apply w-full h-full object-cover;
+}
+
+.preview-overlay {
+  @apply absolute inset-0 bg-black bg-opacity-0 flex items-center justify-center gap-2;
+  @apply opacity-0 transition-all duration-150;
+  
+  .preview-container:hover & {
+    @apply bg-opacity-50 opacity-100;
+  }
+}
+
+.overlay-button {
+  @apply flex items-center gap-1 px-3 py-2 bg-white text-gray-900 rounded-md text-sm font-medium;
+  @apply hover:bg-gray-100 transition-colors duration-150;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal;
+  
+  &.remove-button {
+    @apply bg-red-50 text-red-700 hover:bg-red-100;
+  }
+}
+
+.image-attribution {
+  @apply flex items-center gap-2 mt-2 text-xs text-gray-500;
+}
+
+.attribution-text {
+  @apply truncate;
+}
+
+.cover-image-empty {
+  @apply text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50;
+}
+
+.empty-icon {
+  @apply mx-auto w-8 h-8 text-gray-400 mb-2;
+}
+
+.empty-text {
+  @apply text-sm font-medium text-gray-600 mb-1;
+}
+
+.empty-subtext {
+  @apply text-xs text-gray-500;
+}
+
+// Image Gallery Modal
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50;
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg shadow-lg max-w-6xl max-h-full overflow-hidden;
+  animation: modal-slide-in 0.2s ease-out;
+  
+  &.image-gallery-modal {
+    @apply w-full h-full max-h-[90vh];
+  }
+}
+
+.modal-header {
+  @apply flex items-center justify-between p-4 border-b border-gray-200;
+}
+
+.modal-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.modal-close {
+  @apply p-2 text-gray-400 hover:text-gray-600 rounded-full;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal;
+  @apply transition-colors duration-150;
+  
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.modal-body {
+  @apply p-4 overflow-y-auto flex-1;
+}
+
+// Button Variants
+.btn-sm {
+  @apply px-3 py-2 text-sm;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 rounded-md;
+  @apply hover:bg-gray-50 hover:border-gray-400;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal focus:ring-offset-2;
+  @apply transition-colors duration-150;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+// Modal Animations
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Responsive Design for Cover Image
+@media (max-width: 768px) {
+  .cover-image-header {
+    @apply flex-col items-start gap-3;
+  }
+  
+  .preview-container {
+    max-width: 100%;
+  }
+  
+  .modal-content.image-gallery-modal {
+    @apply max-h-[95vh];
+  }
+  
+  .modal-body {
+    @apply p-2;
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-content,
+  .preview-overlay {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 // Utility Classes
 .capitalize {
   text-transform: capitalize;

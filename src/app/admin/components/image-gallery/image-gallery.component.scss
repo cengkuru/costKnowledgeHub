@@ -1,0 +1,380 @@
+// Image Gallery Component Styles
+// Following EMOTIONAL_DESIGN_SYSTEM.md principles
+
+.image-gallery {
+  @apply w-full;
+}
+
+// Gallery Header
+.gallery-header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.gallery-title {
+  @apply text-lg font-semibold text-cost-charcoal;
+}
+
+// Mode Tabs - Simple, functional design
+.mode-tabs {
+  @apply flex bg-cost-gray rounded-lg p-1;
+}
+
+.mode-tab {
+  @apply flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md;
+  @apply text-cost-charcoal bg-transparent;
+  @apply transition-colors duration-150;
+  
+  &:hover {
+    @apply bg-white text-cost-teal;
+    // Simple color change - no transform effects
+  }
+  
+  &.active {
+    @apply bg-white text-cost-teal shadow-sm;
+  }
+  
+  &:focus-visible {
+    @apply outline-none ring-2 ring-cost-teal ring-offset-2;
+  }
+}
+
+.tab-icon {
+  @apply w-4 h-4;
+}
+
+// Search Section
+.search-section {
+  @apply mb-6;
+}
+
+.search-input-group {
+  @apply relative flex items-center;
+}
+
+.search-icon {
+  @apply absolute left-3 w-5 h-5 text-gray-400 pointer-events-none;
+}
+
+.search-input {
+  @apply w-full pl-10 pr-24 py-3 border border-gray-300 rounded-lg;
+  @apply text-sm placeholder-gray-500;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal focus:border-cost-teal;
+  @apply transition-colors duration-150;
+}
+
+.search-button {
+  @apply absolute right-2 px-4 py-2 bg-cost-teal text-white text-sm font-medium rounded-md;
+  @apply hover:bg-cost-cyan;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal focus:ring-offset-2;
+  @apply transition-colors duration-150;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+// Upload Section - Clean, functional design
+.upload-section {
+  @apply mb-6;
+}
+
+.upload-dropzone {
+  @apply relative border-2 border-dashed border-gray-300 rounded-lg p-8;
+  @apply transition-colors duration-150;
+  
+  &.drag-over {
+    @apply border-cost-teal bg-cost-teal bg-opacity-5;
+  }
+  
+  &.uploading {
+    @apply pointer-events-none opacity-75;
+  }
+}
+
+.upload-content {
+  @apply text-center;
+}
+
+.upload-icon {
+  @apply mx-auto w-12 h-12 text-gray-400 mb-4;
+}
+
+.upload-text {
+  @apply mb-4;
+}
+
+.upload-primary {
+  @apply text-lg font-medium text-cost-charcoal mb-1;
+}
+
+.upload-secondary {
+  @apply text-sm text-gray-500;
+}
+
+.upload-button {
+  @apply inline-block px-6 py-3 bg-cost-teal text-white font-medium rounded-lg cursor-pointer;
+  @apply hover:bg-cost-cyan;
+  @apply focus-within:ring-2 focus-within:ring-cost-teal focus-within:ring-offset-2;
+  @apply transition-colors duration-150;
+}
+
+.hidden-input {
+  @apply sr-only;
+}
+
+.upload-hints {
+  @apply mt-4 text-xs text-gray-500 space-y-1;
+}
+
+.upload-progress {
+  @apply absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center;
+  @apply text-cost-teal font-medium;
+}
+
+.progress-spinner {
+  @apply w-8 h-8 border-2 border-cost-teal border-t-transparent rounded-full;
+  @apply animate-spin mb-2;
+}
+
+// Loading Grid
+.loading-grid {
+  @apply grid grid-cols-3 gap-4 mb-6;
+}
+
+.image-skeleton {
+  @apply aspect-video bg-gray-200 rounded-lg;
+  @apply animate-pulse;
+}
+
+// Image Grid - Clean 3x3 layout
+.image-grid {
+  @apply grid grid-cols-3 gap-4 mb-6;
+}
+
+.image-item {
+  @apply cursor-pointer rounded-lg overflow-hidden;
+  @apply border-2 border-transparent;
+  @apply transition-colors duration-150;
+  
+  &:hover {
+    @apply border-cost-cyan;
+    // Simple border change - no scale or transform
+  }
+  
+  &.selected {
+    @apply border-cost-teal bg-cost-teal bg-opacity-5;
+  }
+  
+  &:focus-visible {
+    @apply outline-none ring-2 ring-cost-teal ring-offset-2;
+  }
+}
+
+.image-container {
+  @apply relative aspect-video overflow-hidden bg-gray-100;
+}
+
+.gallery-image {
+  @apply w-full h-full object-cover;
+}
+
+.selection-indicator {
+  @apply absolute top-2 right-2 w-6 h-6 bg-cost-teal text-white rounded-full;
+  @apply flex items-center justify-center;
+  @apply opacity-0 transition-opacity duration-150;
+  
+  .image-item.selected & {
+    @apply opacity-100;
+  }
+}
+
+.check-icon {
+  @apply w-4 h-4;
+}
+
+.preview-button {
+  @apply absolute bottom-2 right-2 p-2 bg-black bg-opacity-50 text-white rounded-full;
+  @apply opacity-0 transition-opacity duration-150;
+  @apply hover:bg-opacity-70;
+  @apply focus:outline-none focus:ring-2 focus:ring-white;
+  
+  .image-item:hover & {
+    @apply opacity-100;
+  }
+  
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+.image-info {
+  @apply p-3;
+}
+
+.image-description {
+  @apply text-sm font-medium text-cost-charcoal mb-1;
+  @apply truncate;
+}
+
+.image-attribution {
+  @apply text-xs text-gray-500;
+  @apply truncate;
+}
+
+// Empty States
+.empty-state {
+  @apply text-center py-12;
+}
+
+.empty-icon {
+  @apply mx-auto w-12 h-12 text-gray-400 mb-4;
+}
+
+.empty-state h4 {
+  @apply text-lg font-medium text-cost-charcoal mb-2;
+}
+
+.empty-state p {
+  @apply text-gray-500;
+}
+
+// Selected Image Display
+.selected-image-display {
+  @apply mt-6 p-4 bg-cost-gray rounded-lg;
+}
+
+.selected-image-display h4 {
+  @apply text-sm font-medium text-cost-charcoal mb-3;
+}
+
+.selected-image-container {
+  @apply flex gap-4;
+}
+
+.selected-image {
+  @apply w-20 h-20 object-cover rounded-lg border border-gray-200;
+}
+
+.selected-image-info {
+  @apply flex-1;
+}
+
+.selected-description {
+  @apply text-sm font-medium text-cost-charcoal mb-1;
+}
+
+.selected-attribution {
+  @apply text-xs text-gray-500 mb-3;
+}
+
+.clear-selection-button {
+  @apply text-sm text-cost-teal font-medium;
+  @apply hover:text-cost-cyan;
+  @apply focus:outline-none focus:underline;
+  @apply transition-colors duration-150;
+}
+
+// Modal - Simple overlay design
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  @apply p-4;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg max-w-4xl max-h-full overflow-hidden;
+  @apply shadow-lg;
+}
+
+.modal-header {
+  @apply flex items-center justify-between p-4 border-b border-gray-200;
+}
+
+.modal-header h3 {
+  @apply text-lg font-semibold text-cost-charcoal;
+}
+
+.modal-close {
+  @apply p-2 text-gray-400 hover:text-gray-600 rounded-full;
+  @apply focus:outline-none focus:ring-2 focus:ring-cost-teal;
+  @apply transition-colors duration-150;
+  
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.modal-body {
+  @apply p-4;
+}
+
+.preview-image {
+  @apply w-full max-h-96 object-contain mb-4;
+}
+
+.preview-info {
+  @apply text-center;
+}
+
+.preview-attribution {
+  @apply text-sm text-gray-500 mb-4;
+}
+
+.preview-actions {
+  @apply space-x-3;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .image-grid,
+  .loading-grid {
+    @apply grid-cols-2;
+  }
+  
+  .mode-tabs {
+    @apply flex-col space-y-1 p-0 bg-transparent;
+  }
+  
+  .mode-tab {
+    @apply justify-start bg-white border border-gray-200;
+    
+    &.active {
+      @apply border-cost-teal;
+    }
+  }
+  
+  .selected-image-container {
+    @apply flex-col;
+  }
+  
+  .selected-image {
+    @apply w-full h-32;
+  }
+  
+  .upload-dropzone {
+    @apply p-6;
+  }
+  
+  .upload-icon {
+    @apply w-10 h-10;
+  }
+  
+  .upload-primary {
+    @apply text-base;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-grid,
+  .loading-grid {
+    @apply grid-cols-1;
+  }
+}
+
+// Focus Management
+.image-item:focus-visible {
+  @apply ring-2 ring-cost-teal ring-offset-2 outline-none;
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  * {
+    @apply transition-none animate-none;
+  }
+}

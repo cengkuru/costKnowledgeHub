@@ -10,7 +10,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ActivityService } from '../../../core/services/activity.service';
 import { Resource, ResourceType, Language, TopicCategory } from '../../../core/models/resource.model';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { ImageGalleryComponent, ImageSelectionEvent } from '../image-gallery/image-gallery.component';
 import { AIService, TagSuggestion } from '../../../core/services/ai.service';
+import { UnsplashService, ImageSearchContext } from '../../../core/services/unsplash.service';
 
 interface FormTab {
   id: string;
@@ -126,7 +128,7 @@ const WORKFLOW_CONFIGS: Record<ResourceType, WorkflowConfig> = {
 @Component({
   selector: 'app-resource-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FileUploadComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FileUploadComponent, ImageGalleryComponent],
   templateUrl: './resource-form.component.html',
   styleUrl: './resource-form.component.scss'
 })
@@ -139,6 +141,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private aiService = inject(AIService);
   private activityService = inject(ActivityService);
+  private unsplashService = inject(UnsplashService);
   
   resourceForm!: FormGroup;
   isEditMode = false;
@@ -225,6 +228,11 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   suggestingTags = false;
   suggestedTags: TagSuggestion[] = [];
   summariesGenerated = false;
+  
+  // Image Gallery Features
+  showImageGallery = false;
+  selectedCoverImage: ImageSelectionEvent | null = null;
+  imageSearchContext: ImageSearchContext | null = null;
   
   // Enhanced validation messages with specific, actionable guidance
   friendlyMessages = {
@@ -354,6 +362,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   trackFormCompletion(): void {
     this.resourceForm.valueChanges.subscribe(() => {
       this.updateFormCompletion();
+      this.updateImageSearchContext();
     });
   }
   
@@ -1269,6 +1278,104 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.autoSaveTimer) {
       clearInterval(this.autoSaveTimer);
+    }
+  }
+  
+  // Image Gallery Methods
+  
+  /**
+   * Generate image search context based on current form values
+   */
+  generateImageSearchContext(): ImageSearchContext | null {
+    const title = this.resourceForm.get('title.en')?.value;
+    const type = this.resourceForm.get('type')?.value;
+    const topics = this.resourceForm.get('topics')?.value || [];
+    const tags = this.resourceForm.get('tags')?.value || [];
+    const description = this.resourceForm.get('description.en')?.value;
+    const country = this.resourceForm.get('country')?.value;
+
+    if (!title || !type) {
+      return null;
+    }
+
+    return {
+      title,
+      type,
+      topics,
+      tags,
+      description,
+      country
+    };
+  }
+  
+  /**
+   * Open image gallery for cover image selection
+   */
+  openImageGallery(): void {
+    this.imageSearchContext = this.generateImageSearchContext();
+    this.showImageGallery = true;
+  }
+  
+  /**
+   * Handle image selection from gallery
+   */
+  onImageSelected(event: ImageSelectionEvent): void {
+    this.selectedCoverImage = event;
+    this.thumbnailUrl = event.url;
+    this.resourceForm.patchValue({ thumbnailUrl: event.url });
+    this.resourceForm.markAsDirty();
+    this.updateFormCompletion();
+    this.showImageGallery = false;
+  }
+  
+  /**
+   * Handle image gallery close
+   */
+  onImageGalleryClosed(): void {
+    this.showImageGallery = false;
+  }
+  
+  /**
+   * Clear selected cover image
+   */
+  clearCoverImage(): void {
+    this.selectedCoverImage = null;
+    this.thumbnailUrl = null;
+    this.resourceForm.patchValue({ thumbnailUrl: '' });
+    this.resourceForm.markAsDirty();
+    this.updateFormCompletion();
+  }
+  
+  /**
+   * Check if cover image is selected
+   */
+  hasCoverImage(): boolean {
+    return !!(this.selectedCoverImage || this.thumbnailUrl);
+  }
+  
+  /**
+   * Get cover image URL for preview
+   */
+  getCoverImageUrl(): string | null {
+    return this.selectedCoverImage?.url || this.thumbnailUrl;
+  }
+  
+  /**
+   * Get cover image attribution text
+   */
+  getCoverImageAttribution(): string {
+    if (this.selectedCoverImage?.image) {
+      return this.unsplashService.getAttributionText(this.selectedCoverImage.image);
+    }
+    return '';
+  }
+  
+  /**
+   * Update image search context when form changes
+   */
+  updateImageSearchContext(): void {
+    if (this.showImageGallery) {
+      this.imageSearchContext = this.generateImageSearchContext();
     }
   }
   

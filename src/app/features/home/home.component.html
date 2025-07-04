@@ -1,24 +1,17 @@
 <!-- Home Page Content -->
 
-  <!-- Hero Section with City Background -->
-  <section class="relative h-96 bg-cover bg-center"
-           style="background-image: linear-gradient(rgba(53, 94, 105, 0.7), rgba(53, 94, 105, 0.7)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-    <div class="absolute inset-0 bg-gradient-to-r from-cost-teal/80 to-cost-teal/60"></div>
-
-    <div class="relative container mx-auto px-6 h-full flex items-center">
-      <div class="text-white max-w-2xl">
-        <h1 class="text-5xl font-bold mb-4 leading-tight">
-          CoST Knowledge Hub
-        </h1>
-        <p class="text-xl mb-8 text-gray-100">
-          Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability
-        </p>
-        <button 
-          [routerLink]="['/resources']" 
-          class="bg-cost-cyan hover:bg-cost-cyan/90 text-white px-8 py-3 rounded font-semibold transition-colors cursor-pointer">
-          EXPLORE NOW
-        </button>
-      </div>
+  <!-- Hero Section - Simplified Design -->
+  <section class="bg-cost-teal py-16">
+    <div class="container mx-auto px-6 text-center text-white">
+      <h1 class="text-4xl font-bold mb-4">CoST Knowledge Hub</h1>
+      <p class="text-xl mb-8 max-w-3xl mx-auto">
+        Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability
+      </p>
+      <button 
+        [routerLink]="['/resources']" 
+        class="bg-cost-cyan hover:bg-cost-cyan/90 text-white px-8 py-3 rounded font-semibold transition-colors duration-150 cursor-pointer">
+        Explore Resources
+      </button>
     </div>
   </section>
 
@@ -38,9 +31,9 @@
       <div class="grid lg:grid-cols-2 gap-8">
 
         <!-- Main Featured Article -->
-        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToFeaturedResource('res-001')">
-          <div class="aspect-video bg-gradient-to-br from-cost-teal to-cost-cyan relative">
+          <div class="aspect-video bg-gray-100 relative">
             <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                  alt="Infrastructure Guide"
                  class="w-full h-full object-cover">
@@ -49,13 +42,13 @@
             </div>
           </div>
           <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-3">
+            <h3 class="text-xl font-bold text-cost-charcoal mb-3">
               How to achieve transparent infrastructure transformation in your country
             </h3>
             <p class="text-gray-600 mb-4">
               Transparency and accountability are the clearest ways to get around a city, benefiting all users. Community engagement and infrastructure disclosure are the keys to make it happen.
             </p>
-            <button class="text-cost-teal hover:text-cost-cyan font-medium">Learn more →</button>
+            <span class="text-cost-teal font-medium">Learn more →</span>
           </div>
         </div>
 
@@ -63,17 +56,17 @@
         <div class="space-y-6">
 
           <!-- Implementation Guides Card -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
                (click)="navigateToFeaturedResource('res-004')">
             <div class="flex">
-              <div class="w-32 h-24 bg-gradient-to-br from-cost-amber to-orange-400 flex-shrink-0">
+              <div class="w-32 h-24 bg-gray-100 flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
                      alt="Policy Guide"
                      class="w-full h-full object-cover">
               </div>
               <div class="p-4 flex-1">
                 <span class="text-cost-teal text-xs font-medium">IMPLEMENTATION GUIDES</span>
-                <h4 class="font-semibold text-gray-800 mt-1 mb-1">
+                <h4 class="font-semibold text-cost-charcoal mt-1 mb-1">
                   Promoting disclosure and accountability: A toolkit of policy options
                 </h4>
               </div>
@@ -81,16 +74,16 @@
           </div>
 
           <!-- Project Monitoring Card -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
                (click)="navigateToReportResources()">
-            <div class="aspect-video bg-gradient-to-br from-cost-cyan to-blue-400 relative">
+            <div class="aspect-video bg-gray-100">
               <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
                    alt="Project Monitoring"
                    class="w-full h-full object-cover">
             </div>
             <div class="p-4">
               <span class="text-cost-teal text-xs font-medium">RESEARCH REPORTS</span>
-              <h4 class="font-semibold text-gray-800 mt-1">
+              <h4 class="font-semibold text-cost-charcoal mt-1">
                 Project monitoring in Africa: Evidence and good practice to improve infrastructure outcomes
               </h4>
             </div>
@@ -207,110 +200,119 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- Data Disclosure -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('disclosure')">
-          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Data Disclosure"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Data Disclosure</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Data Disclosure"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Data Disclosure</h4>
           </div>
         </div>
 
         <!-- Independent Assurance -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('assurance')">
-          <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
-               alt="Independent Assurance"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Independent Assurance</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
+                 alt="Independent Assurance"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Independent Assurance</h4>
           </div>
         </div>
 
         <!-- Public Procurement -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('procurement')">
-          <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Public Procurement"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Public Procurement</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Public Procurement"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Public Procurement</h4>
           </div>
         </div>
 
         <!-- Project Monitoring -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('monitoring')">
-          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Project Monitoring"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Project Monitoring</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Project Monitoring"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Project Monitoring</h4>
           </div>
         </div>
 
         <!-- Multi-stakeholder Working -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('stakeholder')">
-          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Multi-stakeholder Working"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Multi-stakeholder Working</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Multi-stakeholder Working"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Multi-stakeholder Working</h4>
           </div>
         </div>
 
         <!-- Social Accountability -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('accountability')">
-          <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Social Accountability"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Social Accountability</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Social Accountability"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Social Accountability</h4>
           </div>
         </div>
 
         <!-- Governance Frameworks -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('governance')">
-          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Governance Frameworks"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Governance Frameworks</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Governance Frameworks"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Governance Frameworks</h4>
           </div>
         </div>
 
         <!-- Capacity Building -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToTopicResources('capacity')">
-          <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-               alt="Capacity Building"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Capacity Building</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                 alt="Capacity Building"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Capacity Building</h4>
           </div>
         </div>
 
         <!-- Digital Tools -->
-        <div class="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+        <div class="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-cost-cyan transition-colors duration-150"
              (click)="navigateToFeaturedResource('res-006')">
-          <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
-               alt="Digital Tools"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <h4 class="text-lg font-semibold">Digital Tools</h4>
+          <div class="aspect-video bg-gray-100">
+            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
+                 alt="Digital Tools"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 bg-white">
+            <h4 class="text-lg font-semibold text-cost-charcoal">Digital Tools</h4>
           </div>
         </div>
 

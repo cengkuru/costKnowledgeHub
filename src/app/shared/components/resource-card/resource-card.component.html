@@ -7,11 +7,11 @@
       *ngIf="resource.thumbnailUrl; else placeholderImage"
       [src]="resource.thumbnailUrl"
       [alt]="getResourceTitle()"
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      class="w-full h-full object-cover"
     >
 
     <ng-template #placeholderImage>
-      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-cost-gray to-gray-200">
+      <div class="w-full h-full flex items-center justify-center bg-cost-gray">
         <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -38,14 +38,14 @@
     </div>
 
     <!-- Action buttons overlay -->
-    <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+    <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
          *ngIf="!resource.featured">
 
       <!-- Download button -->
       <button
         *ngIf="hasDownloadLink()"
         type="button"
-        class="p-2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+        class="p-2 bg-white rounded-full border border-gray-200 hover:border-cost-cyan transition-colors duration-150"
         (click)="onDownload($event)"
         [attr.aria-label]="i18nService.t('common.download')"
       >
@@ -58,7 +58,7 @@
       <!-- Share button -->
       <button
         type="button"
-        class="p-2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+        class="p-2 bg-white rounded-full border border-gray-200 hover:border-cost-cyan transition-colors duration-150"
         (click)="onShare($event)"
         [attr.aria-label]="i18nService.t('common.share')"
       >
@@ -74,7 +74,7 @@
   <div class="flex-1 p-6 flex flex-col">
 
     <!-- Resource title -->
-    <h3 class="text-lg font-semibold text-cost-charcoal mb-2 line-clamp-2 group-hover:text-cost-teal transition-colors duration-200">
+    <h3 class="text-lg font-semibold text-cost-charcoal mb-2 line-clamp-2">
       {{ getResourceTitle() }}
     </h3>
 

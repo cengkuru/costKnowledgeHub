@@ -21,8 +21,8 @@ export interface ImageSelectionEvent {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageGalleryComponent implements OnInit {
-  @Input() searchContext?: ImageSearchContext;
-  @Input() selectedImageUrl?: string;
+  @Input() searchContext?: ImageSearchContext | null;
+  @Input() selectedImageUrl?: string | null;
   @Input() allowManualUpload = true;
   @Input() maxImages = 9;
   
@@ -290,6 +290,13 @@ export class ImageGalleryComponent implements OnInit {
    */
   isImageSelected(image: UnsplashImage): boolean {
     return this.selectedImage?.id === image.id || this.selectedImageUrl === image.url;
+  }
+
+  /**
+   * TrackBy function for ngFor performance optimization
+   */
+  trackByImageId(index: number, item: UnsplashImage): string {
+    return item.id;
   }
 
   /**

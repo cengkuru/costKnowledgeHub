@@ -2,7 +2,32 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-07-04 16:00:00 UTC
+## [Unreleased] - 2025-07-04 16:20:00 UTC
+
+### Fixed - 2025-07-04 16:20:00 UTC
+- **🛠️ Image Gallery Component Build Errors: Fixed trackBy syntax and type compatibility issues**
+  - Fixed invalid trackBy function syntax in ngFor directive (was using inline function instead of component method)
+  - Added trackByImageId method to ImageGalleryComponent for proper ngFor performance optimization
+  - Updated Input types to accept both null and undefined for searchContext and selectedImageUrl props
+  - **Problem**: Build failed with "Unexpected token {" parser error in trackBy function
+  - **Root Cause**: Angular templates don't support inline function expressions in trackBy
+  - **Solution**: Created proper trackByImageId method and updated Input types for null compatibility
+  - **Result**: Image gallery component builds successfully without type or syntax errors
+
+## [Previous] - 2025-07-04 16:05:00 UTC
+
+### Changed - 2025-07-04 16:05:00 UTC
+- **🎨 Resource Detail Page: Aligned with EMOTIONAL_DESIGN_SYSTEM.md principles**
+  - Removed gradient backgrounds from all layout sections (bg-gradient-to-r from-cost-teal/5 to-cost-cyan/5)
+  - Simplified decorative icon containers by removing background colors
+  - Replaced shadow-card class with clean border-based design (border border-gray-200)
+  - Standardized all card designs to use consistent gray borders instead of colored borders
+  - Removed complex border styling with brand colors in favor of neutral gray
+  - Applied "Simplicity First" principle by eliminating decorative visual elements
+  - Ensured all transitions follow 150ms duration for border-color changes only
+  - **Sections Updated**: Case Study, Dataset, Implementation Guide, Policy Brief, Tool layouts
+  - **Design Philosophy**: Function drives form - removed all non-functional decorative elements
+  - **Result**: Clean, professional detail page that follows established design system patterns
 
 ### Fixed - 2025-07-04 16:00:00 UTC
 - **🐛 Resource Card Date Formatting Error: Fixed "Cannot read properties of undefined (reading 'seconds')" error**
