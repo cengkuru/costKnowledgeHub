@@ -4,6 +4,24 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-05 01:25:00 UTC
+- **📊 Analytics Charts Debug: Added comprehensive logging to diagnose empty chart rendering**
+  - Added debug logs to track chart rendering lifecycle (src/app/admin/components/analytics/analytics.component.ts)
+  - Logged ViewChild references availability in ngAfterViewInit
+  - Tracked data loading and chart creation steps
+  - Added console output for canvas element detection
+  - **Problem**: Page Views and Resource Type Distribution charts appearing empty
+  - **Investigation**: Added logging to identify if issue is with data, DOM elements, or Chart.js initialization
+  - **Next Steps**: Check browser console for debug output to identify root cause
+
+### Fixed - 2025-01-05 01:20:00 UTC
+- **⚙️ Settings Component: Fixed infinite loading state by correcting Firestore collection name mismatch**
+  - Changed SETTINGS_COLLECTION from 'system_settings' to 'settings' (src/app/admin/components/settings/services/settings.service.ts:38)
+  - **Problem**: Settings component showed infinite spinner due to Firestore permission denied errors
+  - **Root Cause**: Service was accessing 'system_settings' collection while security rules only defined 'settings'
+  - **Solution**: Updated collection name to match Firestore security rules
+  - **Result**: Settings component now loads correctly and displays configuration interface
+
 ### Fixed - 2025-01-04 21:15:00 UTC
 - **📊 Analytics Charts: Fixed chart rendering issues in admin analytics component**
   - Added missing ID attributes to canvas elements (src/app/admin/components/analytics/analytics.component.html:104,110)

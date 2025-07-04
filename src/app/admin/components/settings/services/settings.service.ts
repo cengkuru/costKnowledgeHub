@@ -35,7 +35,7 @@ export class SettingsService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
-  private readonly SETTINGS_COLLECTION = 'system_settings';
+  private readonly SETTINGS_COLLECTION = 'settings';
   private readonly SETTINGS_DOC_ID = 'main_config';
 
   constructor() {

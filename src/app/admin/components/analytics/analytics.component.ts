@@ -47,6 +47,12 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    console.log('Analytics: ngAfterViewInit called', {
+      stats: !!this.stats,
+      loading: this.loading,
+      viewsChartRef: !!this.viewsChartRef,
+      typeChartRef: !!this.typeChartRef
+    });
     // Render charts if data is already loaded
     if (this.stats && !this.loading) {
       this.renderCharts();
@@ -110,10 +116,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
         resourceTypeDistribution: typeDistribution
       };
 
-      // Charts will be rendered in ngAfterViewInit or when data updates
-      if (this.viewsChartRef && this.typeChartRef) {
+      // Render charts after view updates
+      setTimeout(() => {
         this.renderCharts();
-      }
+      }, 100);
 
     } catch (error) {
       console.error('Error loading analytics:', error);
@@ -156,11 +162,20 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private renderCharts() {
-    if (!this.stats) return;
+    if (!this.stats) {
+      console.log('Analytics: No stats available for rendering charts');
+      return;
+    }
+
+    console.log('Analytics: Rendering charts with data:', {
+      viewsData: this.stats.viewsChartData,
+      typeDistribution: this.stats.resourceTypeDistribution
+    });
 
     // Render views chart
     const viewsCanvas = this.viewsChartRef?.nativeElement;
     if (viewsCanvas) {
+      console.log('Analytics: Views chart canvas found');
       if (this.viewsChartInstance) {
         this.viewsChartInstance.destroy();
       }
@@ -196,11 +211,15 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       });
+      console.log('Analytics: Views chart created successfully');
+    } else {
+      console.log('Analytics: Views chart canvas NOT found');
     }
 
     // Render type distribution chart
     const typeCanvas = this.typeChartRef?.nativeElement;
     if (typeCanvas) {
+      console.log('Analytics: Type chart canvas found');
       if (this.typeChartInstance) {
         this.typeChartInstance.destroy();
       }
@@ -236,6 +255,9 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       });
+      console.log('Analytics: Type chart created successfully');
+    } else {
+      console.log('Analytics: Type chart canvas NOT found');
     }
   }
 
