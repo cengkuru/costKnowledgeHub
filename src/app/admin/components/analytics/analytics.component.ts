@@ -5,6 +5,14 @@ import { FirestoreService } from '../../../core/services/firestore.service';
 import { I18nService } from '../../../core/services/i18n.service';
 import { Observable, combineLatest, map, startWith, catchError, of } from 'rxjs';
 import { Chart, registerables } from 'chart.js';
+import { 
+  Firestore,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs
+} from '@angular/fire/firestore';
 
 // Register Chart.js components
 Chart.register(...registerables);
@@ -18,6 +26,10 @@ interface DashboardStats {
   searchTrends: { term: string; count: number }[];
   viewsChartData: { labels: string[]; data: number[] };
   resourceTypeDistribution: { type: string; count: number }[];
+  // New fields for proper time periods
+  pageViewsLast30Days: number;
+  downloadsLast30Days: number;
+  activeUsersThisMonth: number;
 }
 
 @Component({
@@ -30,6 +42,7 @@ interface DashboardStats {
 export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   private analyticsService = inject(AnalyticsService);
   private firestoreService = inject(FirestoreService);
+  private firestore = inject(Firestore);
   public i18nService = inject(I18nService);
 
   loading = true;
@@ -69,17 +82,20 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       const [
         topResourcesData,
         searchTrends,
-        allResourcesResult
+        allResourcesResult,
+        analyticsData
       ] = await Promise.all([
         this.analyticsService.getTopResources('views', 10),
         this.analyticsService.getSearchTrends(7),
-        this.firestoreService.getResources()
+        this.firestoreService.getResources(),
+        this.loadAnalyticsData()
       ]);
 
       console.log('Analytics: Data loaded:', {
         topResourcesData: topResourcesData.length,
         searchTrends: searchTrends.length,
-        totalResources: allResourcesResult.resources.length
+        totalResources: allResourcesResult.resources.length,
+        analyticsData
       });
 
       // Calculate stats
@@ -107,16 +123,16 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       );
 
-      // Calculate resource type distribution with fallback
+      // Calculate resource type distribution - only show if we have real data
       const typeDistribution = this.calculateTypeDistribution(publishedResources);
       console.log('Analytics: Type distribution:', typeDistribution);
 
-      // Generate views chart data (enhanced with fallback)
-      const viewsChartData = this.generateViewsChartData(totalPageViews);
+      // Generate views chart data from real analytics
+      const viewsChartData = await this.generateRealViewsChartData();
       console.log('Analytics: Views chart data:', viewsChartData);
 
-      // Calculate active users (mock for now)
-      const activeUsers = Math.max(Math.floor(totalPageViews * 0.3), 15); // Minimum 15 for demo
+      // Calculate active users from actual analytics data
+      const activeUsers = this.calculateActiveUsers(analyticsData);
 
       this.stats = {
         totalPageViews,
@@ -126,7 +142,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
         topResources,
         searchTrends,
         viewsChartData,
-        resourceTypeDistribution: typeDistribution
+        resourceTypeDistribution: typeDistribution,
+        pageViewsLast30Days: analyticsData.pageViewsLast30Days,
+        downloadsLast30Days: analyticsData.downloadsLast30Days,
+        activeUsersThisMonth: analyticsData.activeUsersThisMonth
       };
 
       console.log('Analytics: Stats calculated, preparing to render charts...');
@@ -157,15 +176,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       .map(([type, count]) => ({ type, count }))
       .sort((a, b) => b.count - a.count);
 
-    // Fallback: If no resources, create sample data for demo
+    // Return empty array if no resources - no hardcoded fallback data
     if (distribution.length === 0) {
-      console.log('Analytics: No resources found, generating fallback type distribution');
-      return [
-        { type: 'guide', count: 5 },
-        { type: 'report', count: 3 },
-        { type: 'tool', count: 2 },
-        { type: 'case-study', count: 1 }
-      ];
+      console.log('Analytics: No resources found, returning empty distribution');
+      return [];
     }
 
     return distribution;
@@ -196,6 +210,175 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       
       data.push(dailyViews);
+    }
+
+    return { labels, data };
+  }
+
+  /**
+   * Load real analytics data from Firestore
+   */
+  private async loadAnalyticsData(): Promise<{
+    pageViewsLast30Days: number;
+    downloadsLast30Days: number;
+    activeUsersThisMonth: number;
+    uniqueSessionsLast30Days: number;
+    uniqueSessionsThisMonth: number;
+  }> {
+    const now = new Date();
+    
+    // Calculate dates
+    const last30Days = new Date(now);
+    last30Days.setDate(last30Days.getDate() - 30);
+    
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    try {
+      // Get page views for last 30 days and this month
+      const pageViewsLast30Days = await this.getAnalyticsCount('analytics_page_views', last30Days);
+      const downloadsLast30Days = await this.getAnalyticsCount('analytics_downloads', last30Days);
+      
+      // Get unique sessions for active users calculation
+      const uniqueSessionsLast30Days = await this.getUniqueSessionsCount(last30Days);
+      const uniqueSessionsThisMonth = await this.getUniqueSessionsCount(startOfMonth);
+
+      return {
+        pageViewsLast30Days,
+        downloadsLast30Days,
+        activeUsersThisMonth: uniqueSessionsThisMonth,
+        uniqueSessionsLast30Days,
+        uniqueSessionsThisMonth
+      };
+    } catch (error) {
+      console.error('Error loading analytics data:', error);
+      return {
+        pageViewsLast30Days: 0,
+        downloadsLast30Days: 0,
+        activeUsersThisMonth: 0,
+        uniqueSessionsLast30Days: 0,
+        uniqueSessionsThisMonth: 0
+      };
+    }
+  }
+
+  /**
+   * Get count of documents in analytics collection since a date
+   */
+  private async getAnalyticsCount(collectionName: string, sinceDate: Date): Promise<number> {
+    try {
+      const q = query(
+        collection(this.firestore, collectionName),
+        where('timestamp', '>=', sinceDate)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.size;
+    } catch (error) {
+      console.error(`Error getting ${collectionName} count:`, error);
+      return 0;
+    }
+  }
+
+  /**
+   * Get unique session count since a date
+   */
+  private async getUniqueSessionsCount(sinceDate: Date): Promise<number> {
+    try {
+      const q = query(
+        collection(this.firestore, 'analytics_page_views'),
+        where('timestamp', '>=', sinceDate)
+      );
+      const snapshot = await getDocs(q);
+      
+      const uniqueSessions = new Set<string>();
+      snapshot.forEach((doc: any) => {
+        const data = doc.data();
+        if (data.sessionId) {
+          uniqueSessions.add(data.sessionId);
+        }
+      });
+      
+      return uniqueSessions.size;
+    } catch (error) {
+      console.error('Error getting unique sessions count:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Calculate active users from analytics data
+   */
+  private calculateActiveUsers(analyticsData: any): number {
+    // Use unique sessions this month as active users
+    // If no data, return 0 instead of hardcoded minimum
+    return analyticsData.uniqueSessionsThisMonth || 0;
+  }
+
+  /**
+   * Generate chart data from real analytics page views
+   */
+  private async generateRealViewsChartData(): Promise<{ labels: string[]; data: number[] }> {
+    const labels: string[] = [];
+    const data: number[] = [];
+
+    // Generate last 30 days
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+
+    try {
+      // Get page views from analytics collection
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const q = query(
+        collection(this.firestore, 'analytics_page_views'),
+        where('timestamp', '>=', thirtyDaysAgo),
+        orderBy('timestamp', 'asc')
+      );
+
+      const snapshot = await getDocs(q);
+      
+      // Group views by day
+      const viewsByDay: { [dateStr: string]: number } = {};
+      
+      // Initialize all days with 0
+      for (let i = 29; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        viewsByDay[dateStr] = 0;
+      }
+
+      // Count actual views
+      snapshot.forEach((doc: any) => {
+        const data = doc.data();
+        if (data.timestamp && data.timestamp.toDate) {
+          const date = data.timestamp.toDate();
+          const dateStr = date.toISOString().split('T')[0];
+          if (viewsByDay[dateStr] !== undefined) {
+            viewsByDay[dateStr]++;
+          }
+        }
+      });
+
+      // Convert to array
+      for (let i = 29; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        data.push(viewsByDay[dateStr] || 0);
+      }
+
+      console.log('Analytics: Real views chart data generated:', { labels: labels.length, data: data.length, totalViews: data.reduce((a, b) => a + b, 0) });
+
+    } catch (error) {
+      console.error('Error generating real views chart data:', error);
+      // If error, return zeros instead of mock data
+      for (let i = 0; i < 30; i++) {
+        data.push(0);
+      }
     }
 
     return { labels, data };

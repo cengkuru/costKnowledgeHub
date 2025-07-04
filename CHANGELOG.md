@@ -2,7 +2,22 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-07-04 15:30:00 UTC
+## [Unreleased] - 2025-07-04 15:45:00 UTC
+
+### Fixed - 2025-07-04 15:45:00 UTC
+- **📊 Analytics Dashboard Data Issues: Fixed hardcoded numbers and incorrect calculations in admin analytics**
+  - Removed hardcoded minimum 15 active users and replaced with proper calculation based on actual data
+  - Fixed "This month" labels to show correct time periods (current month vs last 30 days)
+  - Replaced mock fallback data with real analytics data from Firestore collections
+  - Updated Page Views Over Time chart to use actual analytics_page_views data instead of generated mock data
+  - Enhanced active users calculation to use real analytics data from page views and user sessions
+  - Fixed resource type distribution to only show real data without hardcoded fallbacks
+  - **Problem**: Analytics showed static numbers (minimum 15 users) and "This month" labels that weren't month-based
+  - **Root Cause**: Component used hardcoded fallback values and incorrect time period calculations
+  - **Solution**: Implemented proper analytics aggregation using real Firestore analytics collections
+  - **Result**: Analytics dashboard now displays accurate, real-time data without static numbers
+
+## [Previous] - 2025-07-04 15:30:00 UTC
 
 ### Fixed - 2025-07-04 15:30:00 UTC
 - **🔑 User Creation Authentication Issue: Fixed admin session being overridden when creating new users**

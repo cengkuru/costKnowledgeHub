@@ -35,7 +35,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.totalPageViews') }}</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.totalPageViews) }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.pageViewsLast30Days) }}</p>
           <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.last30Days') }}</p>
         </div>
         <div class="p-3 bg-blue-100 rounded-lg">
@@ -52,7 +52,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.totalDownloads') }}</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.totalDownloads) }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.downloadsLast30Days) }}</p>
           <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.last30Days') }}</p>
         </div>
         <div class="p-3 bg-green-100 rounded-lg">
@@ -68,7 +68,7 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-600">{{ t('admin.analytics.activeUsers') }}</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.activeUsers) }}</p>
+          <p class="text-3xl font-bold text-gray-900 mt-2">{{ formatNumber(stats.activeUsersThisMonth) }}</p>
           <p class="text-sm text-gray-500 mt-1">{{ t('admin.analytics.thisMonth') }}</p>
         </div>
         <div class="p-3 bg-purple-100 rounded-lg">
