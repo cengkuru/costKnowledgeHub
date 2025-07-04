@@ -16,7 +16,7 @@ export class HttpService {
   private auth = inject(Auth);
   private http = inject(HttpClient);
   
-  private readonly baseUrl = `https://us-central1-${environment.firebase.projectId}.cloudfunctions.net`;
+  private readonly baseUrl = `https://us-central1-${environment.firebaseConfig.projectId}.cloudfunctions.net`;
   
   /**
    * Get current user's Firebase ID token
