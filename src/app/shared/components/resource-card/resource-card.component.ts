@@ -73,12 +73,51 @@ export class ResourceCardComponent {
   }
 
   formatDate(): string {
-    const date = new Date(this.resource.datePublished.seconds * 1000);
-    return date.toLocaleDateString(this.i18nService.getCurrentLanguage(), {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    try {
+      let date: Date;
+
+      // Handle different timestamp formats
+      if (!this.resource.datePublished) {
+        // Fallback to current date if datePublished is missing
+        date = new Date();
+      } else if (typeof this.resource.datePublished === 'object' && this.resource.datePublished.seconds) {
+        // Firestore Timestamp with seconds property
+        date = new Date(this.resource.datePublished.seconds * 1000);
+      } else if (this.resource.datePublished instanceof Date) {
+        // Already a Date object
+        date = this.resource.datePublished;
+      } else if (typeof this.resource.datePublished === 'string') {
+        // ISO string or other string format
+        date = new Date(this.resource.datePublished);
+      } else if (typeof this.resource.datePublished === 'number') {
+        // Unix timestamp in milliseconds
+        date = new Date(this.resource.datePublished);
+      } else {
+        // Unknown format, fallback to current date
+        console.warn('Unknown datePublished format:', this.resource.datePublished);
+        date = new Date();
+      }
+
+      // Validate the date is valid
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date created from datePublished:', this.resource.datePublished);
+        date = new Date();
+      }
+
+      return date.toLocaleDateString(this.i18nService.getCurrentLanguage(), {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error, 'datePublished:', this.resource.datePublished);
+      // Fallback to current date on any error
+      return new Date().toLocaleDateString(this.i18nService.getCurrentLanguage(), {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
   }
 
   onDownload(event: Event): void {

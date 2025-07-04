@@ -1,0 +1,227 @@
+<!-- Image Gallery Component -->
+<div class="image-gallery">
+  <!-- Mode Selection -->
+  <div class="gallery-header">
+    <h3 class="gallery-title">{{ i18nService.t('admin.resources.coverImage') }}</h3>
+    
+    <div class="mode-tabs">
+      <button
+        type="button"
+        class="mode-tab"
+        [class.active]="mode === 'ai-suggestions'"
+        (click)="setMode('ai-suggestions')"
+        [attr.aria-selected]="mode === 'ai-suggestions'">
+        <svg class="tab-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+        {{ getModeLabel('ai-suggestions') }}
+      </button>
+      
+      <button
+        type="button"
+        class="mode-tab"
+        [class.active]="mode === 'search'"
+        (click)="setMode('search')"
+        [attr.aria-selected]="mode === 'search'">
+        <svg class="tab-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        {{ getModeLabel('search') }}
+      </button>
+      
+      <button
+        *ngIf="allowManualUpload"
+        type="button"
+        class="mode-tab"
+        [class.active]="mode === 'manual-upload'"
+        (click)="setMode('manual-upload')"
+        [attr.aria-selected]="mode === 'manual-upload'">
+        <svg class="tab-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        {{ getModeLabel('manual-upload') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Bar (for search mode) -->
+  <div *ngIf="mode === 'search'" class="search-section">
+    <div class="search-input-group">
+      <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search for infrastructure, construction, teamwork..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput($event)"
+        (keyup.enter)="searchImages()">
+      <button
+        type="button"
+        class="search-button"
+        (click)="searchImages()"
+        [disabled]="!searchQuery.trim() || isLoading">
+        {{ i18nService.t('common.search') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Manual Upload Section -->
+  <div *ngIf="mode === 'manual-upload'" class="upload-section">
+    <div
+      class="upload-dropzone"
+      [class.drag-over]="dragOverActive"
+      [class.uploading]="isUploading"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)">
+      
+      <div class="upload-content">
+        <svg class="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        
+        <div class="upload-text">
+          <p class="upload-primary">{{ i18nService.t('admin.resources.dragDropImage') }}</p>
+          <p class="upload-secondary">{{ i18nService.t('admin.resources.or') }}</p>
+        </div>
+        
+        <label class="upload-button">
+          <input
+            type="file"
+            accept="image/*"
+            class="hidden-input"
+            (change)="handleFileUpload($event)"
+            [disabled]="isUploading">
+          {{ i18nService.t('admin.resources.selectImage') }}
+        </label>
+        
+        <div class="upload-hints">
+          <p>• {{ i18nService.t('admin.resources.imageFormats') }}</p>
+          <p>• {{ i18nService.t('admin.resources.maxSize') }}</p>
+          <p>• {{ i18nService.t('admin.resources.landscapePreferred') }}</p>
+        </div>
+      </div>
+
+      <!-- Upload Progress -->
+      <div *ngIf="isUploading" class="upload-progress">
+        <div class="progress-spinner"></div>
+        <p>{{ i18nService.t('admin.resources.uploading') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="shouldShowLoading()" class="loading-grid">
+    <div class="image-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8,9]"></div>
+  </div>
+
+  <!-- Image Grid -->
+  <div *ngIf="hasImages() && !shouldShowLoading()" class="image-grid">
+    <div
+      *ngFor="let image of getCurrentImages(); trackBy: function(index, item) { return item.id }"
+      class="image-item"
+      [class.selected]="isImageSelected(image)"
+      (click)="selectImage(image)">
+      
+      <!-- Image Container -->
+      <div class="image-container">
+        <img
+          [src]="image.thumb"
+          [alt]="image.alt_description"
+          class="gallery-image"
+          loading="lazy">
+        
+        <!-- Selection Indicator -->
+        <div class="selection-indicator">
+          <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        
+        <!-- Preview Button -->
+        <button
+          type="button"
+          class="preview-button"
+          (click)="showPreview(image); $event.stopPropagation()"
+          [attr.aria-label]="'Preview image: ' + image.description">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Image Info -->
+      <div class="image-info">
+        <p class="image-description">{{ image.description || image.alt_description }}</p>
+        <p class="image-attribution">{{ getAttributionText(image) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty States -->
+  <div *ngIf="mode === 'search' && searchResults.length === 0 && !isLoading && searchQuery" class="empty-state">
+    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <h4>{{ i18nService.t('admin.resources.noSearchResults') }}</h4>
+    <p>{{ i18nService.t('admin.resources.tryDifferentSearch') }}</p>
+  </div>
+
+  <div *ngIf="mode === 'ai-suggestions' && suggestedImages.length === 0 && !isLoading" class="empty-state">
+    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+    </svg>
+    <h4>{{ i18nService.t('admin.resources.noSuggestions') }}</h4>
+    <p>{{ i18nService.t('admin.resources.tryManualUpload') }}</p>
+  </div>
+
+  <!-- Selected Image Display -->
+  <div *ngIf="selectedImage" class="selected-image-display">
+    <h4>{{ i18nService.t('admin.resources.selectedImage') }}</h4>
+    <div class="selected-image-container">
+      <img [src]="selectedImage.thumb" [alt]="selectedImage.alt_description" class="selected-image">
+      <div class="selected-image-info">
+        <p class="selected-description">{{ selectedImage.description || selectedImage.alt_description }}</p>
+        <p class="selected-attribution">{{ getAttributionText(selectedImage) }}</p>
+        <button
+          type="button"
+          class="clear-selection-button"
+          (click)="clearSelection()">
+          {{ i18nService.t('admin.resources.clearSelection') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div *ngIf="showImagePreview && previewImage" class="modal-overlay" (click)="closePreview()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ previewImage.description || previewImage.alt_description }}</h3>
+      <button type="button" class="modal-close" (click)="closePreview()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <img [src]="previewImage.url" [alt]="previewImage.alt_description" class="preview-image">
+      <div class="preview-info">
+        <p class="preview-attribution">{{ getAttributionText(previewImage) }}</p>
+        <div class="preview-actions">
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="selectImage(previewImage); closePreview()">
+            {{ i18nService.t('admin.resources.selectThisImage') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

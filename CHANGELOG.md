@@ -2,7 +2,20 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-07-04 15:45:00 UTC
+## [Unreleased] - 2025-07-04 16:00:00 UTC
+
+### Fixed - 2025-07-04 16:00:00 UTC
+- **🐛 Resource Card Date Formatting Error: Fixed "Cannot read properties of undefined (reading 'seconds')" error**
+  - Fixed formatDate() method in resource-card.component.ts that assumed datePublished.seconds exists
+  - Added proper null/undefined checks for datePublished timestamp field
+  - Enhanced date formatting to handle various timestamp formats (Firestore Timestamp, Date objects, ISO strings)
+  - Added fallback to current date when datePublished is missing or invalid
+  - **Problem**: TypeError when datePublished field is undefined or has unexpected structure
+  - **Root Cause**: formatDate() directly accessed .seconds property without checking if datePublished exists
+  - **Solution**: Added comprehensive date validation and multiple format support with safe fallbacks
+  - **Result**: Resource cards now render properly without console errors regardless of date field state
+
+## [Previous] - 2025-07-04 15:45:00 UTC
 
 ### Fixed - 2025-07-04 15:45:00 UTC
 - **📊 Analytics Dashboard Data Issues: Fixed hardcoded numbers and incorrect calculations in admin analytics**
