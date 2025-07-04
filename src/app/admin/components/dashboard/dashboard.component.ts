@@ -158,6 +158,11 @@ export class DashboardComponent implements OnInit {
   }
   
   formatActivityTime(date: Date | any): string {
+    // Handle null or undefined dates
+    if (!date) {
+      return 'Unknown time';
+    }
+    
     // Handle Firestore Timestamp objects
     const actualDate = date.toDate ? date.toDate() : new Date(date);
     

@@ -15,6 +15,7 @@ admin.initializeApp();
 // Export admin functions
 export { setAdminClaim, createFirstAdmin } from './admin';
 export { setFirstAdmin } from './admin/setFirstAdmin';
+export { makeFirstAdminHTTP } from './admin/makeFirstAdminHTTP';
 
 // Export AI functions
 export { generateMultiLanguageSummary, suggestTags, healthCheck as aiHealthCheck } from './ai';

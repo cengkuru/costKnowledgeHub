@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-04 22:20:00 UTC
+- **🔧 Dashboard Component: Fixed null date handling in formatActivityTime method**
+  - Added null check to prevent "Cannot read properties of null (reading 'toDate')" error (src/app/admin/components/dashboard/dashboard.component.ts:162)
+  - Now returns "Unknown time" when date is null or undefined instead of crashing
+  - **Problem**: Activity list was throwing TypeError when trying to format null timestamps
+  - **Solution**: Added defensive check at beginning of formatActivityTime method
+  - **Result**: Dashboard now handles missing timestamps gracefully without console errors
+
 ### Fixed - 2025-01-04 21:15:00 UTC
 - **🔧 Admin Registration: Fixed Cloud Function call for setting first admin privileges**
   - Created new setFirstAdmin Cloud Function for first user registration (functions/src/admin/setFirstAdmin.ts)
