@@ -4,6 +4,18 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-04 23:00:00 UTC
+- **🔧 Admin Layout: Fixed profile navigation and translation issues**
+  - Created profile component for admin module (src/app/admin/components/profile/profile.component.ts)
+  - Added profile route to admin routing (src/app/admin/admin.routes.ts:41-43)
+  - Fixed [object Object] translation issue by renaming conflicting settings key to settingsPage (src/assets/i18n/*.json)
+  - Updated all settings component references to use admin.settingsPage prefix (src/app/admin/components/settings/settings.component.ts)
+  - Added missing profile and role translations in all languages
+  - Added missing common.save and common.saving translations
+  - **Problem**: Profile link didn't work and Settings showed [object Object] due to translation key conflict
+  - **Solution**: Added profile component/route and renamed conflicting translation keys
+  - **Result**: Profile navigation works correctly and all menu items display proper text
+
 ### Fixed - 2025-01-03 23:23:00 UTC
 - **🔐 Admin Resources Access: Fixed admin users not seeing all resources in admin panel**
   - Updated Firestore security rules to properly handle admin queries (firestore.rules:25-26)

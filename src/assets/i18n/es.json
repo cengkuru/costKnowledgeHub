@@ -18,7 +18,9 @@
     "toggleFilters": "Alternar filtros",
     "searchPlaceholder": "Buscar recursos, herramientas y guías...",
     "searchSuggestions": "Las sugerencias de búsqueda aparecerán aquí",
-    "fieldRequired": "Este campo es obligatorio"
+    "fieldRequired": "Este campo es obligatorio",
+    "save": "Guardar",
+    "saving": "Guardando..."
   },
   "navigation": {
     "home": "Inicio",
