@@ -30,18 +30,22 @@ const COST_TOPICS = [
 ];
 
 export const suggestTags = onRequest({
-  cors: true,
+  cors: [
+    'http://localhost:4200',
+    'http://localhost:5000',
+    'https://knowledgehub-2ed2f.web.app',
+    'https://knowledgehub-2ed2f.firebaseapp.com'
+  ],
   memory: '256MiB',
   timeoutSeconds: 60,
   maxInstances: 10
 }, async (req, res) => {
-  // CORS headers
-  res.set('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-
+  // Handle CORS preflight for OPTIONS requests
   if (req.method === 'OPTIONS') {
-    res.status(200).send();
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
     return;
   }
 

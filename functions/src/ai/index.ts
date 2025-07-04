@@ -6,16 +6,21 @@ export { suggestTags } from './tagSuggester';
 import { onRequest } from 'firebase-functions/v2/https';
 
 export const healthCheck = onRequest({
-  cors: true,
+  cors: [
+    'http://localhost:4200',
+    'http://localhost:5000',
+    'https://knowledgehub-2ed2f.web.app',
+    'https://knowledgehub-2ed2f.firebaseapp.com'
+  ],
   memory: '128MiB',
   timeoutSeconds: 10
 }, async (req, res) => {
-  res.set('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-
+  // Handle CORS preflight for OPTIONS requests
   if (req.method === 'OPTIONS') {
-    res.status(200).send();
+    res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
     return;
   }
 

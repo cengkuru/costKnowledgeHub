@@ -238,7 +238,7 @@ export class AIService {
    * Check if AI features are available
    */
   checkAIAvailability(): Observable<boolean> {
-    const url = `${this.functionsUrl}/healthCheck`;
+    const url = `${this.functionsUrl}/aiHealthCheck`;
     
     return this.http.get<{ available: boolean }>(url).pipe(
       timeout(5000),

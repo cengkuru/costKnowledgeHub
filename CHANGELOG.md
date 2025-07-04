@@ -4,6 +4,25 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 20:25:00 UTC
+- **🎨 Skip Links Accessibility Design: Made skip links invisible until focused**
+  - Updated skip links CSS to position off-screen by default (src/app/admin/components/resources/resource-form.component.scss:21-47)
+  - Skip links now only appear when focused via keyboard navigation (position: absolute; left: -9999px)
+  - Reduced keyboard help button opacity and made it more subtle (opacity: 0.6, subtle background)
+  - **Problem**: Skip links were always visible and obtrusive, violating EMOTIONAL_DESIGN_SYSTEM principles
+  - **Solution**: Made skip links follow progressive disclosure - only visible when needed for accessibility
+  - **Result**: Clean interface with 3 or fewer focal points while maintaining full keyboard accessibility
+
+### Fixed - 2025-01-03 20:00:00 UTC
+- **🔧 AI Functions CORS and Health Check: Fixed 404 error and CORS configuration for AI functions**
+  - Fixed AI service calling wrong function name - changed /healthCheck to /aiHealthCheck (src/app/core/services/ai.service.ts:241)
+  - Updated all AI functions to use proper CORS array configuration (functions/src/ai/index.ts:9-14, functions/src/ai/summaryGenerator.ts:24-29, functions/src/ai/tagSuggester.ts:33-38, functions/src/ai/extractUrlMetadata.ts:13-18)
+  - Added explicit OPTIONS request handling for all AI functions
+  - **Problem**: AI health check returning 404 error and CORS policy errors
+  - **Root Cause**: Function was exported as aiHealthCheck but frontend was calling healthCheck
+  - **Solution**: Updated frontend to use correct function name and fixed CORS configuration
+  - **Result**: AI health check and all AI functions now work properly with CORS
+
 ### Fixed - 2025-07-04 08:10:00 UTC
 - **🌐 Cloud Functions CORS Configuration: Fixed CORS errors for all Cloud Functions**
   - Updated CORS configuration syntax for Firebase Functions v2 (functions/src/userSync.ts)

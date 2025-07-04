@@ -10,13 +10,18 @@ export const extractUrlMetadata = functions.https.onRequest(
   {
     timeoutSeconds: 60,
     memory: '1GiB',
-    cors: true
+    cors: [
+      'http://localhost:4200',
+      'http://localhost:5000',
+      'https://knowledgehub-2ed2f.web.app',
+      'https://knowledgehub-2ed2f.firebaseapp.com'
+    ]
   },
   async (req, res) => {
-    // Handle CORS preflight
+    // Handle CORS preflight for OPTIONS requests
     if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       res.set('Access-Control-Max-Age', '3600');
       res.status(204).send('');
       return;
