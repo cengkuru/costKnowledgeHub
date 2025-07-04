@@ -17,7 +17,8 @@
     "clearSearch": "Limpiar búsqueda",
     "toggleFilters": "Alternar filtros",
     "searchPlaceholder": "Buscar recursos, herramientas y guías...",
-    "searchSuggestions": "Las sugerencias de búsqueda aparecerán aquí"
+    "searchSuggestions": "Las sugerencias de búsqueda aparecerán aquí",
+    "fieldRequired": "Este campo es obligatorio"
   },
   "navigation": {
     "home": "Inicio",
@@ -153,41 +154,31 @@
     "createAccount": "Crear Cuenta"
   },
   "register": {
-    "title": "Crea Tu Cuenta",
-    "subtitle": "¿Ya tienes una cuenta?",
-    "signInLink": "Iniciar sesión",
+    "title": "Crear Cuenta de Administrador",
+    "subtitle": "Registrar el primer administrador del Knowledge Hub",
     "displayName": "Nombre de Usuario",
-    "displayNamePlaceholder": "Ingresa tu nombre",
     "email": "Dirección de Correo Electrónico",
-    "emailPlaceholder": "Ingresa tu correo electrónico",
     "password": "Contraseña",
-    "passwordPlaceholder": "Crea una contraseña (mín. 6 caracteres)",
     "confirmPassword": "Confirmar Contraseña",
-    "confirmPasswordPlaceholder": "Vuelve a ingresar tu contraseña",
-    "passwordStrength": {
-      "weak": "Débil",
-      "medium": "Media",
-      "strong": "Fuerte"
-    },
-    "terms": {
-      "prefix": "Acepto los",
-      "link": "Términos y Condiciones",
-      "suffix": "y la Política de Privacidad"
-    },
-    "submitButton": "Crear Cuenta",
-    "loading": "Creando cuenta...",
-    "success": "¡Cuenta creada exitosamente! Redirigiendo...",
-    "backToHome": "← Volver al Inicio",
-    "errors": {
-      "requiredFields": "Por favor completa todos los campos requeridos",
-      "passwordsDontMatch": "Las contraseñas no coinciden",
-      "acceptTerms": "Por favor acepta los términos y condiciones",
-      "emailInUse": "Este correo ya está registrado. Por favor inicia sesión.",
-      "invalidEmail": "Por favor ingresa un correo electrónico válido",
-      "weakPassword": "La contraseña es muy débil. Usa al menos 6 caracteres.",
-      "operationNotAllowed": "El registro está deshabilitado actualmente. Contacta al soporte.",
-      "genericError": "Ocurrió un error durante el registro"
-    }
+    "passwordStrength": "Fortaleza de la Contraseña",
+    "passwordWeak": "Débil",
+    "passwordMedium": "Media",
+    "passwordStrong": "Fuerte",
+    "acceptTerms": "Acepto los ",
+    "termsLink": "Términos y Condiciones",
+    "createAccount": "Crear Cuenta",
+    "creating": "Creando Cuenta...",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Iniciar sesión",
+    "note": "Nota",
+    "firstUserNote": "El primer usuario registrado recibirá automáticamente privilegios de administrador.",
+    "emailInUse": "Este correo electrónico ya está registrado.",
+    "weakPassword": "La contraseña es muy débil. Usa al menos 6 caracteres.",
+    "invalidEmail": "Por favor ingresa un correo electrónico válido.",
+    "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "termsRequired": "Debes aceptar los términos y condiciones.",
+    "error": "Error en el registro. Por favor intenta de nuevo."
   },
   "home": {
     "title": "CoST Knowledge Hub",

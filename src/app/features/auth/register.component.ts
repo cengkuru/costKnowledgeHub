@@ -1,150 +1,197 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { I18nService } from '../../core/services/i18n.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { User } from '../../core/services/user.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
-  email = '';
-  password = '';
-  confirmPassword = '';
-  displayName = '';
-  acceptTerms = false;
+export class RegisterComponent implements OnInit {
+  registerForm: FormGroup;
   loading = false;
-  errorMessage = '';
-  successMessage = '';
-  showPassword = false;
-  showConfirmPassword = false;
-  
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  
-  constructor(
-    public i18nService: I18nService
-  ) {}
+  error = '';
+  passwordVisible = false;
+  confirmPasswordVisible = false;
+  passwordStrength = 0;
 
-  get passwordStrength(): { strength: number; label: string; color: string } {
-    if (!this.password) {
-      return { strength: 0, label: '', color: '' };
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router,
+    public i18nService: I18nService
+  ) {
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+      displayName: ['', Validators.required],
+      acceptTerms: [false, Validators.requiredTrue]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  ngOnInit() {
+    // Check if user is already logged in
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.router.navigate(['/admin']);
+      }
+    });
+
+    // Watch password changes for strength indicator
+    this.registerForm.get('password')?.valueChanges.subscribe(password => {
+      this.passwordStrength = this.calculatePasswordStrength(password);
+    });
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (!password || !confirmPassword) {
+      return null;
     }
 
+    if (password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    } else {
+      confirmPassword.setErrors(null);
+      return null;
+    }
+  }
+
+  calculatePasswordStrength(password: string): number {
+    if (!password) return 0;
+    
     let strength = 0;
     
     // Length check
-    if (this.password.length >= 8) strength++;
-    if (this.password.length >= 12) strength++;
+    if (password.length >= 8) strength += 20;
+    if (password.length >= 12) strength += 20;
     
     // Character variety checks
-    if (/[a-z]/.test(this.password)) strength++;
-    if (/[A-Z]/.test(this.password)) strength++;
-    if (/[0-9]/.test(this.password)) strength++;
-    if (/[^a-zA-Z0-9]/.test(this.password)) strength++;
+    if (/[a-z]/.test(password)) strength += 20;
+    if (/[A-Z]/.test(password)) strength += 20;
+    if (/[0-9]/.test(password)) strength += 10;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 10;
     
-    // Determine label and color
-    let label = '';
-    let color = '';
-    
-    if (strength <= 2) {
-      label = this.i18nService.t('register.passwordStrength.weak');
-      color = 'text-red-600';
-    } else if (strength <= 4) {
-      label = this.i18nService.t('register.passwordStrength.medium');
-      color = 'text-yellow-600';
-    } else {
-      label = this.i18nService.t('register.passwordStrength.strong');
-      color = 'text-green-600';
-    }
-    
-    return { strength: Math.min(strength, 6), label, color };
+    return Math.min(strength, 100);
   }
 
-  get passwordsMatch(): boolean {
-    return this.password === this.confirmPassword && this.password.length > 0;
+  getPasswordStrengthClass(): string {
+    if (this.passwordStrength < 40) return 'weak';
+    if (this.passwordStrength < 70) return 'medium';
+    return 'strong';
   }
 
-  get isFormValid(): boolean {
-    return this.email.length > 0 &&
-           this.password.length >= 6 &&
-           this.passwordsMatch &&
-           this.displayName.trim().length > 0 &&
-           this.acceptTerms;
+  getPasswordStrengthText(): string {
+    if (this.passwordStrength < 40) return this.i18nService.t('register.passwordWeak');
+    if (this.passwordStrength < 70) return this.i18nService.t('register.passwordMedium');
+    return this.i18nService.t('register.passwordStrong');
   }
 
-  async onSubmit(): Promise<void> {
-    if (!this.isFormValid) {
-      this.errorMessage = this.i18nService.t('register.errors.requiredFields');
-      return;
-    }
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
 
-    if (!this.acceptTerms) {
-      this.errorMessage = this.i18nService.t('register.errors.acceptTerms');
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
+  }
+
+  async onSubmit() {
+    if (this.registerForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.errorMessage = '';
+    this.error = '';
 
     try {
-      // Create account with Firebase Auth
-      const credential = await this.authService.signUp(this.email, this.password);
+      const { email, password, displayName } = this.registerForm.value;
+
+      // Create user account
+      const userCredential = await this.authService.signUp(email, password);
       
-      // Update display name immediately
-      if (this.displayName.trim()) {
-        await this.authService.updateUserProfile(this.displayName.trim());
+      if (userCredential.user) {
+        // Update display name
+        await this.authService.updateUserProfile(displayName);
+
+        // Check if this is the first user (will be admin)
+        const users = await this.userService.getUsers();
+        const isFirstUser = users.length === 0;
+
+        // Create user document in Firestore
+        // UserService.createUser handles the Firestore document creation
+        // For the first user, we need to set admin role via Cloud Function
+        if (isFirstUser) {
+          // Set admin role for first user
+          await this.authService.setAdminPrivilege(userCredential.user.uid, true);
+        }
+
+        // If first user, set admin custom claim
+        if (isFirstUser) {
+          // Note: In production, this should be done via a Cloud Function
+          // For now, the user will need to sign out and back in to get admin privileges
+          console.log('First user registered - admin role assigned');
+        }
+
+        // Navigate to profile setup or admin dashboard
+        this.router.navigate(['/admin']);
       }
-      
-      // Show success message briefly
-      this.successMessage = this.i18nService.t('register.success');
-      
-      // Redirect to admin dashboard (profile setup is handled if needed)
-      setTimeout(async () => {
-        await this.router.navigate(['/admin']);
-      }, 1500);
-      
     } catch (error: any) {
-      this.loading = false;
+      console.error('Registration error:', error);
       
-      // Handle specific Firebase auth errors
+      // Handle specific Firebase errors
       switch (error.code) {
         case 'auth/email-already-in-use':
-          this.errorMessage = this.i18nService.t('register.errors.emailInUse');
-          break;
-        case 'auth/invalid-email':
-          this.errorMessage = this.i18nService.t('register.errors.invalidEmail');
-          break;
-        case 'auth/operation-not-allowed':
-          this.errorMessage = this.i18nService.t('register.errors.operationNotAllowed');
+          this.error = this.i18nService.t('register.emailInUse');
           break;
         case 'auth/weak-password':
-          this.errorMessage = this.i18nService.t('register.errors.weakPassword');
+          this.error = this.i18nService.t('register.weakPassword');
+          break;
+        case 'auth/invalid-email':
+          this.error = this.i18nService.t('register.invalidEmail');
           break;
         default:
-          this.errorMessage = this.i18nService.t('register.errors.genericError') + ' (' + error.code + ')';
+          this.error = this.i18nService.t('register.error');
       }
+    } finally {
+      this.loading = false;
     }
   }
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
+  getFieldError(fieldName: string): string {
+    const field = this.registerForm.get(fieldName);
+    if (!field || !field.touched || !field.errors) {
+      return '';
+    }
 
-  toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
+    if (field.errors['required']) {
+      return this.i18nService.t('common.fieldRequired');
+    }
+    if (field.errors['email']) {
+      return this.i18nService.t('register.invalidEmail');
+    }
+    if (field.errors['minlength']) {
+      return this.i18nService.t('register.passwordTooShort');
+    }
+    if (fieldName === 'confirmPassword' && field.errors['passwordMismatch']) {
+      return this.i18nService.t('register.passwordMismatch');
+    }
+    if (fieldName === 'acceptTerms' && field.errors['requiredTrue']) {
+      return this.i18nService.t('register.termsRequired');
+    }
 
-  navigateToLogin(): void {
-    this.router.navigate(['/login']);
-  }
-
-  navigateBack(): void {
-    this.router.navigate(['/home']);
+    return '';
   }
 }

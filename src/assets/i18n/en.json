@@ -17,7 +17,8 @@
     "clearSearch": "Clear search",
     "toggleFilters": "Toggle filters",
     "searchPlaceholder": "Search resources, tools, and guides...",
-    "searchSuggestions": "Search suggestions will appear here"
+    "searchSuggestions": "Search suggestions will appear here",
+    "fieldRequired": "This field is required"
   },
   "navigation": {
     "home": "Home",
@@ -188,6 +189,33 @@
       "operationNotAllowed": "Registration is currently disabled. Please contact support.",
       "genericError": "An error occurred during registration"
     }
+  },
+  "register": {
+    "title": "Create Admin Account",
+    "subtitle": "Register the first administrator for the Knowledge Hub",
+    "displayName": "Display Name",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "passwordStrength": "Password Strength",
+    "passwordWeak": "Weak",
+    "passwordMedium": "Medium",
+    "passwordStrong": "Strong",
+    "acceptTerms": "I agree to the ",
+    "termsLink": "Terms and Conditions",
+    "createAccount": "Create Account",
+    "creating": "Creating Account...",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "note": "Note",
+    "firstUserNote": "The first registered user will automatically be assigned admin privileges.",
+    "emailInUse": "This email is already registered.",
+    "weakPassword": "Password is too weak. Please use at least 6 characters.",
+    "invalidEmail": "Please enter a valid email address.",
+    "passwordTooShort": "Password must be at least 6 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "termsRequired": "You must accept the terms and conditions.",
+    "error": "Registration failed. Please try again."
   },
   "home": {
     "title": "CoST Knowledge Hub",
