@@ -4,6 +4,16 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-04 21:15:00 UTC
+- **🔧 Admin Registration: Fixed Cloud Function call for setting first admin privileges**
+  - Created new setFirstAdmin Cloud Function for first user registration (functions/src/admin/setFirstAdmin.ts)
+  - Fixed incorrect function name - was calling non-existent 'setAdminRole' instead of 'setAdminClaim'
+  - Updated AuthService to call correct function with proper parameters (email instead of userId)
+  - Added special setFirstAdmin method that doesn't require existing admin privileges
+  - **Problem**: Registration worked but admin privileges weren't set due to calling wrong function
+  - **Solution**: Created dedicated setFirstAdmin function for initial setup that bypasses admin check
+  - **Result**: First registered user now properly receives admin role without CORS issues
+
 ### Fixed - 2025-01-04 15:45:00 UTC
 - **🔧 Registration Component: Fixed build errors and import issues**
   - Fixed incorrect User model import path - now imports from UserService (src/app/features/auth/register.component.ts:8)

@@ -134,8 +134,8 @@ export class RegisterComponent implements OnInit {
         // UserService.createUser handles the Firestore document creation
         // For the first user, we need to set admin role via Cloud Function
         if (isFirstUser) {
-          // Set admin role for first user
-          await this.authService.setAdminPrivilege(userCredential.user.uid, true);
+          // Set admin role for first user using special first admin function
+          await this.authService.setFirstAdmin(email);
         }
 
         // If first user, set admin custom claim

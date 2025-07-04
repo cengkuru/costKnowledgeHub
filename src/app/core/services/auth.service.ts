@@ -289,13 +289,27 @@ export class AuthService {
   /**
    * Set admin privileges for a user (must be called from Cloud Function)
    */
-  async setAdminPrivilege(userId: string, isAdmin: boolean): Promise<void> {
+  async setAdminPrivilege(email: string, makeAdmin: boolean): Promise<void> {
     try {
-      const setAdminRole = httpsCallable(this.functions, 'setAdminRole');
-      const result = await setAdminRole({ userId, isAdmin });
+      const setAdminClaim = httpsCallable(this.functions, 'setAdminClaim');
+      const result = await setAdminClaim({ email, makeAdmin });
       console.log('Admin privilege set:', result);
     } catch (error) {
       console.error('Error setting admin privilege:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Set admin privileges for the first user (no existing admins)
+   */
+  async setFirstAdmin(email: string): Promise<void> {
+    try {
+      const setFirstAdmin = httpsCallable(this.functions, 'setFirstAdmin');
+      const result = await setFirstAdmin({ email });
+      console.log('First admin set:', result);
+    } catch (error) {
+      console.error('Error setting first admin:', error);
       throw error;
     }
   }
