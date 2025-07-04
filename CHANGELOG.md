@@ -4,6 +4,18 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-05 00:55:00 UTC
+- **🎨 Admin Resources Layout: Redesigned using card-based layout following EMOTIONAL_DESIGN_SYSTEM.md principles**
+  - Replaced table-based layout with responsive card grid (src/app/admin/components/resources/resource-management.component.html:124-201)
+  - Removed excessive animations and decorative elements from SCSS (src/app/admin/components/resources/resource-management.component.scss)
+  - Applied clean, functional design with proper spacing and minimal transitions (200-250ms)
+  - Fixed horizontal scroll issue by eliminating table constraints
+  - Implemented professional card design with subtle hover effects (translateY only)
+  - Fixed SCSS compound selector errors in resource-form.component.scss
+  - **Problem**: Layout was "horrible and congested with horizontal scroll", violating design principles
+  - **Solution**: Card-based responsive layout with minimal, functional styling
+  - **Result**: Clean, professional interface without horizontal scrolling
+
 ### Changed - 2025-01-05 00:30:00 UTC
 - **🎨 Admin Sidebar: Redesigned to follow EMOTIONAL_DESIGN_SYSTEM.md principles**
   - Simplified HTML structure by removing duplicate class bindings (src/app/admin/admin-layout.component.html)

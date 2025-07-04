@@ -91,7 +91,7 @@
                 <label *ngFor="let option of filterOptions.type" class="flex items-center">
                   <input
                     type="checkbox"
-                    class="rounded border-gray-300 text-cost-cyan focus:ring-cost-cyan"
+                    class="form-checkbox"
                     [checked]="isFilterActive('type', option.value)"
                     (change)="onFilterChange('type', option.value, $any($event.target).checked)"
                   >
@@ -108,7 +108,7 @@
                 <label *ngFor="let option of filterOptions.topic" class="flex items-center">
                   <input
                     type="checkbox"
-                    class="rounded border-gray-300 text-cost-cyan focus:ring-cost-cyan"
+                    class="form-checkbox"
                     [checked]="isFilterActive('topic', option.value)"
                     (change)="onFilterChange('topic', option.value, $any($event.target).checked)"
                   >
@@ -125,7 +125,7 @@
                 <label *ngFor="let option of filterOptions.country" class="flex items-center">
                   <input
                     type="checkbox"
-                    class="rounded border-gray-300 text-cost-cyan focus:ring-cost-cyan"
+                    class="form-checkbox"
                     [checked]="isFilterActive('country', option.value)"
                     (change)="onFilterChange('country', option.value, $any($event.target).checked)"
                   >
@@ -142,7 +142,7 @@
                 <label *ngFor="let option of filterOptions.language" class="flex items-center">
                   <input
                     type="checkbox"
-                    class="rounded border-gray-300 text-cost-cyan focus:ring-cost-cyan"
+                    class="form-checkbox"
                     [checked]="isFilterActive('language', option.value)"
                     (change)="onFilterChange('language', option.value, $any($event.target).checked)"
                   >

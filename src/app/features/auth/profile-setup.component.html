@@ -34,22 +34,20 @@
       <!-- Form -->
       <form (ngSubmit)="onSubmit()" #profileForm="ngForm" class="space-y-6">
         <!-- Display Name Field -->
-        <div>
-          <label for="displayName" class="block text-sm font-medium text-gray-700">
+        <div class="form-group">
+          <label for="displayName" class="form-label">
             {{ i18nService.t('profileSetup.displayNameLabel') }}
           </label>
-          <div class="mt-1">
-            <input
-              id="displayName"
-              name="displayName"
-              type="text"
-              [(ngModel)]="displayName"
-              required
-              autocomplete="name"
-              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-cost-teal focus:border-cost-teal sm:text-sm"
-              [placeholder]="i18nService.t('profileSetup.displayNamePlaceholder')">
-          </div>
-          <p class="mt-2 text-xs text-gray-500">
+          <input
+            id="displayName"
+            name="displayName"
+            type="text"
+            [(ngModel)]="displayName"
+            required
+            autocomplete="name"
+            class="form-input"
+            [placeholder]="i18nService.t('profileSetup.displayNamePlaceholder')">
+          <p class="form-help">
             {{ i18nService.t('profileSetup.displayNameHelp') }}
           </p>
         </div>
