@@ -193,7 +193,16 @@ export class FirestoreService {
             status: data.status,
             type: data.type
           });
-          resources.push({ id: doc.id, ...data } as Resource);
+          
+          // Ensure topics and tags arrays exist
+          const resource = {
+            id: doc.id,
+            ...data,
+            topics: data.topics || [],
+            tags: data.tags || []
+          } as Resource;
+          
+          resources.push(resource);
           lastDocument = doc;
         }
         index++;

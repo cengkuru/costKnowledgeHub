@@ -218,9 +218,11 @@ export class ResourceService {
           countryCount[resource.country] = (countryCount[resource.country] || 0) + 1;
 
           // Count tags/topics
-          resource.tags.forEach(tag => {
-            topicCount[tag] = (topicCount[tag] || 0) + 1;
-          });
+          if (resource.tags && resource.tags.length > 0) {
+            resource.tags.forEach(tag => {
+              topicCount[tag] = (topicCount[tag] || 0) + 1;
+            });
+          }
         });
 
         return {

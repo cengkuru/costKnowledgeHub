@@ -2,7 +2,20 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-07-04 16:20:00 UTC
+## [Unreleased] - 2025-07-04 16:25:00 UTC
+
+### Fixed - 2025-07-04 16:25:00 UTC
+- **📋 Resource Details Page: Fixed empty Topics & Tags section by ensuring arrays are initialized**
+  - Fixed Topics & Tags section showing empty even when data might exist in Firestore
+  - Added null safety checks in firestore.service.ts to ensure topics and tags are always arrays
+  - Updated resource loading to initialize empty arrays for topics and tags if they don't exist
+  - Fixed resource.service.ts filtering and counting methods to handle missing topics/tags gracefully
+  - **Problem**: Topics & Tags section was empty because resources loaded from Firestore might not have these fields
+  - **Root Cause**: Firestore documents created before topics/tags were added lack these array fields
+  - **Solution**: Added defensive initialization during resource loading to ensure arrays always exist
+  - **Result**: Topics & Tags section now displays properly, showing content when available or remaining hidden when empty
+
+## [Previous] - 2025-07-04 16:20:00 UTC
 
 ### Fixed - 2025-07-04 16:20:00 UTC
 - **🛠️ Image Gallery Component Build Errors: Fixed trackBy syntax and type compatibility issues**
