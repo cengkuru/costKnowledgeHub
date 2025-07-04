@@ -303,7 +303,7 @@
         "warning": "Advertencia"
       }
     },
-    "settings": {
+    "settingsPage": {
       "title": "Configuración",
       "subtitle": "Configurar ajustes del sistema y preferencias",
       "tabs": {
@@ -393,6 +393,24 @@
         "min": "El valor debe ser al menos {{min}}",
         "max": "El valor debe ser máximo {{max}}"
       }
+    },
+    "profile": {
+      "title": "Mi Perfil",
+      "subtitle": "Administra tu información personal y preferencias",
+      "displayName": "Nombre para Mostrar",
+      "displayNamePlaceholder": "Ingresa tu nombre para mostrar",
+      "email": "Dirección de Correo",
+      "emailNote": "El correo no se puede cambiar",
+      "photoURL": "URL de Foto de Perfil",
+      "photoURLPlaceholder": "https://ejemplo.com/foto.jpg",
+      "accountInfo": "Información de la Cuenta",
+      "userId": "ID de Usuario",
+      "createdAt": "Cuenta Creada",
+      "lastLogin": "Último Inicio de Sesión"
+    },
+    "role": {
+      "administrator": "Administrador",
+      "user": "Usuario"
     }
   }
 }

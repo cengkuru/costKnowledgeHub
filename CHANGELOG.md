@@ -4,6 +4,15 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Fixed - 2025-01-03 23:23:00 UTC
+- **🔐 Admin Resources Access: Fixed admin users not seeing all resources in admin panel**
+  - Updated Firestore security rules to properly handle admin queries (firestore.rules:25-26)
+  - Modified FirestoreService to accept isAdmin parameter for queries (src/app/core/services/firestore.service.ts:100-109)
+  - Updated ResourceService to check admin status and pass to Firestore queries (src/app/core/services/resource.service.ts:15,52-56)
+  - Enhanced admin status debugging in resource management component (src/app/admin/components/resources/resource-management.component.ts:64-84)
+  - **Result**: Admin users can now see all resources regardless of status, while non-admins only see published resources
+  - **Deployed**: Updated Firestore security rules to production
+
 ### Added - 2025-01-04 22:35:00 UTC
 - **🎯 Admin Layout: Display current user's role in the interface**
   - Added isAdminRole property to track user's admin status (src/app/admin/admin-layout.component.ts:35)

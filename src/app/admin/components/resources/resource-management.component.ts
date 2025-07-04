@@ -61,11 +61,26 @@ export class ResourceManagementComponent implements OnInit {
   async checkAdminStatus(): Promise<void> {
     try {
       const isAdmin = await this.authService.isAdmin();
+      console.log('=== ADMIN STATUS CHECK ===');
       console.log('User admin status:', isAdmin);
+      console.log('Current user:', this.authService.currentUser);
+      console.log('User email:', this.authService.userEmail);
+      console.log('User ID:', this.authService.userId);
+      
+      // Force token refresh to get latest claims
+      if (this.authService.currentUser) {
+        const idToken = await this.authService.currentUser.getIdToken(true);
+        const idTokenResult = await this.authService.currentUser.getIdTokenResult();
+        console.log('Token claims:', idTokenResult.claims);
+        console.log('Admin claim value:', idTokenResult.claims['admin']);
+      }
+      console.log('=========================');
       
       if (!isAdmin) {
         console.warn('User is not an admin. They may only see published resources.');
         this.showToast('Limited access: You can only view published resources', true);
+      } else {
+        console.log('✅ User confirmed as admin - should see all resources');
       }
     } catch (error) {
       console.error('Error checking admin status:', error);

@@ -18,8 +18,12 @@ service cloud.firestore {
     
     // Resources collection
     match /resources/{resourceId} {
-      // Anyone can read published resources
-      allow read: if resource.data.status == 'published' || isAdmin();
+      // Read rules:
+      // - Admins can read all resources
+      // - Non-admins and unauthenticated users can read published resources
+      // Note: When querying collections, resource.data is not available
+      allow read: if isAdmin() || 
+        (resource.data.status == 'published');
       
       // Only admins can create, update, or delete resources
       allow create: if isAdmin();

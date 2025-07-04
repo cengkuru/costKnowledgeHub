@@ -6,12 +6,14 @@ import { FilterGroup, ActiveFilters, DEFAULT_FILTERS } from '../models/filter.mo
 import { COST_TOPICS } from '../models/topic.model';
 import { COST_COUNTRIES } from '../models/country.model';
 import { FirestoreService } from './firestore.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResourceService {
   private firestoreService = inject(FirestoreService);
+  private authService = inject(AuthService);
 
   private resourcesSubject = new BehaviorSubject<Resource[]>([]);
   private filtersSubject = new BehaviorSubject<FilterGroup>({
@@ -47,7 +49,12 @@ export class ResourceService {
     private async loadResources(): Promise<void> {
     try {
       this.loadingSubject.next(true);
-      const result = await this.firestoreService.getResources();
+      
+      // Check if the current user is an admin
+      const isAdmin = await this.authService.isAdmin();
+      console.log('ResourceService - Loading resources as admin:', isAdmin);
+      
+      const result = await this.firestoreService.getResources(undefined, 1000, undefined, isAdmin);
       this.resourcesSubject.next(result.resources);
 
       // Build filters from loaded resources

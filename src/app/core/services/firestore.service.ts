@@ -97,7 +97,7 @@ export class FirestoreService {
   /**
    * Get resources with filters
    */
-  async getResources(filter?: ResourceFilter, pageSize: number = 20, lastDoc?: any): Promise<{
+  async getResources(filter?: ResourceFilter, pageSize: number = 20, lastDoc?: any, isAdmin: boolean = false): Promise<{
     resources: Resource[];
     hasMore: boolean;
     lastDocument?: any;
@@ -106,6 +106,7 @@ export class FirestoreService {
       console.log('=== FIRESTORE GET RESOURCES DEBUG ===');
       console.log('Filter:', filter);
       console.log('Page size:', pageSize);
+      console.log('Is admin:', isAdmin);
       
       const constraints: any[] = [];
 
@@ -125,6 +126,11 @@ export class FirestoreService {
 
         if (filter.country && filter.country.length > 0) {
           constraints.push(where('country', 'in', filter.country));
+        }
+        
+        // Only apply status filter if explicitly provided
+        if (filter.status !== undefined) {
+          constraints.push(where('status', '==', filter.status));
         }
       }
 

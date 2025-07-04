@@ -26,10 +26,10 @@ import {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="py-6">
             <h1 class="text-2xl font-semibold text-cost-charcoal">
-              {{ i18nService.t('admin.settings.title') }}
+              {{ i18nService.t('admin.settingsPage.title') }}
             </h1>
             <p class="mt-1 text-sm text-gray-600">
-              {{ i18nService.t('admin.settings.subtitle') }}
+              {{ i18nService.t('admin.settingsPage.subtitle') }}
             </p>
           </div>
         </div>
@@ -48,7 +48,7 @@ import {
                 class="group rounded-md px-3 py-2 flex items-center text-sm font-medium w-full text-left focus:outline-none focus:ring-2 focus:ring-cost-cyan focus:ring-offset-2"
               >
                 <span [class]="getTabIconClass(tab)" class="flex-shrink-0 -ml-1 mr-3 h-6 w-6"></span>
-                <span class="truncate">{{ i18nService.t('admin.settings.tabs.' + tab.id) }}</span>
+                <span class="truncate">{{ i18nService.t('admin.settingsPage.tabs.' + tab.id) }}</span>
                 <span 
                   *ngIf="tab.hasChanges" 
                   class="ml-auto w-2 h-2 bg-cost-amber rounded-full"
@@ -62,7 +62,7 @@ import {
             <!-- Loading State -->
             <div *ngIf="settingsService.loading$ | async" class="flex justify-center py-12">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cost-cyan"></div>
-              <span class="ml-2 text-gray-600">{{ i18nService.t('admin.settings.actions.loadingSettings') }}</span>
+              <span class="ml-2 text-gray-600">{{ i18nService.t('admin.settingsPage.actions.loadingSettings') }}</span>
             </div>
 
             <!-- Settings Forms -->
@@ -71,7 +71,7 @@ import {
               <div *ngIf="activeTab === 'application'" class="bg-white shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                   <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settings.application.title') }}
+                    {{ i18nService.t('admin.settingsPage.application.title') }}
                   </h3>
                   
                   <form [formGroup]="applicationForm" (ngSubmit)="saveApplicationSettings()">
@@ -79,37 +79,37 @@ import {
                       <!-- Site Title -->
                       <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.siteTitle') }}
+                          {{ i18nService.t('admin.settingsPage.application.siteTitle') }}
                         </label>
                         <input 
                           type="text" 
                           formControlName="siteTitle"
                           class="input-field"
-                          [placeholder]="i18nService.t('admin.settings.application.siteTitle')"
+                          [placeholder]="i18nService.t('admin.settingsPage.application.siteTitle')"
                         >
                         <div *ngIf="applicationForm.get('siteTitle')?.errors?.['required'] && applicationForm.get('siteTitle')?.touched" 
                              class="mt-1 text-sm text-red-600">
-                          {{ i18nService.t('admin.settings.validation.required') }}
+                          {{ i18nService.t('admin.settingsPage.validation.required') }}
                         </div>
                       </div>
 
                       <!-- Site Description -->
                       <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.siteDescription') }}
+                          {{ i18nService.t('admin.settingsPage.application.siteDescription') }}
                         </label>
                         <textarea 
                           formControlName="siteDescription"
                           rows="3"
                           class="input-field"
-                          [placeholder]="i18nService.t('admin.settings.application.siteDescription')"
+                          [placeholder]="i18nService.t('admin.settingsPage.application.siteDescription')"
                         ></textarea>
                       </div>
 
                       <!-- Default Language -->
                       <div>
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.defaultLanguage') }}
+                          {{ i18nService.t('admin.settingsPage.application.defaultLanguage') }}
                         </label>
                         <select formControlName="defaultLanguage" class="input-field">
                           <option value="en">English</option>
@@ -121,7 +121,7 @@ import {
                       <!-- Timezone -->
                       <div>
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.timezone') }}
+                          {{ i18nService.t('admin.settingsPage.application.timezone') }}
                         </label>
                         <select formControlName="timezone" class="input-field">
                           <option value="UTC">UTC</option>
@@ -143,7 +143,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.application.emailNotifications') }}
+                            {{ i18nService.t('admin.settingsPage.application.emailNotifications') }}
                           </label>
                         </div>
                       </div>
@@ -157,7 +157,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.application.analyticsEnabled') }}
+                            {{ i18nService.t('admin.settingsPage.application.analyticsEnabled') }}
                           </label>
                         </div>
                       </div>
@@ -165,7 +165,7 @@ import {
                       <!-- Analytics Tracking ID -->
                       <div class="sm:col-span-2" *ngIf="applicationForm.get('analyticsEnabled')?.value">
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.analyticsTrackingId') }}
+                          {{ i18nService.t('admin.settingsPage.application.analyticsTrackingId') }}
                         </label>
                         <input 
                           type="text" 
@@ -184,7 +184,7 @@ import {
                             class="h-4 w-4 text-cost-amber focus:ring-cost-amber border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.application.maintenanceMode') }}
+                            {{ i18nService.t('admin.settingsPage.application.maintenanceMode') }}
                           </label>
                         </div>
                       </div>
@@ -192,13 +192,13 @@ import {
                       <!-- Maintenance Message -->
                       <div class="sm:col-span-2" *ngIf="applicationForm.get('maintenanceMode')?.value">
                         <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settings.application.maintenanceMessage') }}
+                          {{ i18nService.t('admin.settingsPage.application.maintenanceMessage') }}
                         </label>
                         <textarea 
                           formControlName="maintenanceMessage"
                           rows="3"
                           class="input-field"
-                          [placeholder]="i18nService.t('admin.settings.application.maintenanceMessage')"
+                          [placeholder]="i18nService.t('admin.settingsPage.application.maintenanceMessage')"
                         ></textarea>
                       </div>
                     </div>
@@ -210,7 +210,7 @@ import {
                         (click)="resetForm('application')"
                         class="btn-secondary"
                       >
-                        {{ i18nService.t('admin.settings.actions.reset') }}
+                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
                       </button>
                       <button 
                         type="submit"
@@ -218,10 +218,10 @@ import {
                         [class.opacity-50]="applicationForm.invalid || saving"
                         class="btn-primary"
                       >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settings.actions.save') }}</span>
+                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
                         <span *ngIf="saving" class="flex items-center">
                           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settings.actions.savingSettings') }}
+                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
                         </span>
                       </button>
                     </div>
@@ -233,7 +233,7 @@ import {
               <div *ngIf="activeTab === 'userSecurity'" class="bg-white shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                   <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settings.userSecurity.title') }}
+                    {{ i18nService.t('admin.settingsPage.userSecurity.title') }}
                   </h3>
                   
                   <form [formGroup]="userSecurityForm" (ngSubmit)="saveUserSecuritySettings()">
@@ -247,7 +247,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.allowUserRegistration') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.allowUserRegistration') }}
                           </label>
                         </div>
                       </div>
@@ -261,7 +261,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.requireEmailVerification') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.requireEmailVerification') }}
                           </label>
                         </div>
                       </div>
@@ -270,7 +270,7 @@ import {
                       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.userSecurity.passwordMinLength') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.passwordMinLength') }}
                           </label>
                           <input 
                             type="number" 
@@ -283,7 +283,7 @@ import {
 
                         <div>
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.userSecurity.sessionTimeoutMinutes') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.sessionTimeoutMinutes') }}
                           </label>
                           <input 
                             type="number" 
@@ -304,7 +304,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.passwordRequireUppercase') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.passwordRequireUppercase') }}
                           </label>
                         </div>
 
@@ -315,7 +315,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.passwordRequireNumbers') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.passwordRequireNumbers') }}
                           </label>
                         </div>
 
@@ -326,7 +326,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.passwordRequireSpecialChars') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.passwordRequireSpecialChars') }}
                           </label>
                         </div>
                       </div>
@@ -335,7 +335,7 @@ import {
                       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.userSecurity.maxLoginAttempts') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.maxLoginAttempts') }}
                           </label>
                           <input 
                             type="number" 
@@ -348,7 +348,7 @@ import {
 
                         <div>
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.userSecurity.lockoutDurationMinutes') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.lockoutDurationMinutes') }}
                           </label>
                           <input 
                             type="number" 
@@ -369,7 +369,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.twoFactorAuthEnabled') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.twoFactorAuthEnabled') }}
                           </label>
                         </div>
 
@@ -380,7 +380,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.userSecurity.adminApprovalRequired') }}
+                            {{ i18nService.t('admin.settingsPage.userSecurity.adminApprovalRequired') }}
                           </label>
                         </div>
                       </div>
@@ -393,7 +393,7 @@ import {
                         (click)="resetForm('userSecurity')"
                         class="btn-secondary"
                       >
-                        {{ i18nService.t('admin.settings.actions.reset') }}
+                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
                       </button>
                       <button 
                         type="submit"
@@ -401,10 +401,10 @@ import {
                         [class.opacity-50]="userSecurityForm.invalid || saving"
                         class="btn-primary"
                       >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settings.actions.save') }}</span>
+                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
                         <span *ngIf="saving" class="flex items-center">
                           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settings.actions.savingSettings') }}
+                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
                         </span>
                       </button>
                     </div>
@@ -416,7 +416,7 @@ import {
               <div *ngIf="activeTab === 'contentManagement'" class="bg-white shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                   <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settings.contentManagement.title') }}
+                    {{ i18nService.t('admin.settingsPage.contentManagement.title') }}
                   </h3>
                   
                   <form [formGroup]="contentManagementForm" (ngSubmit)="saveContentManagementSettings()">
@@ -430,7 +430,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.autoPublishResources') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.autoPublishResources') }}
                           </label>
                         </div>
 
@@ -441,7 +441,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.requireApprovalForPublishing') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.requireApprovalForPublishing') }}
                           </label>
                         </div>
                       </div>
@@ -450,7 +450,7 @@ import {
                       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.contentManagement.maxFileUploadSizeMB') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.maxFileUploadSizeMB') }}
                           </label>
                           <input 
                             type="number" 
@@ -471,7 +471,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.autoGenerateThumbnails') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.autoGenerateThumbnails') }}
                           </label>
                         </div>
 
@@ -482,7 +482,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.enableContentVersioning') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.enableContentVersioning') }}
                           </label>
                         </div>
 
@@ -493,7 +493,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.searchIndexingEnabled') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.searchIndexingEnabled') }}
                           </label>
                         </div>
 
@@ -504,7 +504,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.autoTaggingEnabled') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.autoTaggingEnabled') }}
                           </label>
                         </div>
 
@@ -515,7 +515,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.contentManagement.duplicateContentCheck') }}
+                            {{ i18nService.t('admin.settingsPage.contentManagement.duplicateContentCheck') }}
                           </label>
                         </div>
                       </div>
@@ -528,7 +528,7 @@ import {
                         (click)="resetForm('contentManagement')"
                         class="btn-secondary"
                       >
-                        {{ i18nService.t('admin.settings.actions.reset') }}
+                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
                       </button>
                       <button 
                         type="submit"
@@ -536,10 +536,10 @@ import {
                         [class.opacity-50]="contentManagementForm.invalid || saving"
                         class="btn-primary"
                       >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settings.actions.save') }}</span>
+                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
                         <span *ngIf="saving" class="flex items-center">
                           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settings.actions.savingSettings') }}
+                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
                         </span>
                       </button>
                     </div>
@@ -551,7 +551,7 @@ import {
               <div *ngIf="activeTab === 'systemAdministration'" class="bg-white shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                   <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settings.systemAdministration.title') }}
+                    {{ i18nService.t('admin.settingsPage.systemAdministration.title') }}
                   </h3>
                   
                   <form [formGroup]="systemAdministrationForm" (ngSubmit)="saveSystemAdministrationSettings()">
@@ -565,14 +565,14 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.systemAdministration.enableSystemLogs') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableSystemLogs') }}
                           </label>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2" *ngIf="systemAdministrationForm.get('enableSystemLogs')?.value">
                           <div>
                             <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settings.systemAdministration.logLevel') }}
+                              {{ i18nService.t('admin.settingsPage.systemAdministration.logLevel') }}
                             </label>
                             <select formControlName="logLevel" class="input-field">
                               <option value="error">Error</option>
@@ -584,7 +584,7 @@ import {
 
                           <div>
                             <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settings.systemAdministration.logRetentionDays') }}
+                              {{ i18nService.t('admin.settingsPage.systemAdministration.logRetentionDays') }}
                             </label>
                             <input 
                               type="number" 
@@ -606,7 +606,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.systemAdministration.enablePerformanceMonitoring') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.enablePerformanceMonitoring') }}
                           </label>
                         </div>
 
@@ -617,7 +617,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.systemAdministration.enableCacheOptimization') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableCacheOptimization') }}
                           </label>
                         </div>
 
@@ -628,7 +628,7 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.systemAdministration.enableRateLimiting') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableRateLimiting') }}
                           </label>
                         </div>
                       </div>
@@ -637,7 +637,7 @@ import {
                       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div *ngIf="systemAdministrationForm.get('enableCacheOptimization')?.value">
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.systemAdministration.cacheExpirationMinutes') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.cacheExpirationMinutes') }}
                           </label>
                           <input 
                             type="number" 
@@ -650,7 +650,7 @@ import {
 
                         <div *ngIf="systemAdministrationForm.get('enableRateLimiting')?.value">
                           <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settings.systemAdministration.apiRateLimitPerMinute') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.apiRateLimitPerMinute') }}
                           </label>
                           <input 
                             type="number" 
@@ -671,14 +671,14 @@ import {
                             class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
                           >
                           <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settings.systemAdministration.enableAutoBackup') }}
+                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableAutoBackup') }}
                           </label>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2" *ngIf="systemAdministrationForm.get('enableAutoBackup')?.value">
                           <div>
                             <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settings.systemAdministration.backupFrequency') }}
+                              {{ i18nService.t('admin.settingsPage.systemAdministration.backupFrequency') }}
                             </label>
                             <select formControlName="backupFrequency" class="input-field">
                               <option value="daily">Daily</option>
@@ -689,7 +689,7 @@ import {
 
                           <div>
                             <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settings.systemAdministration.backupRetentionDays') }}
+                              {{ i18nService.t('admin.settingsPage.systemAdministration.backupRetentionDays') }}
                             </label>
                             <input 
                               type="number" 
@@ -710,7 +710,7 @@ import {
                         (click)="resetForm('systemAdministration')"
                         class="btn-secondary"
                       >
-                        {{ i18nService.t('admin.settings.actions.reset') }}
+                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
                       </button>
                       <button 
                         type="submit"
@@ -718,10 +718,10 @@ import {
                         [class.opacity-50]="systemAdministrationForm.invalid || saving"
                         class="btn-primary"
                       >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settings.actions.save') }}</span>
+                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
                         <span *ngIf="saving" class="flex items-center">
                           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settings.actions.savingSettings') }}
+                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
                         </span>
                       </button>
                     </div>
@@ -742,7 +742,7 @@ import {
                       [disabled]="saving"
                       class="btn-secondary"
                     >
-                      {{ i18nService.t('admin.settings.actions.export') }}
+                      {{ i18nService.t('admin.settingsPage.actions.export') }}
                     </button>
                     
                     <input 
@@ -757,7 +757,7 @@ import {
                       [disabled]="saving"
                       class="btn-secondary"
                     >
-                      {{ i18nService.t('admin.settings.actions.import') }}
+                      {{ i18nService.t('admin.settingsPage.actions.import') }}
                     </button>
 
                     <button 
@@ -765,7 +765,7 @@ import {
                       [disabled]="saving"
                       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
-                      {{ i18nService.t('admin.settings.actions.reset') }}
+                      {{ i18nService.t('admin.settingsPage.actions.reset') }}
                     </button>
                   </div>
                 </div>
@@ -965,10 +965,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     try {
       await this.settingsService.updateApplicationSettings(settings).toPromise();
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsSaved'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.applicationForm.markAsPristine();
     } catch (error) {
-      this.showError(this.i18nService.t('admin.settings.actions.errorSaving'));
+      this.showError(this.i18nService.t('admin.settingsPage.actions.errorSaving'));
     } finally {
       this.saving = false;
     }
@@ -982,10 +982,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     try {
       await this.settingsService.updateUserSecuritySettings(settings).toPromise();
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsSaved'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.userSecurityForm.markAsPristine();
     } catch (error) {
-      this.showError(this.i18nService.t('admin.settings.actions.errorSaving'));
+      this.showError(this.i18nService.t('admin.settingsPage.actions.errorSaving'));
     } finally {
       this.saving = false;
     }
@@ -999,10 +999,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     try {
       await this.settingsService.updateContentManagementSettings(settings).toPromise();
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsSaved'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.contentManagementForm.markAsPristine();
     } catch (error) {
-      this.showError(this.i18nService.t('admin.settings.actions.errorSaving'));
+      this.showError(this.i18nService.t('admin.settingsPage.actions.errorSaving'));
     } finally {
       this.saving = false;
     }
@@ -1016,17 +1016,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     try {
       await this.settingsService.updateSystemAdministrationSettings(settings).toPromise();
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsSaved'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
       this.systemAdministrationForm.markAsPristine();
     } catch (error) {
-      this.showError(this.i18nService.t('admin.settings.actions.errorSaving'));
+      this.showError(this.i18nService.t('admin.settingsPage.actions.errorSaving'));
     } finally {
       this.saving = false;
     }
   }
 
   resetForm(formType: string): void {
-    const confirmed = confirm(this.i18nService.t('admin.settings.actions.confirmReset'));
+    const confirmed = confirm(this.i18nService.t('admin.settingsPage.actions.confirmReset'));
     if (!confirmed) return;
 
     switch (formType) {
@@ -1058,7 +1058,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       link.click();
       window.URL.revokeObjectURL(url);
       
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsExported'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsExported'));
     } catch (error) {
       this.showError('Failed to export settings');
     }
@@ -1073,7 +1073,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       try {
         const importData = JSON.parse(e.target?.result as string);
         await this.settingsService.importSettings(importData).toPromise();
-        this.showSuccess(this.i18nService.t('admin.settings.actions.settingsImported'));
+        this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsImported'));
         this.loadSettings();
       } catch (error) {
         this.showError('Failed to import settings. Please check the file format.');
@@ -1083,12 +1083,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   async resetAllSettings(): Promise<void> {
-    const confirmed = confirm(this.i18nService.t('admin.settings.actions.confirmReset'));
+    const confirmed = confirm(this.i18nService.t('admin.settingsPage.actions.confirmReset'));
     if (!confirmed) return;
 
     try {
       await this.settingsService.resetToDefaults().toPromise();
-      this.showSuccess(this.i18nService.t('admin.settings.actions.settingsReset'));
+      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsReset'));
       this.loadSettings();
     } catch (error) {
       this.showError('Failed to reset settings');

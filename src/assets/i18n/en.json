@@ -18,7 +18,9 @@
     "toggleFilters": "Toggle filters",
     "searchPlaceholder": "Search resources, tools, and guides...",
     "searchSuggestions": "Search suggestions will appear here",
-    "fieldRequired": "This field is required"
+    "fieldRequired": "This field is required",
+    "save": "Save",
+    "saving": "Saving..."
   },
   "navigation": {
     "home": "Home",
@@ -402,7 +404,7 @@
       "fileTooLarge": "File too large. Maximum size is 50MB.",
       "dragAreaActive": "Drop files here to upload"
     },
-    "settings": {
+    "settingsPage": {
       "title": "Settings",
       "subtitle": "Configure system settings and preferences",
       "tabs": {
@@ -693,6 +695,24 @@
         "uk": "United Kingdom",
         "ph": "Philippines"
       }
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information and preferences",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Enter your display name",
+      "email": "Email Address",
+      "emailNote": "Email cannot be changed",
+      "photoURL": "Profile Photo URL",
+      "photoURLPlaceholder": "https://example.com/photo.jpg",
+      "accountInfo": "Account Information",
+      "userId": "User ID",
+      "createdAt": "Account Created",
+      "lastLogin": "Last Login"
+    },
+    "role": {
+      "administrator": "Administrator",
+      "user": "User"
     },
     "topics": {
       "disclosure": "Data Disclosure",
