@@ -1,0 +1,254 @@
+<div class="user-management">
+  <!-- Header -->
+  <div class="mb-space-4">
+    <h1 class="text-title font-semibold text-primary">{{ i18nService.t('admin.users.title') }}</h1>
+    <p class="text-secondary mt-space-1">{{ i18nService.t('admin.users.subtitle') }}</p>
+  </div>
+
+  <!-- Actions Bar -->
+  <div class="action-bar">
+    <div class="actions-container">
+      <!-- Search -->
+      <div class="flex-1">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange()"
+          class="search-input"
+          [placeholder]="i18nService.t('admin.users.searchPlaceholder')">
+      </div>
+
+      <!-- Filters -->
+      <select
+        [(ngModel)]="selectedRole"
+        (ngModelChange)="applyFilters()"
+        class="filter-select">
+        <option value="all">{{ i18nService.t('admin.users.allRoles') }}</option>
+        <option value="admin">{{ i18nService.t('admin.users.adminRole') }}</option>
+        <option value="editor">{{ i18nService.t('admin.users.editorRole') }}</option>
+        <option value="viewer">{{ i18nService.t('admin.users.viewerRole') }}</option>
+      </select>
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="applyFilters()"
+        class="filter-select">
+        <option value="all">{{ i18nService.t('admin.users.allStatuses') }}</option>
+        <option value="active">{{ i18nService.t('admin.users.activeStatus') }}</option>
+        <option value="suspended">{{ i18nService.t('admin.users.suspendedStatus') }}</option>
+        <option value="pending">{{ i18nService.t('admin.users.pendingStatus') }}</option>
+      </select>
+
+      <!-- Add User Button -->
+      <button
+        (click)="showAddUserModal = true"
+        class="action-primary">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        {{ i18nService.t('admin.users.addUser') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-content">
+      <svg class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      {{ i18nService.t('admin.users.loading') }}
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div *ngIf="!loading && filteredUsers.length > 0" class="users-table-container">
+    <div class="table-wrapper">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th class="table-header">
+              {{ i18nService.t('admin.users.userColumn') }}
+            </th>
+            <th class="table-header">
+              {{ i18nService.t('admin.users.roleColumn') }}
+            </th>
+            <th class="table-header">
+              {{ i18nService.t('admin.users.statusColumn') }}
+            </th>
+            <th class="table-header">
+              {{ i18nService.t('admin.users.lastLoginColumn') }}
+            </th>
+            <th class="table-header">
+              {{ i18nService.t('admin.users.actions') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of paginatedUsers" class="table-row">
+            <td class="table-cell">
+              <div class="user-info">
+                <div class="user-avatar">
+                  {{ user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase() }}
+                </div>
+                <div class="user-details">
+                  <div class="user-name">
+                    {{ user.displayName || 'No name' }}
+                  </div>
+                  <div class="user-email">
+                    {{ user.email }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="table-cell">
+              <select
+                [(ngModel)]="user.role"
+                (ngModelChange)="updateUserRole(user, $event)"
+                class="role-select">
+                <option value="admin">{{ i18nService.t('admin.users.adminRole') }}</option>
+                <option value="editor">{{ i18nService.t('admin.users.editorRole') }}</option>
+                <option value="viewer">{{ i18nService.t('admin.users.viewerRole') }}</option>
+              </select>
+            </td>
+            <td class="table-cell">
+              <span
+                class="status-badge"
+                [ngClass]="{
+                  'status-active': user.status === 'active',
+                  'status-suspended': user.status === 'suspended',
+                  'status-pending': user.status === 'pending'
+                }">
+                {{ i18nService.t('admin.users.' + user.status + 'Status') }}
+              </span>
+            </td>
+            <td class="table-cell">
+              <span class="last-login">{{ formatDate(user.lastLoginAt) }}</span>
+            </td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <button
+                  (click)="toggleUserStatus(user)"
+                  class="action-button action-toggle">
+                  {{ user.status === 'active' ? 'Suspend' : 'Activate' }}
+                </button>
+                <button
+                  (click)="sendPasswordReset(user)"
+                  class="action-button action-reset">
+                  Reset Password
+                </button>
+                <button
+                  (click)="viewUserActivity(user)"
+                  class="action-button action-view">
+                  Activity
+                </button>
+                <button
+                  (click)="deleteUser(user)"
+                  class="action-button action-delete">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- No Users -->
+  <div *ngIf="!loading && filteredUsers.length === 0" class="empty-state">
+    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+    </svg>
+    <h3 class="empty-title">{{ i18nService.t('admin.users.noUsers') }}</h3>
+    <p class="empty-description">{{ i18nService.t('admin.users.noUsersDescription') }}</p>
+    <button
+      (click)="showAddUserModal = true"
+      class="action-primary">
+      {{ i18nService.t('admin.users.addUser') }}
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading && filteredUsers.length > pageSize" class="pagination-container">
+    <div class="pagination-content">
+      <div class="pagination-info">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, filteredUsers.length) }} of {{ filteredUsers.length }} users
+      </div>
+      <div class="pagination-controls">
+        <button
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          class="pagination-button">
+          Previous
+        </button>
+        <span class="pagination-current">{{ currentPage }} / {{ totalPages }}</span>
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="pagination-button">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div *ngIf="showAddUserModal" class="modal-overlay">
+  <div class="modal-container">
+    <h3 class="modal-title">{{ i18nService.t('admin.users.addUser') }}</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmitUser()">
+      <div class="form-content">
+        <div class="form-field">
+          <label class="form-label">Email</label>
+          <input type="email" formControlName="email" class="form-input">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Display Name</label>
+          <input type="text" formControlName="displayName" class="form-input">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input type="password" formControlName="password" class="form-input">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Role</label>
+          <select formControlName="role" class="form-select">
+            <option value="viewer">{{ i18nService.t('admin.users.viewerRole') }}</option>
+            <option value="editor">{{ i18nService.t('admin.users.editorRole') }}</option>
+            <option value="admin">{{ i18nService.t('admin.users.adminRole') }}</option>
+          </select>
+        </div>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" (click)="cancelAddUser()" class="action-secondary">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="submitting" class="action-primary">
+          {{ submitting ? 'Creating...' : 'Create User' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- User Activity Modal -->
+<div *ngIf="showActivityModal" class="modal-overlay">
+  <div class="modal-container modal-large">
+    <h3 class="modal-title">User Activity - {{ selectedUser?.email }}</h3>
+    <div class="activity-content">
+      <div *ngFor="let activity of userActivities" class="activity-item">
+        <div class="activity-action">{{ activity.action }}</div>
+        <div class="activity-time">{{ formatDate(activity.timestamp) }}</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button (click)="closeActivityModal()" class="action-secondary">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
