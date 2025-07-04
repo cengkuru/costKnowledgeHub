@@ -22,6 +22,9 @@
               <p class="text-xs text-gray-500">
                 <span *ngIf="displayName">{{ i18nService.t('admin.welcomeBack') }}, {{ displayName }}</span>
                 <span *ngIf="!displayName">{{ i18nService.t('admin.subtitle') }}</span>
+                <span *ngIf="isAdminRole" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cost-teal text-white">
+                  Admin
+                </span>
               </p>
             </div>
           </div>
@@ -177,6 +180,10 @@
               <div class="px-4 py-2 border-b border-gray-200">
                 <p class="text-sm font-medium text-gray-900">{{ displayName || userEmail }}</p>
                 <p class="text-xs text-gray-500">{{ userEmail }}</p>
+                <p class="text-xs text-cost-teal font-semibold mt-1">
+                  <span *ngIf="isAdminRole">Administrator</span>
+                  <span *ngIf="!isAdminRole">User</span>
+                </p>
               </div>
               <button
                 (click)="navigateToProfile()"

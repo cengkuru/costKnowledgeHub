@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-01-04 22:35:00 UTC
+- **🎯 Admin Layout: Display current user's role in the interface**
+  - Added isAdminRole property to track user's admin status (src/app/admin/admin-layout.component.ts:35)
+  - Check admin status on user authentication state change (src/app/admin/admin-layout.component.ts:165-169)
+  - Display role badge next to welcome message in header (src/app/admin/admin-layout.component.html:25-27)
+  - Show role (Administrator/User) in profile dropdown menu (src/app/admin/admin-layout.component.html:180-183)
+  - **Result**: Users can now see their role status in two places - header badge and profile dropdown
+
 ### Fixed - 2025-01-04 22:20:00 UTC
 - **🔧 Dashboard Component: Fixed null date handling in formatActivityTime method**
   - Added null check to prevent "Cannot read properties of null (reading 'toDate')" error (src/app/admin/components/dashboard/dashboard.component.ts:162)

@@ -31,6 +31,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
   unreadCount = 0;
   
+  // User role
+  isAdminRole = false;
+  
   // Subscriptions
   private notificationsSubscription?: Subscription;
   private unreadCountSubscription?: Subscription;
@@ -155,8 +158,15 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     document.addEventListener('click', this.handleOutsideClick.bind(this));
     
     // Initialize notification service with current user
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe(async user => {
       this.notificationService.startListeningForUser(user?.uid || null);
+      
+      // Check admin status when user changes
+      if (user) {
+        this.isAdminRole = await this.authService.isAdmin();
+      } else {
+        this.isAdminRole = false;
+      }
     });
     
     // Subscribe to notifications
