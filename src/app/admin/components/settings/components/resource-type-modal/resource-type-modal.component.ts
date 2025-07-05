@@ -110,19 +110,19 @@ export class ResourceTypeModalComponent implements OnInit {
     
     const errors = control.errors;
     if (errors['required']) {
-      return this.i18nService.t('admin.settings.validation.required');
+      return this.i18nService.t('admin.settingsPage.validation.required');
     }
     if (errors['minlength']) {
-      return this.i18nService.t('admin.settings.validation.minLength', { min: errors['minlength'].requiredLength });
+      return this.i18nService.t('admin.settingsPage.validation.minLength', { min: errors['minlength'].requiredLength });
     }
     if (errors['pattern']) {
-      return this.i18nService.t('admin.settings.validation.idPattern');
+      return this.i18nService.t('admin.settingsPage.validation.idPattern');
     }
     if (errors['duplicate']) {
-      return this.i18nService.t('admin.settings.validation.duplicate');
+      return this.i18nService.t('admin.settingsPage.validation.duplicate');
     }
     if (errors['min']) {
-      return this.i18nService.t('admin.settings.validation.min', { min: errors['min'].min });
+      return this.i18nService.t('admin.settingsPage.validation.min', { min: errors['min'].min });
     }
     
     return '';

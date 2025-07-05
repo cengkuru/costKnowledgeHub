@@ -4,17 +4,17 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
-### Fixed - 2025-07-05 19:45:00 UTC
-- **🌐 Translation Keys: Fixed incorrect translation key paths in resource type modal**
-  - Updated all translation key references in resource-type-modal.component.html to use correct paths
-  - Changed from `contentManagement.resourceTypes.*` to `admin.settings.contentManagement.resourceTypes.*`
-  - Fixed 17 translation key references across all fields, placeholders, and hints
+### Fixed - 2025-07-05 20:00:00 UTC
+- **🌐 Translation Keys: Fixed incorrect translation key paths - correct path is admin.settingsPage**
+  - The correct path is `admin.settingsPage.contentManagement.resourceTypes.*` not `admin.settings.contentManagement.resourceTypes.*`
+  - Updated all 17 translation key references in resource-type-modal.component.html
+  - Fixed modal showing raw translation keys instead of translated text
   - **Keys Fixed**:
     - All fields: id, label, icon, description, order, defaultCover, enabled
     - All placeholders: id, label, description, order, defaultCover
     - All hints: id, order, defaultCover
     - Modal title keys: edit and add
-  - **Result**: Resource type modal now displays all labels, placeholders, and hints correctly
+  - **Result**: Modal now properly displays translated text instead of showing translation keys
 
 ### Fixed - 2025-07-05 19:30:00 UTC
 - **🌐 Translation Keys: Fixed validation key paths and hardcoded text**

@@ -1,6 +1,6 @@
 <app-modal
   [isOpen]="isOpen"
-  [title]="isEditMode ? i18nService.t('admin.settings.contentManagement.resourceTypes.edit') : i18nService.t('admin.settings.contentManagement.resourceTypes.add')"
+  [title]="isEditMode ? i18nService.t('admin.settingsPage.contentManagement.resourceTypes.edit') : i18nService.t('admin.settingsPage.contentManagement.resourceTypes.add')"
   size="lg"
   (closeModal)="onClose()"
 >
@@ -8,30 +8,30 @@
     <!-- ID Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.id') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.id') }}
         <span class="text-red-500">*</span>
       </label>
       <input
         type="text"
         formControlName="id"
-        [placeholder]="i18nService.t('admin.settings.contentManagement.resourceTypes.placeholders.id')"
+        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.id')"
         class="input-field"
         [class.border-red-500]="form.get('id')?.touched && form.get('id')?.invalid"
       />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settings.contentManagement.resourceTypes.hints.id') }}</p>
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.id') }}</p>
       <p *ngIf="getFieldError('id')" class="mt-1 text-sm text-red-600">{{ getFieldError('id') }}</p>
     </div>
     
     <!-- Label Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.label') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.label') }}
         <span class="text-red-500">*</span>
       </label>
       <input
         type="text"
         formControlName="label"
-        [placeholder]="i18nService.t('admin.settings.contentManagement.resourceTypes.placeholders.label')"
+        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.label')"
         class="input-field"
         [class.border-red-500]="form.get('label')?.touched && form.get('label')?.invalid"
       />
@@ -41,7 +41,7 @@
     <!-- Icon Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.icon') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.icon') }}
         <span class="text-red-500">*</span>
       </label>
       <div class="grid grid-cols-4 gap-2">
@@ -62,12 +62,12 @@
     <!-- Description Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.description') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.description') }}
         <span class="text-red-500">*</span>
       </label>
       <textarea
         formControlName="description"
-        [placeholder]="i18nService.t('admin.settings.contentManagement.resourceTypes.placeholders.description')"
+        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.description')"
         rows="3"
         class="input-field"
         [class.border-red-500]="form.get('description')?.touched && form.get('description')?.invalid"
@@ -78,38 +78,38 @@
     <!-- Order Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.order') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.order') }}
         <span class="text-red-500">*</span>
       </label>
       <input
         type="number"
         formControlName="order"
-        [placeholder]="i18nService.t('admin.settings.contentManagement.resourceTypes.placeholders.order')"
+        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.order')"
         class="input-field"
         [class.border-red-500]="form.get('order')?.touched && form.get('order')?.invalid"
       />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settings.contentManagement.resourceTypes.hints.order') }}</p>
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.order') }}</p>
       <p *ngIf="getFieldError('order')" class="mt-1 text-sm text-red-600">{{ getFieldError('order') }}</p>
     </div>
     
     <!-- Default Cover URL Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.defaultCover') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.defaultCover') }}
       </label>
       <input
         type="url"
         formControlName="defaultCover"
-        [placeholder]="i18nService.t('admin.settings.contentManagement.resourceTypes.placeholders.defaultCover')"
+        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.defaultCover')"
         class="input-field"
       />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settings.contentManagement.resourceTypes.hints.defaultCover') }}</p>
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.defaultCover') }}</p>
     </div>
     
     <!-- Enabled Toggle -->
     <div class="flex items-center justify-between">
       <label class="text-sm font-medium text-cost-charcoal">
-        {{ i18nService.t('admin.settings.contentManagement.resourceTypes.fields.enabled') }}
+        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.enabled') }}
       </label>
       <label class="relative inline-flex items-center cursor-pointer">
         <input
