@@ -38,27 +38,6 @@
       <p *ngIf="getFieldError('label')" class="mt-1 text-sm text-red-600">{{ getFieldError('label') }}</p>
     </div>
     
-    <!-- Icon Field -->
-    <div>
-      <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.icon') }}
-        <span class="text-red-500">*</span>
-      </label>
-      <div class="grid grid-cols-4 gap-2">
-        <button
-          *ngFor="let icon of availableIcons"
-          type="button"
-          [class]="form.get('icon')?.value === icon.value ? 'border-cost-cyan bg-cost-cyan bg-opacity-10' : 'border-gray-300 hover:border-cost-cyan'"
-          class="p-3 border-2 rounded-lg text-center transition-colors"
-          (click)="form.get('icon')?.setValue(icon.value)"
-        >
-          <span class="text-2xl block mb-1">{{ icon.icon }}</span>
-          <span class="text-xs text-gray-600">{{ icon.label }}</span>
-        </button>
-      </div>
-      <p *ngIf="getFieldError('icon')" class="mt-1 text-sm text-red-600">{{ getFieldError('icon') }}</p>
-    </div>
-    
     <!-- Description Field -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
@@ -96,6 +75,7 @@
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
         {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.defaultCover') }}
+        <span class="text-red-500">*</span>
       </label>
       
       <!-- Image Preview -->
@@ -155,8 +135,10 @@
         formControlName="defaultCover"
         [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.defaultCover')"
         class="input-field"
+        [class.border-red-500]="form.get('defaultCover')?.touched && form.get('defaultCover')?.invalid"
       />
       <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.defaultCover') }}</p>
+      <p *ngIf="getFieldError('defaultCover')" class="mt-1 text-sm text-red-600">{{ getFieldError('defaultCover') }}</p>
     </div>
     
     <!-- Enabled Toggle -->

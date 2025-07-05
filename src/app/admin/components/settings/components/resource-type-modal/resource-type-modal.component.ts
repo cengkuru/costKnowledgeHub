@@ -33,25 +33,6 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
   selectedFile: File | null = null;
   isGeneratingAI = false;
   
-  // Available icons for resource types
-  availableIcons = [
-    { value: 'book-open', label: 'Book', icon: '📖' },
-    { value: 'academic-cap', label: 'Academic', icon: '🎓' },
-    { value: 'document-text', label: 'Document', icon: '📄' },
-    { value: 'chart-bar', label: 'Chart', icon: '📊' },
-    { value: 'beaker', label: 'Research', icon: '🧪' },
-    { value: 'clipboard-list', label: 'Checklist', icon: '📋' },
-    { value: 'code', label: 'Code', icon: '💻' },
-    { value: 'photograph', label: 'Image', icon: '🖼️' },
-    { value: 'globe', label: 'Global', icon: '🌍' },
-    { value: 'shield-check', label: 'Policy', icon: '🛡️' },
-    { value: 'template', label: 'Template', icon: '📐' },
-    { value: 'lightbulb', label: 'Idea', icon: '💡' },
-    { value: 'database', label: 'Database', icon: '🗄️' },
-    { value: 'briefcase', label: 'Business', icon: '💼' },
-    { value: 'presentation-chart-bar', label: 'Presentation', icon: '📈' },
-    { value: 'document-duplicate', label: 'Duplicate', icon: '📑' }
-  ];
   
   constructor(
     private fb: FormBuilder,
@@ -79,11 +60,10 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
     this.form = this.fb.group({
       id: [this.resourceType?.id || '', [Validators.required, Validators.pattern(/^[a-z][a-zA-Z0-9]*$/)]],
       label: [this.resourceType?.label || '', [Validators.required, Validators.minLength(3)]],
-      icon: [this.resourceType?.icon || 'document-text', [Validators.required]],
       description: [this.resourceType?.description || '', [Validators.required, Validators.minLength(10)]],
       enabled: [this.resourceType?.enabled ?? true],
       order: [this.resourceType?.order || this.getNextOrder(), [Validators.required, Validators.min(0)]],
-      defaultCover: [this.resourceType?.defaultCover || '']
+      defaultCover: [this.resourceType?.defaultCover || '', [Validators.required]]
     });
     
     // Disable ID field in edit mode

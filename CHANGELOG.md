@@ -4,6 +4,36 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 21:00:00 UTC
+- **✅ Resource Type Modal: Completed final enhancements and icon removal**
+  - Added validation error display for defaultCover field (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.html:141)
+  - Added red border styling for invalid defaultCover field
+  - Verified complete removal of all icon-related code from component
+  - Fixed Cloud Function deployment for generateCoverImage
+  - **Result**: Resource type management now fully functional with cover images only, no icons
+  
+### Added - 2025-07-05 20:50:00 UTC
+- **🤖 AI Cover Image Generation: Implemented Cloud Function for AI-powered cover images**
+  - Created generateCoverImage Cloud Function (functions/src/ai/generateCoverImage.ts)
+  - Integrated Gemini AI for generating minimalist cover image prompts
+  - Added AI generation button to resource type modal interface
+  - Configured CORS for localhost and production domains
+  - **Features**:
+    - Uses resource type title and description to generate prompts
+    - Creates HBR-level quality minimalist image prompts
+    - Returns placeholder image URL from picsum.photos
+    - Validates input parameters for security
+  - **Result**: Users can generate professional cover images with AI assistance
+
+### Fixed - 2025-07-05 20:45:00 UTC
+- **🔧 Modal Animation Error: Fixed BrowserAnimationsModule import and removed icon selection**
+  - Added BrowserAnimationsModule import to modal component imports
+  - Removed icon selection grid from resource type modal
+  - Removed icon field from resource type form
+  - Updated to use only cover images for resource types
+  - Fixed runtime animation error NG05105
+  - **Result**: Modal now works without animation errors, focused on cover images only
+
 ### Added - 2025-07-05 20:30:00 UTC
 - **📸 Resource Type Cover Image: Added file upload and AI generation capabilities**
   - Added file upload functionality for cover images with Firebase Storage integration
