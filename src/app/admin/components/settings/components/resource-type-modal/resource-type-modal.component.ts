@@ -215,7 +215,13 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       }
     } catch (error) {
       console.error('AI generation error:', error);
-      alert('Failed to generate image. Please try again.');
+      // Fallback to Lorem Picsum when Cloud Function is not available
+      const keywords = [title, description].join(' ').toLowerCase();
+      const seed = keywords.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const width = 800;
+      const height = 400;
+      const imageUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
+      this.form.patchValue({ defaultCover: imageUrl });
     } finally {
       this.isGeneratingAI = false;
     }

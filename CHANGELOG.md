@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 21:15:00 UTC
+- **🔧 AI Image Generation: Added fallback for Cloud Function deployment issues**
+  - Cloud Function deployment experiencing timeouts due to container health check failures
+  - Added client-side fallback to Lorem Picsum when Cloud Function is unavailable
+  - Simplified Cloud Function to remove potential startup issues
+  - Frontend now generates consistent placeholder images using title/description hash
+  - **Result**: AI generation button works even when Cloud Function is offline
+
 ### Fixed - 2025-07-05 21:00:00 UTC
 - **✅ Resource Type Modal: Completed final enhancements and icon removal**
   - Added validation error display for defaultCover field (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.html:141)

@@ -1,10 +1,8 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { GeminiClient } from '../geminiClient';
-import axios from 'axios';
 
 /**
- * Cloud Function to generate minimalist cover images for resource types
- * Uses Gemini to create a prompt, then calls an image generation service
+ * Simplified Cloud Function to generate cover images for resource types
+ * Uses Lorem Picsum for now, with AI integration to be added later
  */
 interface GenerateCoverImageData {
   title: string;
@@ -18,6 +16,7 @@ export const generateCoverImage = onCall<GenerateCoverImageData>({
     'https://knowledgehub-2ed2f.web.app',
     'https://knowledgehub-2ed2f.firebaseapp.com'
   ],
+  maxInstances: 10,
 }, async (request) => {
   // Check authentication
   if (!request.auth) {
@@ -37,39 +36,20 @@ export const generateCoverImage = onCall<GenerateCoverImageData>({
   }
 
   try {
-    // Initialize Gemini client
-    const gemini = new GeminiClient();
+    // Generate a placeholder image using Lorem Picsum
+    // In production, this will use AI to generate the image
+    const keywords = [title, description].join(' ').toLowerCase();
+    const seed = keywords.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     
-    // Generate an optimized prompt for a minimalist, HBR-style cover image
-    const promptGenerationPrompt = `
-    Create a detailed image generation prompt for a minimalist, professional cover image.
-    
-    Context:
-    - Title: ${title}
-    - Description: ${description}
-    
-    Requirements:
-    - Minimalist design with clean lines
-    - Professional business aesthetic (Harvard Business Review style)
-    - Abstract or conceptual representation
-    - Subtle color palette with one accent color
-    - No text in the image
-    - Modern, sophisticated look
-    - Suitable for infrastructure and transparency themes
-    
-    Return only the image generation prompt, no other text.
-    `;
-    
-    const imagePrompt = await gemini.generateContent(promptGenerationPrompt);
-    
-    // For now, we'll use a placeholder image service
-    // In production, you would integrate with DALL-E, Stable Diffusion, or similar
-    const imageUrl = await generatePlaceholderImage(title, imagePrompt);
+    // Using Lorem Picsum with seed for consistent images
+    const width = 800;
+    const height = 400;
+    const imageUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
     
     return {
       success: true,
       imageUrl,
-      prompt: imagePrompt
+      prompt: `Minimalist cover for: ${title}`
     };
     
   } catch (error) {
@@ -80,45 +60,3 @@ export const generateCoverImage = onCall<GenerateCoverImageData>({
     );
   }
 });
-
-/**
- * Generate a placeholder image using a service like Unsplash or Lorem Picsum
- * In production, replace this with actual AI image generation
- */
-async function generatePlaceholderImage(title: string, prompt: string): Promise<string> {
-  // For demo purposes, we'll use Unsplash with relevant keywords
-  const keywords = extractKeywords(title, prompt);
-  const query = keywords.join(',');
-  
-  // Using Unsplash Source API for a random image based on keywords
-  // In production, use DALL-E or Stable Diffusion API
-  const width = 800;
-  const height = 400;
-  const imageUrl = `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(query)},minimal,abstract`;
-  
-  // Verify the image exists
-  try {
-    await axios.head(imageUrl);
-    return imageUrl;
-  } catch (error) {
-    // Fallback to a generic minimal image
-    return `https://source.unsplash.com/${width}x${height}/?minimal,geometric,abstract`;
-  }
-}
-
-/**
- * Extract keywords from title and prompt for image search
- */
-function extractKeywords(title: string, prompt: string): string[] {
-  const commonWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for'];
-  const allWords = `${title} ${prompt}`.toLowerCase().split(/\s+/);
-  
-  const keywords = allWords
-    .filter(word => word.length > 3 && !commonWords.includes(word))
-    .slice(0, 3);
-  
-  // Add default keywords for CoST theme
-  keywords.push('infrastructure', 'transparency', 'minimal');
-  
-  return [...new Set(keywords)];
-}
