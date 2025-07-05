@@ -240,29 +240,29 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       const imageUrl = await this.generateContextualImage(title, description);
       this.form.patchValue({ defaultCover: imageUrl });
       this.form.get('defaultCover')?.markAsTouched();
+      this.form.get('defaultCover')?.updateValueAndValidity();
+      console.log('AI generated image URL:', imageUrl);
     } catch (error) {
       console.error('AI generation error:', error);
-      alert('Failed to generate image. Please try again.');
+      // Even if there's an error, use the fallback
+      const fallbackUrl = this.generateFallbackImage(title, description);
+      this.form.patchValue({ defaultCover: fallbackUrl });
+      this.form.get('defaultCover')?.markAsTouched();
+      this.form.get('defaultCover')?.updateValueAndValidity();
+      console.log('Using fallback image URL:', fallbackUrl);
     } finally {
       this.isGeneratingAI = false;
     }
   }
   
   private async generateContextualImage(title: string, description: string): Promise<string> {
-    // Try Cloud Function first
-    try {
-      const generateCoverImage = httpsCallable(this.functions, 'generateCoverImage');
-      const result = await generateCoverImage({ title, description });
-      const data = result.data as { success: boolean; imageUrl: string; prompt: string };
-      
-      if (data.success && data.imageUrl) {
-        return data.imageUrl;
-      }
-    } catch (error) {
-      console.log('Cloud function unavailable, using fallback');
-    }
-    
-    // Fallback to Lorem Picsum with consistent seed
+    // Skip Cloud Function for now due to authentication issues
+    // Directly use Lorem Picsum with consistent seed
+    return this.generateFallbackImage(title, description);
+  }
+  
+  private generateFallbackImage(title: string, description: string): string {
+    // Generate consistent seed from title and description
     const keywords = [title, description].join(' ').toLowerCase();
     const seed = keywords.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const width = 800;

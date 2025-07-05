@@ -51,14 +51,23 @@
       </label>
       
       <!-- Image Preview -->
-      <div *ngIf="coverImageUrl" class="mb-3">
+      <div class="mb-3" *ngIf="coverImageUrl || isGeneratingAI || isUploading">
         <p class="text-sm text-gray-600 mb-1">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.preview') }}:</p>
-        <img 
-          [src]="coverImageUrl" 
-          alt="Cover preview" 
-          class="w-full max-w-xs h-32 object-cover rounded-lg border border-gray-200"
-          (error)="onImageError($event)"
-        />
+        <div class="w-full max-w-xs h-32 rounded-lg border border-gray-200 overflow-hidden bg-gray-100">
+          <img 
+            *ngIf="coverImageUrl && !isGeneratingAI && !isUploading"
+            [src]="coverImageUrl" 
+            alt="Cover preview" 
+            class="w-full h-full object-cover"
+            (error)="onImageError($event)"
+          />
+          <div *ngIf="isGeneratingAI || isUploading" class="w-full h-full flex items-center justify-center">
+            <div class="text-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cost-cyan mx-auto mb-2"></div>
+              <p class="text-sm text-gray-600">{{ isUploading ? 'Uploading...' : 'Generating...' }}</p>
+            </div>
+          </div>
+        </div>
       </div>
       
       <!-- Upload and Generate Buttons -->
@@ -105,7 +114,7 @@
       </div>
       <!-- Hidden input to store the cover URL -->
       <input type="hidden" formControlName="defaultCover" />
-      <p *ngIf="!form.get('defaultCover')?.value && form.get('defaultCover')?.touched" class="mt-1 text-sm text-red-600">
+      <p *ngIf="!coverImageUrl && form.get('defaultCover')?.touched" class="mt-1 text-sm text-red-600">
         {{ i18nService.t('admin.settingsPage.validation.required') }}
       </p>
     </div>
