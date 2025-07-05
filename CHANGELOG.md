@@ -4,6 +4,15 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 23:00:00 UTC
+- **🖼️ Image Generation & Preview: Fixed broken AI generation and preview**
+  - Restored Cloud Function fallback for AI image generation
+  - Fixed preview reactivity using getter method
+  - Added image error handling for failed loads
+  - Improved form update after successful upload
+  - Added console logging for debugging
+  - **Result**: AI generation works with Lorem Picsum fallback, preview updates immediately
+
 ### Fixed - 2025-07-05 22:45:00 UTC
 - **📦 Dependencies: Installed Angular CDK for drag-and-drop functionality**
   - Installed @angular/cdk@^18.2.0 to match Angular version

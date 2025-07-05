@@ -149,6 +149,16 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
     return '';
   }
   
+  get coverImageUrl(): string | null {
+    return this.form.get('defaultCover')?.value || null;
+  }
+  
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    console.error('Image failed to load:', img.src);
+    // You could set a fallback image here if needed
+  }
+  
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -200,8 +210,11 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
           // Get download URL and update form
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           this.form.patchValue({ defaultCover: downloadURL });
+          this.form.get('defaultCover')?.markAsTouched();
+          this.form.get('defaultCover')?.updateValueAndValidity();
           this.isUploading = false;
           this.selectedFile = null;
+          console.log('Upload successful, URL:', downloadURL);
         }
       );
     } catch (error) {
@@ -236,51 +249,24 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
   }
   
   private async generateContextualImage(title: string, description: string): Promise<string> {
-    // Map resource types to relevant image categories
-    const typeKeywords: { [key: string]: string[] } = {
-      'guide': ['document', 'manual', 'blueprint', 'instructions'],
-      'case': ['building', 'infrastructure', 'construction', 'project'],
-      'report': ['analysis', 'chart', 'graph', 'data'],
-      'dataset': ['database', 'spreadsheet', 'analytics', 'metrics'],
-      'tool': ['technology', 'software', 'application', 'digital'],
-      'policy': ['government', 'legislation', 'regulation', 'official'],
-      'template': ['framework', 'structure', 'pattern', 'design'],
-      'infographic': ['visualization', 'diagram', 'illustration', 'graphic'],
-      'review': ['evaluation', 'assessment', 'audit', 'inspection'],
-      'other': ['abstract', 'geometric', 'minimal', 'modern']
-    };
-    
-    // Extract keywords from title and description
-    const lowerTitle = title.toLowerCase();
-    const lowerDesc = description.toLowerCase();
-    
-    // Find matching type
-    let category = 'abstract';
-    for (const [key, keywords] of Object.entries(typeKeywords)) {
-      if (lowerTitle.includes(key) || lowerDesc.includes(key)) {
-        category = keywords[0];
-        break;
+    // Try Cloud Function first
+    try {
+      const generateCoverImage = httpsCallable(this.functions, 'generateCoverImage');
+      const result = await generateCoverImage({ title, description });
+      const data = result.data as { success: boolean; imageUrl: string; prompt: string };
+      
+      if (data.success && data.imageUrl) {
+        return data.imageUrl;
       }
+    } catch (error) {
+      console.log('Cloud function unavailable, using fallback');
     }
     
-    // Add infrastructure/transparency context
-    const contextTerms = ['infrastructure', 'transparency', 'construction', 'development'];
-    const searchTerm = `${category},${contextTerms.join(',')}`;
-    
-    // Use Unsplash with specific search terms for better results
+    // Fallback to Lorem Picsum with consistent seed
+    const keywords = [title, description].join(' ').toLowerCase();
+    const seed = keywords.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const width = 800;
     const height = 400;
-    const imageUrl = `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(searchTerm)}`;
-    
-    // Verify the image loads
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(imageUrl);
-      img.onerror = () => {
-        // Fallback to abstract infrastructure image
-        resolve(`https://source.unsplash.com/${width}x${height}/?infrastructure,abstract`);
-      };
-      img.src = imageUrl;
-    });
+    return `https://picsum.photos/seed/${seed}/${width}/${height}`;
   }
 }

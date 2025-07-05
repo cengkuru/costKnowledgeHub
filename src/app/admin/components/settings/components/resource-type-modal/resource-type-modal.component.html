@@ -51,12 +51,13 @@
       </label>
       
       <!-- Image Preview -->
-      <div *ngIf="form.get('defaultCover')?.value" class="mb-3">
+      <div *ngIf="coverImageUrl" class="mb-3">
         <p class="text-sm text-gray-600 mb-1">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.preview') }}:</p>
         <img 
-          [src]="form.get('defaultCover')?.value" 
+          [src]="coverImageUrl" 
           alt="Cover preview" 
           class="w-full max-w-xs h-32 object-cover rounded-lg border border-gray-200"
+          (error)="onImageError($event)"
         />
       </div>
       
