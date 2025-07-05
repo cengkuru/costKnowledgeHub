@@ -8,11 +8,13 @@ import { FirestoreService } from '../../../core/services/firestore.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ActivityService } from '../../../core/services/activity.service';
+import { ResourceTypeService } from '../../../core/services/resource-type.service';
 import { Resource, ResourceType, Language, TopicCategory } from '../../../core/models/resource.model';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { ImageGalleryComponent, ImageSelectionEvent } from '../image-gallery/image-gallery.component';
 import { AIService, TagSuggestion } from '../../../core/services/ai.service';
 import { UnsplashService, ImageSearchContext } from '../../../core/services/unsplash.service';
+import { ResourceTypeSettings } from '../../../admin/components/settings/models/settings.model';
 
 interface FormTab {
   id: string;
@@ -142,6 +144,7 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   private aiService = inject(AIService);
   private activityService = inject(ActivityService);
   private unsplashService = inject(UnsplashService);
+  private resourceTypeService = inject(ResourceTypeService);
   
   resourceForm!: FormGroup;
   isEditMode = false;
@@ -182,19 +185,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
     { id: 'metadata', label: 'Metadata', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z', complete: false }
   ];
   
-  // Resource types
-  resourceTypes: { value: ResourceType; label: string }[] = [
-    { value: 'guide', label: 'Implementation Guide' },
-    { value: 'case-study', label: 'Case Study' },
-    { value: 'report', label: 'Research Report' },
-    { value: 'independent-review', label: 'Independent Review Report' },
-    { value: 'dataset', label: 'Dataset' },
-    { value: 'tool', label: 'Tool' },
-    { value: 'policy', label: 'Policy Brief' },
-    { value: 'template', label: 'Template' },
-    { value: 'infographic', label: 'Infographic' },
-    { value: 'other', label: 'Other' }
-  ];
+  // Resource types - dynamically loaded from settings
+  resourceTypes: { value: ResourceType; label: string; icon?: string }[] = [];
+  enabledResourceTypes: ResourceTypeSettings[] = [];
   
   // Topics
   topics: { value: TopicCategory; label: string }[] = [
@@ -255,6 +248,9 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.initializeForm();
+    
+    // Load resource types from settings
+    this.loadResourceTypes();
     
     // Check if we're in edit mode
     this.resourceId = this.route.snapshot.paramMap.get('id');
@@ -954,6 +950,34 @@ export class ResourceFormComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Failed to check AI availability:', error);
         this.aiAvailable = false;
+      }
+    });
+  }
+
+  loadResourceTypes(): void {
+    this.resourceTypeService.getResourceTypeOptions().subscribe({
+      next: (types) => {
+        this.resourceTypes = types.map(type => ({
+          ...type,
+          value: type.value as ResourceType
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load resource types:', error);
+        // Fallback to default types if loading fails
+        this.resourceTypes = [
+          { value: 'guide' as ResourceType, label: 'Implementation Guide' },
+          { value: 'case-study' as ResourceType, label: 'Case Study' },
+          { value: 'report' as ResourceType, label: 'Research Report' },
+          { value: 'other' as ResourceType, label: 'Other' }
+        ];
+      }
+    });
+
+    // Also load full resource type settings for additional features
+    this.resourceTypeService.getEnabledResourceTypes().subscribe({
+      next: (types) => {
+        this.enabledResourceTypes = types;
       }
     });
   }

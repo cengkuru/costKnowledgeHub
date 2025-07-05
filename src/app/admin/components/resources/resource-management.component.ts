@@ -7,6 +7,7 @@ import { FirestoreService } from '../../../core/services/firestore.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ResourceService } from '../../../core/services/resource.service';
 import { ActivityService } from '../../../core/services/activity.service';
+import { ResourceTypeService } from '../../../core/services/resource-type.service';
 import { Resource } from '../../../core/models/resource.model';
 
 interface AnimatedResource extends Resource {
@@ -27,6 +28,7 @@ export class ResourceManagementComponent implements OnInit {
   private authService = inject(AuthService);
   private activityService = inject(ActivityService);
   private router = inject(Router);
+  private resourceTypeService = inject(ResourceTypeService);
 
   resources: AnimatedResource[] = [];
   filteredResources: AnimatedResource[] = [];
@@ -51,6 +53,9 @@ export class ResourceManagementComponent implements OnInit {
   rowAnimationStates: Record<string, boolean> = {};
   filterAnimating = false;
 
+  // Resource type labels
+  resourceTypeLabels: Record<string, string> = {};
+
   constructor(
     public i18nService: I18nService,
     private firestoreService: FirestoreService
@@ -59,6 +64,7 @@ export class ResourceManagementComponent implements OnInit {
   ngOnInit(): void {
     this.checkAdminStatus();
     this.loadResources();
+    this.loadResourceTypeLabels();
     // Test direct Firestore query
     this.testDirectFirestoreQuery();
   }
@@ -330,19 +336,33 @@ export class ResourceManagementComponent implements OnInit {
   }
 
   getResourceTypeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      'guide': 'Guide',
-      'case-study': 'Case Study',
-      'report': 'Report',
-      'dataset': 'Dataset',
-      'tool': 'Tool',
-      'policy': 'Policy Brief',
-      'template': 'Template',
-      'infographic': 'Infographic',
-      'other': 'Other'
-    };
+    return this.resourceTypeLabels[type] || type;
+  }
 
-    return labels[type] || type;
+  loadResourceTypeLabels(): void {
+    this.resourceTypeService.getEnabledResourceTypes().subscribe({
+      next: (types) => {
+        this.resourceTypeLabels = {};
+        types.forEach(type => {
+          this.resourceTypeLabels[type.id] = type.label;
+        });
+      },
+      error: (error) => {
+        console.error('Failed to load resource type labels:', error);
+        // Fallback to default labels
+        this.resourceTypeLabels = {
+          'guide': 'Guide',
+          'case-study': 'Case Study',
+          'report': 'Report',
+          'dataset': 'Dataset',
+          'tool': 'Tool',
+          'policy': 'Policy Brief',
+          'template': 'Template',
+          'infographic': 'Infographic',
+          'other': 'Other'
+        };
+      }
+    });
   }
 
   // Bulk selection methods

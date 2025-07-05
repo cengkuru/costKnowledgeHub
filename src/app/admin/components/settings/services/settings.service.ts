@@ -18,7 +18,13 @@ import {
   SystemAdministrationSettings,
   IntegrationSettings,
   SettingsExportData,
-  SettingsValidationError
+  SettingsValidationError,
+  ResourceTypeSettings,
+  TagSettings,
+  CategorySettings,
+  LanguageConfig,
+  WorkflowConfig,
+  FileTypeConfig
 } from '../models/settings.model';
 
 @Injectable({
@@ -267,9 +273,10 @@ export class SettingsService {
     }
 
     // File size validation
-    if (settings.contentManagement.maxFileUploadSizeMB > 100) {
+    if (settings.contentManagement.mediaSettings?.maxFileUploadSizeMB && 
+        settings.contentManagement.mediaSettings.maxFileUploadSizeMB > 100) {
       errors.push({
-        field: 'contentManagement.maxFileUploadSizeMB',
+        field: 'contentManagement.mediaSettings.maxFileUploadSizeMB',
         message: 'Large file sizes may cause performance issues',
         severity: 'warning'
       });
@@ -333,6 +340,210 @@ export class SettingsService {
   }
 
   /**
+   * Get resource types from settings
+   */
+  getResourceTypes(): Observable<ResourceTypeSettings[]> {
+    return this.settings$.pipe(
+      map(settings => settings?.contentManagement?.resourceTypes || this.getDefaultResourceTypes())
+    );
+  }
+
+  /**
+   * Update resource types
+   */
+  updateResourceTypes(resourceTypes: ResourceTypeSettings[]): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    const updatedContentManagement: ContentManagementSettings = {
+      ...currentSettings.contentManagement,
+      resourceTypes
+    };
+
+    return this.updateContentManagementSettings(updatedContentManagement);
+  }
+
+  /**
+   * Add a new resource type
+   */
+  addResourceType(resourceType: ResourceTypeSettings): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    const resourceTypes = currentSettings.contentManagement.resourceTypes || [];
+    const newResourceTypes = [...resourceTypes, resourceType];
+
+    return this.updateResourceTypes(newResourceTypes);
+  }
+
+  /**
+   * Update a specific resource type
+   */
+  updateResourceType(id: string, updates: Partial<ResourceTypeSettings>): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    const resourceTypes = currentSettings.contentManagement.resourceTypes || [];
+    const updatedTypes = resourceTypes.map(type => 
+      type.id === id ? { ...type, ...updates } : type
+    );
+
+    return this.updateResourceTypes(updatedTypes);
+  }
+
+  /**
+   * Get tags from settings
+   */
+  getTags(): Observable<TagSettings[]> {
+    return this.settings$.pipe(
+      map(settings => settings?.contentManagement?.tagManagement?.tags || [])
+    );
+  }
+
+  /**
+   * Update tags
+   */
+  updateTags(tags: TagSettings[]): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    const updatedContentManagement: ContentManagementSettings = {
+      ...currentSettings.contentManagement,
+      tagManagement: {
+        ...currentSettings.contentManagement.tagManagement,
+        tags
+      }
+    };
+
+    return this.updateContentManagementSettings(updatedContentManagement);
+  }
+
+  /**
+   * Get categories from settings
+   */
+  getCategories(): Observable<CategorySettings[]> {
+    return this.settings$.pipe(
+      map(settings => settings?.contentManagement?.tagManagement?.categories || [])
+    );
+  }
+
+  /**
+   * Update categories
+   */
+  updateCategories(categories: CategorySettings[]): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    const updatedContentManagement: ContentManagementSettings = {
+      ...currentSettings.contentManagement,
+      tagManagement: {
+        ...currentSettings.contentManagement.tagManagement,
+        categories
+      }
+    };
+
+    return this.updateContentManagementSettings(updatedContentManagement);
+  }
+
+  /**
+   * Get default resource types
+   */
+  private getDefaultResourceTypes(): ResourceTypeSettings[] {
+    return [
+      {
+        id: 'guidance',
+        label: 'Implementation Guidance',
+        icon: 'book',
+        description: 'Guides and best practices for implementation',
+        enabled: true,
+        order: 1
+      },
+      {
+        id: 'case-study',
+        label: 'Case Study',
+        icon: 'flag',
+        description: 'Real-world examples and success stories',
+        enabled: true,
+        order: 2
+      },
+      {
+        id: 'report',
+        label: 'Report',
+        icon: 'description',
+        description: 'Research reports and findings',
+        enabled: true,
+        order: 3
+      },
+      {
+        id: 'dataset',
+        label: 'Dataset',
+        icon: 'storage',
+        description: 'Data files and statistics',
+        enabled: true,
+        order: 4
+      },
+      {
+        id: 'tool',
+        label: 'Tool',
+        icon: 'build',
+        description: 'Tools and utilities',
+        enabled: true,
+        order: 5
+      },
+      {
+        id: 'policy',
+        label: 'Policy',
+        icon: 'gavel',
+        description: 'Policy documents and frameworks',
+        enabled: true,
+        order: 6
+      },
+      {
+        id: 'template',
+        label: 'Template',
+        icon: 'content_copy',
+        description: 'Reusable templates and forms',
+        enabled: true,
+        order: 7
+      },
+      {
+        id: 'infographic',
+        label: 'Infographic',
+        icon: 'image',
+        description: 'Visual information and graphics',
+        enabled: true,
+        order: 8
+      },
+      {
+        id: 'independent-review',
+        label: 'Independent Review',
+        icon: 'fact_check',
+        description: 'CoST independent review reports',
+        enabled: true,
+        order: 9
+      },
+      {
+        id: 'other',
+        label: 'Other',
+        icon: 'folder',
+        description: 'Other types of resources',
+        enabled: true,
+        order: 10
+      }
+    ];
+  }
+
+  /**
    * Get default settings configuration
    */
   private getDefaultSettings(): SettingsData {
@@ -362,14 +573,99 @@ export class SettingsService {
         adminApprovalRequired: false
       },
       contentManagement: {
+        // Resource Types
+        resourceTypes: this.getDefaultResourceTypes(),
+        defaultResourceType: 'guidance',
+        
+        // Tag Management
+        tagManagement: {
+          tags: this.getDefaultTags(),
+          categories: this.getDefaultCategories(),
+          enableAutoTagging: false,
+          maxTagsPerResource: 10
+        },
+        
+        // Publishing
         autoPublishResources: false,
         requireApprovalForPublishing: true,
-        maxFileUploadSizeMB: 25,
-        allowedFileTypes: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'png', 'gif'],
-        autoGenerateThumbnails: true,
+        publishingWorkflow: {
+          workflows: [],
+          defaultWorkflow: 'standard',
+          requireApproval: true,
+          approvalLevels: 1
+        },
+        
+        // Media Settings
+        mediaSettings: {
+          maxFileUploadSizeMB: 25,
+          allowedFileTypes: this.getDefaultFileTypes(),
+          autoGenerateThumbnails: true,
+          thumbnailSizes: [
+            { name: 'small', width: 150, height: 150, crop: true },
+            { name: 'medium', width: 300, height: 300, crop: false },
+            { name: 'large', width: 600, height: 600, crop: false }
+          ],
+          imageOptimization: true,
+          cdnEnabled: false
+        },
+        
+        // AI Settings
+        aiSettings: {
+          enableAISummaries: false,
+          enableAITags: false,
+          enableAIImageSuggestions: false,
+          aiProvider: 'gemini',
+          defaultPrompts: {}
+        },
+        
+        // Search Settings
+        searchSettings: {
+          searchProvider: 'firestore',
+          searchWeights: {
+            title: 3,
+            description: 2,
+            content: 1,
+            tags: 2
+          },
+          enableSynonyms: false,
+          enableFeaturedResults: true,
+          autocompleteSuggestions: 5
+        },
+        
+        // Homepage Settings
+        homepageSettings: {
+          heroContent: {
+            title: 'CoST Knowledge Hub',
+            subtitle: 'Infrastructure Transparency Resources',
+          },
+          featuredResources: [],
+          topicHighlights: [],
+          showStatistics: true,
+          customBlocks: []
+        },
+        
+        // Analytics Settings
+        analyticsSettings: {
+          enableAnalytics: false,
+          customMetrics: [],
+          reportingPeriods: ['daily', 'weekly', 'monthly'],
+          exportFormats: ['csv', 'excel', 'pdf'],
+          dashboardWidgets: ['pageViews', 'downloads', 'topResources', 'searchTerms']
+        },
+        
+        // Language Settings
+        languageSettings: {
+          supportedLanguages: [
+            { code: 'en', name: 'English', nativeName: 'English', enabled: true, isDefault: true },
+            { code: 'es', name: 'Spanish', nativeName: 'Español', enabled: true, isDefault: false },
+            { code: 'pt', name: 'Portuguese', nativeName: 'Português', enabled: true, isDefault: false }
+          ],
+          defaultLanguage: 'en',
+          autoTranslate: false
+        },
+        
+        // Legacy fields
         enableContentVersioning: true,
-        searchIndexingEnabled: true,
-        autoTaggingEnabled: false,
         duplicateContentCheck: true
       },
       systemAdministration: {
@@ -397,6 +693,64 @@ export class SettingsService {
       updatedBy: currentUser?.uid || 'system',
       version: '1.0.0'
     };
+  }
+
+  /**
+   * Get default tags
+   */
+  private getDefaultTags(): TagSettings[] {
+    return [
+      // Topics
+      { id: 'disclosure', name: 'Disclosure', color: '#3B82F6', icon: 'visibility', enabled: true, category: 'topics' },
+      { id: 'assurance', name: 'Assurance', color: '#10B981', icon: 'verified', enabled: true, category: 'topics' },
+      { id: 'procurement', name: 'Procurement', color: '#F59E0B', icon: 'shopping_cart', enabled: true, category: 'topics' },
+      { id: 'monitoring', name: 'Monitoring', color: '#8B5CF6', icon: 'assessment', enabled: true, category: 'topics' },
+      { id: 'stakeholder', name: 'Stakeholder Engagement', color: '#EC4899', icon: 'groups', enabled: true, category: 'topics' },
+      { id: 'accountability', name: 'Accountability', color: '#14B8A6', icon: 'account_balance', enabled: true, category: 'topics' },
+      
+      // Regions
+      { id: 'africa', name: 'Africa', color: '#F97316', icon: 'public', enabled: true, category: 'regions' },
+      { id: 'asia', name: 'Asia', color: '#06B6D4', icon: 'public', enabled: true, category: 'regions' },
+      { id: 'europe', name: 'Europe', color: '#6366F1', icon: 'public', enabled: true, category: 'regions' },
+      { id: 'americas', name: 'Americas', color: '#84CC16', icon: 'public', enabled: true, category: 'regions' },
+      
+      // Types
+      { id: 'best-practice', name: 'Best Practice', color: '#059669', icon: 'star', enabled: true, category: 'content-type' },
+      { id: 'research', name: 'Research', color: '#7C3AED', icon: 'science', enabled: true, category: 'content-type' },
+      { id: 'technical', name: 'Technical', color: '#DC2626', icon: 'engineering', enabled: true, category: 'content-type' }
+    ];
+  }
+
+  /**
+   * Get default categories
+   */
+  private getDefaultCategories(): CategorySettings[] {
+    return [
+      { id: 'topics', name: 'Topics', description: 'CoST core topics and themes', order: 1, enabled: true },
+      { id: 'regions', name: 'Regions', description: 'Geographic regions', order: 2, enabled: true },
+      { id: 'content-type', name: 'Content Type', description: 'Type of content', order: 3, enabled: true }
+    ];
+  }
+
+  /**
+   * Get default file types
+   */
+  private getDefaultFileTypes(): FileTypeConfig[] {
+    return [
+      { extension: 'pdf', mimeType: 'application/pdf', maxSizeMB: 50, enabled: true },
+      { extension: 'doc', mimeType: 'application/msword', maxSizeMB: 25, enabled: true },
+      { extension: 'docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', maxSizeMB: 25, enabled: true },
+      { extension: 'xls', mimeType: 'application/vnd.ms-excel', maxSizeMB: 25, enabled: true },
+      { extension: 'xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', maxSizeMB: 25, enabled: true },
+      { extension: 'ppt', mimeType: 'application/vnd.ms-powerpoint', maxSizeMB: 50, enabled: true },
+      { extension: 'pptx', mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', maxSizeMB: 50, enabled: true },
+      { extension: 'jpg', mimeType: 'image/jpeg', maxSizeMB: 10, enabled: true },
+      { extension: 'jpeg', mimeType: 'image/jpeg', maxSizeMB: 10, enabled: true },
+      { extension: 'png', mimeType: 'image/png', maxSizeMB: 10, enabled: true },
+      { extension: 'gif', mimeType: 'image/gif', maxSizeMB: 5, enabled: true },
+      { extension: 'zip', mimeType: 'application/zip', maxSizeMB: 100, enabled: true },
+      { extension: 'csv', mimeType: 'text/csv', maxSizeMB: 10, enabled: true }
+    ];
   }
 
   /**

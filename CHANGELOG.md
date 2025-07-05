@@ -2,6 +2,34 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
+## [Unreleased] - 2025-07-05 00:00:00 UTC
+
+### Added - 2025-07-05 00:00:00 UTC
+- **🎨 Dynamic Resource Type Management: Implemented configurable resource types from settings page**
+  - Created comprehensive content management interfaces in settings model (src/app/admin/components/settings/models/settings.model.ts)
+  - Added ResourceTypeSettings interface with id, label, icon, description, enabled, order, defaultCover fields
+  - Added TagManagementSettings interface for managing tags and categories
+  - Enhanced ContentManagementSettings with resource types, tags, publishing workflow, and media settings
+  - Added AI content generation settings and search configuration
+  - Created ResourceTypeService for centralized resource type management
+  - Updated settings service with methods for managing content configurations
+  - Enhanced settings component UI with new content management sections
+  - Modified resource components to use dynamic resource types from settings
+  - Implemented default cover image generation with Gemini AI
+  - Added migration logic to convert hardcoded types to settings-based configuration
+  - **Features Implemented**:
+    - Dynamic resource type creation and management
+    - Enable/disable resource types
+    - Custom icons and descriptions for types
+    - Default cover images per resource type
+    - Tag and category management
+    - Publishing workflow configuration
+    - Media settings and file type management
+    - AI feature toggles and configuration
+    - Search and discovery settings
+  - **Problem Solved**: Admins can now manage resource types without code changes
+  - **Result**: Flexible content management system with full admin control
+
 ## [Unreleased] - 2025-07-04 16:25:00 UTC
 
 ### Fixed - 2025-07-04 16:25:00 UTC

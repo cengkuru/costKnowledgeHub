@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, combineLatest, firstValueFrom } from 'rxjs';
+import { Subject, combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { takeUntil, map, startWith } from 'rxjs/operators';
 
 import { SettingsService } from './services/settings.service';
@@ -12,7 +12,10 @@ import {
   ApplicationSettings, 
   UserSecuritySettings,
   ContentManagementSettings,
-  SystemAdministrationSettings
+  SystemAdministrationSettings,
+  ResourceTypeSettings,
+  TagSettings,
+  CategorySettings
 } from './models/settings.model';
 
 @Component({
@@ -413,137 +416,252 @@ import {
               </div>
 
               <!-- Content Management Settings -->
-              <div *ngIf="activeTab === 'contentManagement'" class="bg-white shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                  <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settingsPage.contentManagement.title') }}
-                  </h3>
-                  
-                  <form [formGroup]="contentManagementForm" (ngSubmit)="saveContentManagementSettings()">
-                    <div class="space-y-6">
-                      <!-- Publishing Settings -->
-                      <div class="space-y-3">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="autoPublishResources"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.autoPublishResources') }}
-                          </label>
+              <div *ngIf="activeTab === 'contentManagement'" class="space-y-6">
+                <!-- Resource Types Section -->
+                <div class="bg-white shadow rounded-lg">
+                  <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
+                      {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.title') }}
+                    </h3>
+                    
+                    <!-- Resource Types List -->
+                    <div class="space-y-3">
+                      <div *ngFor="let type of resourceTypes$ | async" 
+                           class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div class="flex items-center space-x-3">
+                          <span class="material-icons text-cost-cyan">{{ type.icon }}</span>
+                          <div>
+                            <p class="font-medium text-cost-charcoal">{{ type.label }}</p>
+                            <p class="text-sm text-gray-600">{{ type.description }}</p>
+                          </div>
                         </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="requireApprovalForPublishing"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.requireApprovalForPublishing') }}
+                        <div class="flex items-center space-x-2">
+                          <label class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              [checked]="type.enabled"
+                              (change)="toggleResourceType(type.id, $event)"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <span class="ml-2 text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.enabled') }}
+                            </span>
                           </label>
-                        </div>
-                      </div>
-
-                      <!-- File Upload Settings -->
-                      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                          <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.maxFileUploadSizeMB') }}
-                          </label>
-                          <input 
-                            type="number" 
-                            formControlName="maxFileUploadSizeMB"
-                            min="1"
-                            max="100"
-                            class="input-field"
+                          <button 
+                            type="button"
+                            (click)="editResourceType(type)"
+                            class="text-cost-cyan hover:text-cost-teal"
                           >
+                            <span class="material-icons">edit</span>
+                          </button>
                         </div>
                       </div>
-
-                      <!-- Content Features -->
-                      <div class="space-y-3">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="autoGenerateThumbnails"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.autoGenerateThumbnails') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enableContentVersioning"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.enableContentVersioning') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="searchIndexingEnabled"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.searchIndexingEnabled') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="autoTaggingEnabled"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.autoTaggingEnabled') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="duplicateContentCheck"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.contentManagement.duplicateContentCheck') }}
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Form Actions -->
-                    <div class="mt-6 flex justify-end space-x-3">
+                      
                       <button 
                         type="button"
-                        (click)="resetForm('contentManagement')"
-                        class="btn-secondary"
+                        (click)="addNewResourceType()"
+                        class="btn-secondary w-full"
                       >
-                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
-                      </button>
-                      <button 
-                        type="submit"
-                        [disabled]="contentManagementForm.invalid || saving"
-                        [class.opacity-50]="contentManagementForm.invalid || saving"
-                        class="btn-primary"
-                      >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
-                        <span *ngIf="saving" class="flex items-center">
-                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
-                        </span>
+                        <span class="material-icons mr-2">add</span>
+                        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.add') }}
                       </button>
                     </div>
-                  </form>
+                  </div>
+                </div>
+
+                <!-- Tags & Categories Section -->
+                <div class="bg-white shadow rounded-lg">
+                  <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
+                      {{ i18nService.t('admin.settingsPage.contentManagement.tags.title') }}
+                    </h3>
+                    
+                    <!-- Categories -->
+                    <div class="mb-6">
+                      <h4 class="text-sm font-medium text-cost-charcoal mb-3">
+                        {{ i18nService.t('admin.settingsPage.contentManagement.tags.categories') }}
+                      </h4>
+                      <div class="space-y-2">
+                        <div *ngFor="let category of tagCategories$ | async" 
+                             class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span class="font-medium text-sm">{{ category.name }}</span>
+                          <button 
+                            type="button"
+                            (click)="editCategory(category)"
+                            class="text-cost-cyan hover:text-cost-teal"
+                          >
+                            <span class="material-icons text-sm">edit</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div>
+                      <h4 class="text-sm font-medium text-cost-charcoal mb-3">
+                        {{ i18nService.t('admin.settingsPage.contentManagement.tags.tags') }}
+                      </h4>
+                      <div class="flex flex-wrap gap-2">
+                        <span *ngFor="let tag of tags$ | async" 
+                              class="inline-flex items-center px-3 py-1 rounded-full text-sm"
+                              [style.background-color]="tag.color + '20'"
+                              [style.color]="tag.color">
+                          <span class="material-icons mr-1 text-sm">{{ tag.icon || 'label' }}</span>
+                          {{ tag.name }}
+                          <button 
+                            type="button"
+                            (click)="editTag(tag)"
+                            class="ml-2 hover:opacity-70"
+                          >
+                            <span class="material-icons text-sm">edit</span>
+                          </button>
+                        </span>
+                        <button 
+                          type="button"
+                          (click)="addNewTag()"
+                          class="inline-flex items-center px-3 py-1 border border-dashed border-gray-400 rounded-full text-sm text-gray-600 hover:border-cost-cyan hover:text-cost-cyan"
+                        >
+                          <span class="material-icons mr-1 text-sm">add</span>
+                          {{ i18nService.t('admin.settingsPage.contentManagement.tags.add') }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Original Content Management Form -->
+                <div class="bg-white shadow rounded-lg">
+                  <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
+                      {{ i18nService.t('admin.settingsPage.contentManagement.general.title') }}
+                    </h3>
+                    
+                    <form [formGroup]="contentManagementForm" (ngSubmit)="saveContentManagementSettings()">
+                      <div class="space-y-6">
+                        <!-- Publishing Settings -->
+                        <div class="space-y-3">
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="autoPublishResources"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.autoPublishResources') }}
+                            </label>
+                          </div>
+
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="requireApprovalForPublishing"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.requireApprovalForPublishing') }}
+                            </label>
+                          </div>
+                        </div>
+
+                        <!-- File Upload Settings -->
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div>
+                            <label class="block text-sm font-medium text-cost-charcoal mb-1">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.maxFileUploadSizeMB') }}
+                            </label>
+                            <input 
+                              type="number" 
+                              formControlName="maxFileUploadSizeMB"
+                              min="1"
+                              max="100"
+                              class="input-field"
+                            >
+                          </div>
+                        </div>
+
+                        <!-- Content Features -->
+                        <div class="space-y-3">
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="autoGenerateThumbnails"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.autoGenerateThumbnails') }}
+                            </label>
+                          </div>
+
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="enableContentVersioning"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.enableContentVersioning') }}
+                            </label>
+                          </div>
+
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="searchIndexingEnabled"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.searchIndexingEnabled') }}
+                            </label>
+                          </div>
+
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="autoTaggingEnabled"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.autoTaggingEnabled') }}
+                            </label>
+                          </div>
+
+                          <div class="flex items-center">
+                            <input 
+                              type="checkbox" 
+                              formControlName="duplicateContentCheck"
+                              class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
+                            >
+                            <label class="ml-2 block text-sm text-cost-charcoal">
+                              {{ i18nService.t('admin.settingsPage.contentManagement.duplicateContentCheck') }}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Form Actions -->
+                      <div class="mt-6 flex justify-end space-x-3">
+                        <button 
+                          type="button"
+                          (click)="resetForm('contentManagement')"
+                          class="btn-secondary"
+                        >
+                          {{ i18nService.t('admin.settingsPage.actions.reset') }}
+                        </button>
+                        <button 
+                          type="submit"
+                          [disabled]="contentManagementForm.invalid || saving"
+                          [class.opacity-50]="contentManagementForm.invalid || saving"
+                          class="btn-primary"
+                        >
+                          <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
+                          <span *ngIf="saving" class="flex items-center">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
+                          </span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
 
@@ -843,6 +961,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
     { id: 'systemAdministration', label: 'System Administration', icon: 'server', active: false, hasChanges: false }
   ];
 
+  // Content Management Observables
+  resourceTypes$: Observable<ResourceTypeSettings[]> = this.settingsService.getResourceTypes();
+  tags$: Observable<TagSettings[]> = this.settingsService.getTags();
+  tagCategories$: Observable<CategorySettings[]> = this.settingsService.getCategories();
+
   ngOnInit(): void {
     this.initializeForms();
     this.loadSettings();
@@ -1109,5 +1232,53 @@ export class SettingsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showErrorMessage = false;
     }, 5000);
+  }
+
+  // Resource Type Management Methods
+  async toggleResourceType(typeId: string, event: any): Promise<void> {
+    const enabled = event.target.checked;
+    try {
+      await firstValueFrom(this.settingsService.updateResourceType(typeId, { enabled }));
+      this.showSuccess(`Resource type ${enabled ? 'enabled' : 'disabled'} successfully`);
+    } catch (error) {
+      this.showError('Failed to update resource type');
+      event.target.checked = !enabled; // Revert checkbox
+    }
+  }
+
+  editResourceType(type: ResourceTypeSettings): void {
+    // TODO: Open modal/dialog for editing resource type
+    console.log('Edit resource type:', type);
+    // This would typically open a modal with a form to edit the resource type
+    this.showSuccess('Resource type editing not yet implemented');
+  }
+
+  addNewResourceType(): void {
+    // TODO: Open modal/dialog for adding new resource type
+    console.log('Add new resource type');
+    // This would typically open a modal with a form to create a new resource type
+    this.showSuccess('Adding new resource types not yet implemented');
+  }
+
+  // Tag Management Methods
+  editTag(tag: TagSettings): void {
+    // TODO: Open modal/dialog for editing tag
+    console.log('Edit tag:', tag);
+    // This would typically open a modal with a form to edit the tag
+    this.showSuccess('Tag editing not yet implemented');
+  }
+
+  addNewTag(): void {
+    // TODO: Open modal/dialog for adding new tag
+    console.log('Add new tag');
+    // This would typically open a modal with a form to create a new tag
+    this.showSuccess('Adding new tags not yet implemented');
+  }
+
+  editCategory(category: CategorySettings): void {
+    // TODO: Open modal/dialog for editing category
+    console.log('Edit category:', category);
+    // This would typically open a modal with a form to edit the category
+    this.showSuccess('Category editing not yet implemented');
   }
 }
