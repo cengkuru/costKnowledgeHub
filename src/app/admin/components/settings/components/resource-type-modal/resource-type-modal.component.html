@@ -5,22 +5,8 @@
   (closeModal)="onClose()"
 >
   <form [formGroup]="form" class="space-y-6">
-    <!-- ID Field -->
-    <div>
-      <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.id') }}
-        <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="text"
-        formControlName="id"
-        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.id')"
-        class="input-field"
-        [class.border-red-500]="form.get('id')?.touched && form.get('id')?.invalid"
-      />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.id') }}</p>
-      <p *ngIf="getFieldError('id')" class="mt-1 text-sm text-red-600">{{ getFieldError('id') }}</p>
-    </div>
+    <!-- ID Field (Hidden in UI, auto-generated) -->
+    <input type="hidden" formControlName="id" />
     
     <!-- Label Field -->
     <div>
@@ -54,22 +40,8 @@
       <p *ngIf="getFieldError('description')" class="mt-1 text-sm text-red-600">{{ getFieldError('description') }}</p>
     </div>
     
-    <!-- Order Field -->
-    <div>
-      <label class="block text-sm font-medium text-cost-charcoal mb-1">
-        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.order') }}
-        <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="number"
-        formControlName="order"
-        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.order')"
-        class="input-field"
-        [class.border-red-500]="form.get('order')?.touched && form.get('order')?.invalid"
-      />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.order') }}</p>
-      <p *ngIf="getFieldError('order')" class="mt-1 text-sm text-red-600">{{ getFieldError('order') }}</p>
-    </div>
+    <!-- Order Field (Hidden - managed by drag sorting) -->
+    <input type="hidden" formControlName="order" />
     
     <!-- Default Cover Image Section -->
     <div>
@@ -89,9 +61,10 @@
       </div>
       
       <!-- Upload and Generate Buttons -->
-      <div class="flex gap-2 mb-3">
-        <label class="relative">
+      <div class="flex gap-2">
+        <label class="flex-1">
           <input
+            #fileInput
             type="file"
             accept="image/*"
             (change)="onFileSelected($event)"
@@ -100,8 +73,9 @@
           />
           <button
             type="button"
-            class="btn-secondary flex items-center gap-2"
+            class="btn-secondary flex items-center justify-center gap-2 w-full"
             [disabled]="isUploading"
+            (click)="fileInput.click()"
           >
             <svg *ngIf="!isUploading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -113,7 +87,7 @@
         
         <button
           type="button"
-          class="btn-secondary flex items-center gap-2"
+          class="btn-secondary flex items-center justify-center gap-2 flex-1"
           [disabled]="isUploading || isGeneratingAI"
           (click)="generateWithAI()"
         >
@@ -128,17 +102,11 @@
           <span *ngIf="isGeneratingAI">{{ i18nService.t('common.generating') }}...</span>
         </button>
       </div>
-      
-      <!-- URL Input -->
-      <input
-        type="url"
-        formControlName="defaultCover"
-        [placeholder]="i18nService.t('admin.settingsPage.contentManagement.resourceTypes.placeholders.defaultCover')"
-        class="input-field"
-        [class.border-red-500]="form.get('defaultCover')?.touched && form.get('defaultCover')?.invalid"
-      />
-      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.hints.defaultCover') }}</p>
-      <p *ngIf="getFieldError('defaultCover')" class="mt-1 text-sm text-red-600">{{ getFieldError('defaultCover') }}</p>
+      <!-- Hidden input to store the cover URL -->
+      <input type="hidden" formControlName="defaultCover" />
+      <p *ngIf="!form.get('defaultCover')?.value && form.get('defaultCover')?.touched" class="mt-1 text-sm text-red-600">
+        {{ i18nService.t('admin.settingsPage.validation.required') }}
+      </p>
     </div>
     
     <!-- Enabled Toggle -->

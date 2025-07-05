@@ -63,13 +63,26 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       description: [this.resourceType?.description || '', [Validators.required, Validators.minLength(10)]],
       enabled: [this.resourceType?.enabled ?? true],
       order: [this.resourceType?.order || this.getNextOrder(), [Validators.required, Validators.min(0)]],
-      defaultCover: [this.resourceType?.defaultCover || '', [Validators.required]]
+      defaultCover: [this.resourceType?.defaultCover || '']
     });
     
-    // Disable ID field in edit mode
-    if (this.isEditMode) {
-      this.form.get('id')?.disable();
+    // Auto-generate ID from label when adding new
+    if (!this.isEditMode) {
+      this.form.get('label')?.valueChanges.subscribe(label => {
+        if (label && !this.form.get('id')?.touched) {
+          const generatedId = this.generateIdFromLabel(label);
+          this.form.patchValue({ id: generatedId }, { emitEvent: false });
+        }
+      });
     }
+  }
+  
+  private generateIdFromLabel(label: string): string {
+    return label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-+/g, '-');
   }
   
   getNextOrder(): number {
@@ -85,7 +98,13 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
   }
   
   onSave() {
-    if (this.form.valid) {
+    // Validate required cover image
+    if (!this.form.get('defaultCover')?.value) {
+      this.form.get('defaultCover')?.setErrors({ required: true });
+      this.form.get('defaultCover')?.markAsTouched();
+    }
+    
+    if (this.form.valid && this.form.get('defaultCover')?.value) {
       const formValue = this.form.getRawValue();
       
       // Check for duplicate ID when adding new
@@ -204,26 +223,64 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
     this.isGeneratingAI = true;
     
     try {
-      const generateCoverImage = httpsCallable(this.functions, 'generateCoverImage');
-      const result = await generateCoverImage({ title, description });
-      const data = result.data as { success: boolean; imageUrl: string; prompt: string };
-      
-      if (data.success && data.imageUrl) {
-        this.form.patchValue({ defaultCover: data.imageUrl });
-      } else {
-        alert('Failed to generate image. Please try again.');
-      }
+      // Generate contextually relevant image based on resource type
+      const imageUrl = await this.generateContextualImage(title, description);
+      this.form.patchValue({ defaultCover: imageUrl });
+      this.form.get('defaultCover')?.markAsTouched();
     } catch (error) {
       console.error('AI generation error:', error);
-      // Fallback to Lorem Picsum when Cloud Function is not available
-      const keywords = [title, description].join(' ').toLowerCase();
-      const seed = keywords.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const width = 800;
-      const height = 400;
-      const imageUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
-      this.form.patchValue({ defaultCover: imageUrl });
+      alert('Failed to generate image. Please try again.');
     } finally {
       this.isGeneratingAI = false;
     }
+  }
+  
+  private async generateContextualImage(title: string, description: string): Promise<string> {
+    // Map resource types to relevant image categories
+    const typeKeywords: { [key: string]: string[] } = {
+      'guide': ['document', 'manual', 'blueprint', 'instructions'],
+      'case': ['building', 'infrastructure', 'construction', 'project'],
+      'report': ['analysis', 'chart', 'graph', 'data'],
+      'dataset': ['database', 'spreadsheet', 'analytics', 'metrics'],
+      'tool': ['technology', 'software', 'application', 'digital'],
+      'policy': ['government', 'legislation', 'regulation', 'official'],
+      'template': ['framework', 'structure', 'pattern', 'design'],
+      'infographic': ['visualization', 'diagram', 'illustration', 'graphic'],
+      'review': ['evaluation', 'assessment', 'audit', 'inspection'],
+      'other': ['abstract', 'geometric', 'minimal', 'modern']
+    };
+    
+    // Extract keywords from title and description
+    const lowerTitle = title.toLowerCase();
+    const lowerDesc = description.toLowerCase();
+    
+    // Find matching type
+    let category = 'abstract';
+    for (const [key, keywords] of Object.entries(typeKeywords)) {
+      if (lowerTitle.includes(key) || lowerDesc.includes(key)) {
+        category = keywords[0];
+        break;
+      }
+    }
+    
+    // Add infrastructure/transparency context
+    const contextTerms = ['infrastructure', 'transparency', 'construction', 'development'];
+    const searchTerm = `${category},${contextTerms.join(',')}`;
+    
+    // Use Unsplash with specific search terms for better results
+    const width = 800;
+    const height = 400;
+    const imageUrl = `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(searchTerm)}`;
+    
+    // Verify the image loads
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(imageUrl);
+      img.onerror = () => {
+        // Fallback to abstract infrastructure image
+        resolve(`https://source.unsplash.com/${width}x${height}/?infrastructure,abstract`);
+      };
+      img.src = imageUrl;
+    });
   }
 }

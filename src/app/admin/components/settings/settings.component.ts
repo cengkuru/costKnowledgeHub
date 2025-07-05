@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { takeUntil, map, startWith } from 'rxjs/operators';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { SettingsService } from './services/settings.service';
 import { I18nService } from '../../../core/services/i18n.service';
@@ -22,7 +23,7 @@ import {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ResourceTypeModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, ResourceTypeModalComponent, DragDropModule],
   template: `
     <div class="min-h-screen bg-cost-gray">
       <!-- Header -->
@@ -425,11 +426,24 @@ import {
                       {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.title') }}
                     </h3>
                     
-                    <!-- Resource Types List -->
-                    <div class="space-y-3">
-                      <div *ngFor="let type of resourceTypes$ | async" 
-                           class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <!-- Resource Types List with Drag & Drop -->
+                    <div 
+                      cdkDropList 
+                      [cdkDropListData]="resourceTypes" 
+                      (cdkDropListDropped)="dropResourceType($event)"
+                      class="space-y-3"
+                    >
+                      <div 
+                        *ngFor="let type of resourceTypes" 
+                        cdkDrag
+                        class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-move"
+                        [class.cdk-drag-dragging]="false"
+                      >
+                        <!-- Drag Handle -->
                         <div class="flex items-center space-x-3">
+                          <div cdkDragHandle class="cursor-move p-1 hover:bg-gray-100 rounded">
+                            <span class="material-icons text-gray-400">drag_indicator</span>
+                          </div>
                           <img 
                             *ngIf="type.defaultCover"
                             [src]="type.defaultCover" 
@@ -958,6 +972,23 @@ import {
     .tab-icon-inactive {
       @apply text-gray-400 group-hover:text-cost-charcoal;
     }
+    
+    /* Drag and drop styles */
+    .cdk-drag-preview {
+      @apply border-2 border-cost-cyan bg-white shadow-lg rounded-lg opacity-90;
+    }
+    
+    .cdk-drag-placeholder {
+      @apply opacity-30;
+    }
+    
+    .cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    
+    .cdk-drop-list-dragging .cdk-drag {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
   `]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
@@ -988,15 +1019,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
     { id: 'systemAdministration', label: 'System Administration', icon: 'server', active: false, hasChanges: false }
   ];
 
-  // Content Management Observables
-  resourceTypes$: Observable<ResourceTypeSettings[]> = this.settingsService.getResourceTypes();
+  // Content Management Data
+  resourceTypes: ResourceTypeSettings[] = [];
   tags$: Observable<TagSettings[]> = this.settingsService.getTags();
   tagCategories$: Observable<CategorySettings[]> = this.settingsService.getCategories();
   
   // Modal state
   isResourceTypeModalOpen = false;
   selectedResourceType: ResourceTypeSettings | null = null;
-  resourceTypes: ResourceTypeSettings[] = [];
 
   ngOnInit(): void {
     this.initializeForms();
@@ -1004,7 +1034,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.setupFormChangeDetection();
     
     // Subscribe to resource types to keep array updated
-    this.resourceTypes$
+    this.settingsService.getResourceTypes()
       .pipe(takeUntil(this.destroy$))
       .subscribe(types => {
         this.resourceTypes = types || [];
@@ -1328,6 +1358,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.showError('Failed to restore default resource types');
     } finally {
       this.saving = false;
+    }
+  }
+  
+  async dropResourceType(event: CdkDragDrop<ResourceTypeSettings[]>): Promise<void> {
+    moveItemInArray(this.resourceTypes, event.previousIndex, event.currentIndex);
+    
+    // Update order values
+    this.resourceTypes.forEach((type, index) => {
+      type.order = index;
+    });
+    
+    try {
+      // Save the new order to Firestore
+      await firstValueFrom(this.settingsService.updateResourceTypes(this.resourceTypes));
+      this.showSuccess('Resource type order updated');
+    } catch (error) {
+      console.error('Error updating resource type order:', error);
+      this.showError('Failed to update order');
+      // Revert on error
+      this.loadSettings();
     }
   }
 

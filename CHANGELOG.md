@@ -4,6 +4,25 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 22:30:00 UTC
+- **🎨 Resource Type Modal: Simplified UI and improved AI image generation**
+  - Fixed file upload functionality by adding proper click handler (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.html:75)
+  - Removed URL input field to follow "Simplicity First" principle from EMOTIONAL_DESIGN_SYSTEM.md
+  - Hidden ID field (auto-generated from label) and Order field (managed by drag-sorting)
+  - Improved AI image generation with contextually relevant images based on resource type
+  - Added intelligent keyword mapping for infrastructure-related imagery
+  - Made cover image required for all resource types
+  - **Result**: Cleaner modal with only essential fields, better AI images, working upload
+
+### Added - 2025-07-05 22:15:00 UTC
+- **🔀 Drag-and-Drop Sorting: Implemented reorderable resource types**
+  - Added Angular CDK DragDropModule for sorting functionality
+  - Resource types can be reordered by dragging with visual feedback
+  - Order automatically saved to Firestore on drop
+  - Added drag handle icon for better UX
+  - Removed order field from modal (now managed by drag-and-drop)
+  - **Result**: Intuitive drag-and-drop interface for managing resource type order
+
 ### Added - 2025-07-05 22:00:00 UTC
 - **🔄 Restore Default Resource Types: Added one-click restoration with AI covers**
   - Created `restoreDefaultResourceTypes()` method in settings service (src/app/admin/components/settings/services/settings.service.ts:555)
