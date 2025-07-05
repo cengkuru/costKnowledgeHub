@@ -22,7 +22,8 @@
     "save": "Salvar",
     "saving": "Salvando...",
     "add": "Adicionar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "generating": "Gerando"
   },
   "navigation": {
     "home": "Início",
@@ -392,7 +393,11 @@
             "id": "Identificador único usando camelCase. Não pode ser alterado após a criação.",
             "order": "Números menores aparecem primeiro nas listas",
             "defaultCover": "Opcional. Usado quando nenhuma imagem é fornecida para um recurso."
-          }
+          },
+          "uploadImage": "Enviar Imagem",
+          "generateWithAI": "Gerar com IA",
+          "uploading": "Enviando...",
+          "preview": "Visualização"
         },
         "tags": {
           "title": "Tags e Categorias",

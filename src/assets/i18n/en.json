@@ -22,7 +22,8 @@
     "save": "Save",
     "saving": "Saving...",
     "add": "Add",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "generating": "Generating"
   },
   "navigation": {
     "home": "Home",
@@ -480,7 +481,11 @@
             "id": "Unique identifier using camelCase. Cannot be changed after creation.",
             "order": "Lower numbers appear first in lists",
             "defaultCover": "Optional. Used when no image is provided for a resource."
-          }
+          },
+          "uploadImage": "Upload Image",
+          "generateWithAI": "Generate with AI",
+          "uploading": "Uploading...",
+          "preview": "Preview"
         },
         "tags": {
           "title": "Tags & Categories",

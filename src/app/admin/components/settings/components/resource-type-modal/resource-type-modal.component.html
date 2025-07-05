@@ -92,11 +92,64 @@
       <p *ngIf="getFieldError('order')" class="mt-1 text-sm text-red-600">{{ getFieldError('order') }}</p>
     </div>
     
-    <!-- Default Cover URL Field -->
+    <!-- Default Cover Image Section -->
     <div>
       <label class="block text-sm font-medium text-cost-charcoal mb-1">
         {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.fields.defaultCover') }}
       </label>
+      
+      <!-- Image Preview -->
+      <div *ngIf="form.get('defaultCover')?.value" class="mb-3">
+        <p class="text-sm text-gray-600 mb-1">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.preview') }}:</p>
+        <img 
+          [src]="form.get('defaultCover')?.value" 
+          alt="Cover preview" 
+          class="w-full max-w-xs h-32 object-cover rounded-lg border border-gray-200"
+        />
+      </div>
+      
+      <!-- Upload and Generate Buttons -->
+      <div class="flex gap-2 mb-3">
+        <label class="relative">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            class="hidden"
+            [disabled]="isUploading"
+          />
+          <button
+            type="button"
+            class="btn-secondary flex items-center gap-2"
+            [disabled]="isUploading"
+          >
+            <svg *ngIf="!isUploading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <span *ngIf="!isUploading">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.uploadImage') }}</span>
+            <span *ngIf="isUploading">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.uploading') }} {{ uploadProgress.toFixed(0) }}%</span>
+          </button>
+        </label>
+        
+        <button
+          type="button"
+          class="btn-secondary flex items-center gap-2"
+          [disabled]="isUploading || isGeneratingAI"
+          (click)="generateWithAI()"
+        >
+          <svg *ngIf="!isGeneratingAI" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+          </svg>
+          <svg *ngIf="isGeneratingAI" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span *ngIf="!isGeneratingAI">{{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.generateWithAI') }}</span>
+          <span *ngIf="isGeneratingAI">{{ i18nService.t('common.generating') }}...</span>
+        </button>
+      </div>
+      
+      <!-- URL Input -->
       <input
         type="url"
         formControlName="defaultCover"

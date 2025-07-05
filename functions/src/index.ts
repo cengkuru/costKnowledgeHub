@@ -20,6 +20,7 @@ export { makeFirstAdminHTTP } from './admin/makeFirstAdminHTTP';
 // Export AI functions
 export { generateMultiLanguageSummary, suggestTags, healthCheck as aiHealthCheck } from './ai';
 export { extractUrlMetadata } from './ai/extractUrlMetadata';
+export { generateCoverImage } from './ai/generateCoverImage';
 
 // Export email functions
 export {

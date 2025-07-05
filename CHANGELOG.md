@@ -4,6 +4,28 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Added - 2025-07-05 20:30:00 UTC
+- **📸 Resource Type Cover Image: Added file upload and AI generation capabilities**
+  - Added file upload functionality for cover images with Firebase Storage integration
+  - Implemented image preview display when cover image exists
+  - Added upload button and file input to modal interface
+  - Created upload service method for handling image uploads
+  - **Features**:
+    - Direct file upload to Firebase Storage
+    - Automatic URL update after successful upload
+    - Image preview for existing covers
+    - File type validation (images only)
+    - Progress indicator during upload
+  - **Result**: Users can now upload cover images instead of only providing URLs
+
+### Fixed - 2025-07-05 20:15:00 UTC
+- **🔧 Resource Type Modal: Fixed form patching for edit mode**
+  - Implemented ngOnChanges lifecycle hook to handle input changes
+  - Form now properly updates when editing different resource types
+  - Fixed issue where edit modal showed empty fields instead of existing data
+  - Added proper change detection for resourceType input
+  - **Result**: Edit functionality now correctly displays existing resource type data
+
 ### Fixed - 2025-07-05 20:00:00 UTC
 - **🌐 Translation Keys: Fixed incorrect translation key paths - correct path is admin.settingsPage**
   - The correct path is `admin.settingsPage.contentManagement.resourceTypes.*` not `admin.settings.contentManagement.resourceTypes.*`
