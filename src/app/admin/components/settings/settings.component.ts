@@ -474,6 +474,15 @@ import {
                         <span class="material-icons mr-2">add</span>
                         {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.add') }}
                       </button>
+                      
+                      <button 
+                        type="button"
+                        (click)="restoreDefaultResourceTypes()"
+                        class="btn-primary w-full"
+                      >
+                        <span class="material-icons mr-2">restore</span>
+                        {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.restoreDefaults') }}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1306,6 +1315,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error saving resource type:', error);
       this.showError('Failed to save resource type');
+    }
+  }
+  
+  async restoreDefaultResourceTypes(): Promise<void> {
+    try {
+      this.saving = true;
+      await this.settingsService.restoreDefaultResourceTypes();
+      this.showSuccess('Default resource types restored successfully with AI-generated cover images');
+    } catch (error) {
+      console.error('Error restoring default resource types:', error);
+      this.showError('Failed to restore default resource types');
+    } finally {
+      this.saving = false;
     }
   }
 

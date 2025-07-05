@@ -373,6 +373,7 @@
           "title": "Tipos de Recursos",
           "add": "Adicionar Tipo de Recurso",
           "edit": "Editar Tipo de Recurso",
+          "restoreDefaults": "Restaurar Todos os Tipos Padrão",
           "fields": {
             "id": "ID",
             "label": "Rótulo",

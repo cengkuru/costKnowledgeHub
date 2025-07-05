@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, BehaviorSubject, throwError, of, from } from 'rxjs';
+import { Observable, BehaviorSubject, throwError, of, from, firstValueFrom } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { 
   Firestore, 
@@ -547,6 +547,32 @@ export class SettingsService {
         order: 10
       }
     ];
+  }
+
+  /**
+   * Restore all default resource types with AI-generated cover images
+   */
+  async restoreDefaultResourceTypes(): Promise<void> {
+    const defaultTypes = this.getDefaultResourceTypes();
+    const typesWithCovers: ResourceTypeSettings[] = [];
+    
+    for (const type of defaultTypes) {
+      // Generate a unique seed for each resource type based on its properties
+      const seed = `${type.id}-${type.label}-${type.description}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const width = 800;
+      const height = 400;
+      
+      // Use Lorem Picsum with consistent seed for each type
+      const coverUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
+      
+      typesWithCovers.push({
+        ...type,
+        defaultCover: coverUrl
+      });
+    }
+    
+    // Update all resource types at once
+    await firstValueFrom(this.updateResourceTypes(typesWithCovers));
   }
 
   /**

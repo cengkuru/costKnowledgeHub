@@ -4,6 +4,15 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Added - 2025-07-05 22:00:00 UTC
+- **🔄 Restore Default Resource Types: Added one-click restoration with AI covers**
+  - Created `restoreDefaultResourceTypes()` method in settings service (src/app/admin/components/settings/services/settings.service.ts:555)
+  - Added "Restore All Default Types" button to settings UI
+  - Automatically generates consistent cover images using Lorem Picsum
+  - Includes all 10 default resource types: guidance, case-study, report, dataset, tool, policy, template, infographic, independent-review, other
+  - Added translations for restore button in all languages
+  - **Result**: One-click restoration of all default resource types with AI-generated covers
+
 ### Fixed - 2025-07-05 21:45:00 UTC
 - **🔧 Settings Data Loss: Fixed resource types being overwritten on save**
   - Changed `setDoc` to use `{ merge: true }` option to preserve existing data (src/app/admin/components/settings/services/settings.service.ts:156)

@@ -373,6 +373,7 @@
           "title": "Tipos de Recursos",
           "add": "Agregar Tipo de Recurso",
           "edit": "Editar Tipo de Recurso",
+          "restoreDefaults": "Restaurar Todos los Tipos Predeterminados",
           "fields": {
             "id": "ID",
             "label": "Etiqueta",

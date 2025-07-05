@@ -461,6 +461,7 @@
           "title": "Resource Types",
           "add": "Add Resource Type",
           "edit": "Edit Resource Type",
+          "restoreDefaults": "Restore All Default Types",
           "fields": {
             "id": "ID",
             "label": "Label",
