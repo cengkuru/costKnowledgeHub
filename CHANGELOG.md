@@ -4,6 +4,12 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 22:45:00 UTC
+- **📦 Dependencies: Installed Angular CDK for drag-and-drop functionality**
+  - Installed @angular/cdk@^18.2.0 to match Angular version
+  - Fixed build errors related to missing drag-drop module
+  - **Result**: Application builds successfully with drag-and-drop functionality
+
 ### Fixed - 2025-07-05 22:30:00 UTC
 - **🎨 Resource Type Modal: Simplified UI and improved AI image generation**
   - Fixed file upload functionality by adding proper click handler (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.html:75)
