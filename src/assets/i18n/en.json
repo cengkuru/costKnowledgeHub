@@ -20,7 +20,9 @@
     "searchSuggestions": "Search suggestions will appear here",
     "fieldRequired": "This field is required",
     "save": "Save",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "add": "Add",
+    "cancel": "Cancel"
   },
   "navigation": {
     "home": "Home",
@@ -449,7 +451,43 @@
         "enableContentVersioning": "Enable Content Versioning",
         "searchIndexingEnabled": "Enable Search Indexing",
         "autoTaggingEnabled": "Enable Auto-tagging",
-        "duplicateContentCheck": "Enable Duplicate Content Check"
+        "duplicateContentCheck": "Enable Duplicate Content Check",
+        "enabled": "Enabled",
+        "general": {
+          "title": "General Settings"
+        },
+        "resourceTypes": {
+          "title": "Resource Types",
+          "add": "Add Resource Type",
+          "edit": "Edit Resource Type",
+          "fields": {
+            "id": "ID",
+            "label": "Label",
+            "icon": "Icon",
+            "description": "Description",
+            "order": "Display Order",
+            "defaultCover": "Default Cover Image URL",
+            "enabled": "Enabled"
+          },
+          "placeholders": {
+            "id": "e.g., caseStudy",
+            "label": "e.g., Case Study",
+            "description": "Brief description of this resource type",
+            "order": "0",
+            "defaultCover": "https://example.com/image.jpg"
+          },
+          "hints": {
+            "id": "Unique identifier using camelCase. Cannot be changed after creation.",
+            "order": "Lower numbers appear first in lists",
+            "defaultCover": "Optional. Used when no image is provided for a resource."
+          }
+        },
+        "tags": {
+          "title": "Tags & Categories",
+          "categories": "Categories",
+          "tags": "Tags",
+          "add": "Add Tag"
+        }
       },
       "systemAdministration": {
         "title": "System Administration Settings",
@@ -492,7 +530,9 @@
         "url": "Please enter a valid URL",
         "number": "Please enter a valid number",
         "min": "Value must be at least {{min}}",
-        "max": "Value must be at most {{max}}"
+        "max": "Value must be at most {{max}}",
+        "idPattern": "ID must start with a lowercase letter and contain only letters and numbers",
+        "duplicate": "This ID already exists"
       }
     },
     "dashboard": {

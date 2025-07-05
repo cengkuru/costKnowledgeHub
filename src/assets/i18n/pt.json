@@ -20,7 +20,9 @@
     "searchSuggestions": "Sugestões de pesquisa aparecerão aqui",
     "fieldRequired": "Este campo é obrigatório",
     "save": "Salvar",
-    "saving": "Salvando..."
+    "saving": "Salvando...",
+    "add": "Adicionar",
+    "cancel": "Cancelar"
   },
   "navigation": {
     "home": "Início",
@@ -350,7 +352,43 @@
         "enableContentVersioning": "Habilitar Versionamento de Conteúdo",
         "searchIndexingEnabled": "Habilitar Indexação de Busca",
         "autoTaggingEnabled": "Habilitar Marcação Automática",
-        "duplicateContentCheck": "Habilitar Verificação de Conteúdo Duplicado"
+        "duplicateContentCheck": "Habilitar Verificação de Conteúdo Duplicado",
+        "enabled": "Habilitado",
+        "general": {
+          "title": "Configurações Gerais"
+        },
+        "resourceTypes": {
+          "title": "Tipos de Recursos",
+          "add": "Adicionar Tipo de Recurso",
+          "edit": "Editar Tipo de Recurso",
+          "fields": {
+            "id": "ID",
+            "label": "Rótulo",
+            "icon": "Ícone",
+            "description": "Descrição",
+            "order": "Ordem de Exibição",
+            "defaultCover": "URL da Imagem de Capa Padrão",
+            "enabled": "Habilitado"
+          },
+          "placeholders": {
+            "id": "ex., estudoDeCaso",
+            "label": "ex., Estudo de Caso",
+            "description": "Breve descrição deste tipo de recurso",
+            "order": "0",
+            "defaultCover": "https://exemplo.com/imagem.jpg"
+          },
+          "hints": {
+            "id": "Identificador único usando camelCase. Não pode ser alterado após a criação.",
+            "order": "Números menores aparecem primeiro nas listas",
+            "defaultCover": "Opcional. Usado quando nenhuma imagem é fornecida para um recurso."
+          }
+        },
+        "tags": {
+          "title": "Tags e Categorias",
+          "categories": "Categorias",
+          "tags": "Tags",
+          "add": "Adicionar Tag"
+        }
       },
       "systemAdministration": {
         "title": "Configurações de Administração do Sistema",
@@ -393,7 +431,9 @@
         "url": "Por favor, insira uma URL válida",
         "number": "Por favor, insira um número válido",
         "min": "O valor deve ser pelo menos {{min}}",
-        "max": "O valor deve ser no máximo {{max}}"
+        "max": "O valor deve ser no máximo {{max}}",
+        "idPattern": "O ID deve começar com uma letra minúscula e conter apenas letras e números",
+        "duplicate": "Este ID já existe"
       }
     },
     "profilePage": {

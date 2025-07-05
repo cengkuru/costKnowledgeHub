@@ -6,6 +6,7 @@ import { takeUntil, map, startWith } from 'rxjs/operators';
 
 import { SettingsService } from './services/settings.service';
 import { I18nService } from '../../../core/services/i18n.service';
+import { ResourceTypeModalComponent } from './components/resource-type-modal/resource-type-modal.component';
 import { 
   SettingsData, 
   SettingsTab, 
@@ -21,7 +22,7 @@ import {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ResourceTypeModalComponent],
   template: `
     <div class="min-h-screen bg-cost-gray">
       <!-- Header -->
@@ -902,6 +903,15 @@ import {
     <div *ngIf="showErrorMessage" class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-md shadow-lg">
       {{ errorMessage }}
     </div>
+
+    <!-- Resource Type Modal -->
+    <app-resource-type-modal
+      [isOpen]="isResourceTypeModalOpen"
+      [resourceType]="selectedResourceType"
+      [existingTypes]="resourceTypes"
+      (closeModal)="closeResourceTypeModal()"
+      (saveResourceType)="saveResourceType($event)"
+    ></app-resource-type-modal>
   `,
   styles: [`
     .btn-primary {
@@ -965,11 +975,23 @@ export class SettingsComponent implements OnInit, OnDestroy {
   resourceTypes$: Observable<ResourceTypeSettings[]> = this.settingsService.getResourceTypes();
   tags$: Observable<TagSettings[]> = this.settingsService.getTags();
   tagCategories$: Observable<CategorySettings[]> = this.settingsService.getCategories();
+  
+  // Modal state
+  isResourceTypeModalOpen = false;
+  selectedResourceType: ResourceTypeSettings | null = null;
+  resourceTypes: ResourceTypeSettings[] = [];
 
   ngOnInit(): void {
     this.initializeForms();
     this.loadSettings();
     this.setupFormChangeDetection();
+    
+    // Subscribe to resource types to keep array updated
+    this.resourceTypes$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(types => {
+        this.resourceTypes = types || [];
+      });
   }
 
   ngOnDestroy(): void {
@@ -1247,17 +1269,36 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   editResourceType(type: ResourceTypeSettings): void {
-    // TODO: Open modal/dialog for editing resource type
-    console.log('Edit resource type:', type);
-    // This would typically open a modal with a form to edit the resource type
-    this.showSuccess('Resource type editing not yet implemented');
+    this.selectedResourceType = { ...type };
+    this.isResourceTypeModalOpen = true;
   }
 
   addNewResourceType(): void {
-    // TODO: Open modal/dialog for adding new resource type
-    console.log('Add new resource type');
-    // This would typically open a modal with a form to create a new resource type
-    this.showSuccess('Adding new resource types not yet implemented');
+    this.selectedResourceType = null;
+    this.isResourceTypeModalOpen = true;
+  }
+  
+  closeResourceTypeModal(): void {
+    this.isResourceTypeModalOpen = false;
+    this.selectedResourceType = null;
+  }
+  
+  async saveResourceType(resourceType: ResourceTypeSettings): Promise<void> {
+    try {
+      if (this.selectedResourceType) {
+        // Updating existing resource type
+        await firstValueFrom(this.settingsService.updateResourceType(resourceType.id, resourceType));
+        this.showSuccess('Resource type updated successfully');
+      } else {
+        // Adding new resource type
+        await firstValueFrom(this.settingsService.addResourceType(resourceType));
+        this.showSuccess('Resource type added successfully');
+      }
+      this.closeResourceTypeModal();
+    } catch (error) {
+      console.error('Error saving resource type:', error);
+      this.showError('Failed to save resource type');
+    }
   }
 
   // Tag Management Methods

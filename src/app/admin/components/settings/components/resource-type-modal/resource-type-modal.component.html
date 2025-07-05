@@ -1,0 +1,143 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditMode ? i18nService.t('contentManagement.resourceTypes.edit') : i18nService.t('contentManagement.resourceTypes.add')"
+  size="lg"
+  (closeModal)="onClose()"
+>
+  <form [formGroup]="form" class="space-y-6">
+    <!-- ID Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.id') }}
+        <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="id"
+        [placeholder]="i18nService.t('contentManagement.resourceTypes.placeholders.id')"
+        class="input-field"
+        [class.border-red-500]="form.get('id')?.touched && form.get('id')?.invalid"
+      />
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('contentManagement.resourceTypes.hints.id') }}</p>
+      <p *ngIf="getFieldError('id')" class="mt-1 text-sm text-red-600">{{ getFieldError('id') }}</p>
+    </div>
+    
+    <!-- Label Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.label') }}
+        <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        formControlName="label"
+        [placeholder]="i18nService.t('contentManagement.resourceTypes.placeholders.label')"
+        class="input-field"
+        [class.border-red-500]="form.get('label')?.touched && form.get('label')?.invalid"
+      />
+      <p *ngIf="getFieldError('label')" class="mt-1 text-sm text-red-600">{{ getFieldError('label') }}</p>
+    </div>
+    
+    <!-- Icon Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.icon') }}
+        <span class="text-red-500">*</span>
+      </label>
+      <div class="grid grid-cols-4 gap-2">
+        <button
+          *ngFor="let icon of availableIcons"
+          type="button"
+          [class]="form.get('icon')?.value === icon.value ? 'border-cost-cyan bg-cost-cyan bg-opacity-10' : 'border-gray-300 hover:border-cost-cyan'"
+          class="p-3 border-2 rounded-lg text-center transition-colors"
+          (click)="form.get('icon')?.setValue(icon.value)"
+        >
+          <span class="text-2xl block mb-1">{{ icon.icon }}</span>
+          <span class="text-xs text-gray-600">{{ icon.label }}</span>
+        </button>
+      </div>
+      <p *ngIf="getFieldError('icon')" class="mt-1 text-sm text-red-600">{{ getFieldError('icon') }}</p>
+    </div>
+    
+    <!-- Description Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.description') }}
+        <span class="text-red-500">*</span>
+      </label>
+      <textarea
+        formControlName="description"
+        [placeholder]="i18nService.t('contentManagement.resourceTypes.placeholders.description')"
+        rows="3"
+        class="input-field"
+        [class.border-red-500]="form.get('description')?.touched && form.get('description')?.invalid"
+      ></textarea>
+      <p *ngIf="getFieldError('description')" class="mt-1 text-sm text-red-600">{{ getFieldError('description') }}</p>
+    </div>
+    
+    <!-- Order Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.order') }}
+        <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="number"
+        formControlName="order"
+        [placeholder]="i18nService.t('contentManagement.resourceTypes.placeholders.order')"
+        class="input-field"
+        [class.border-red-500]="form.get('order')?.touched && form.get('order')?.invalid"
+      />
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('contentManagement.resourceTypes.hints.order') }}</p>
+      <p *ngIf="getFieldError('order')" class="mt-1 text-sm text-red-600">{{ getFieldError('order') }}</p>
+    </div>
+    
+    <!-- Default Cover URL Field -->
+    <div>
+      <label class="block text-sm font-medium text-cost-charcoal mb-1">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.defaultCover') }}
+      </label>
+      <input
+        type="url"
+        formControlName="defaultCover"
+        [placeholder]="i18nService.t('contentManagement.resourceTypes.placeholders.defaultCover')"
+        class="input-field"
+      />
+      <p class="mt-1 text-sm text-gray-500">{{ i18nService.t('contentManagement.resourceTypes.hints.defaultCover') }}</p>
+    </div>
+    
+    <!-- Enabled Toggle -->
+    <div class="flex items-center justify-between">
+      <label class="text-sm font-medium text-cost-charcoal">
+        {{ i18nService.t('contentManagement.resourceTypes.fields.enabled') }}
+      </label>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          formControlName="enabled"
+          class="sr-only peer"
+        />
+        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cost-cyan peer-focus:ring-opacity-30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cost-cyan"></div>
+      </label>
+    </div>
+  </form>
+  
+  <!-- Modal Footer -->
+  <div modal-footer>
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="onClose()"
+    >
+      {{ i18nService.t('common.cancel') }}
+    </button>
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="onSave()"
+      [disabled]="form.invalid"
+    >
+      {{ isEditMode ? i18nService.t('common.save') : i18nService.t('common.add') }}
+    </button>
+  </div>
+</app-modal>
