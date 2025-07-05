@@ -281,6 +281,17 @@
       "users": "Usuários",
       "settings": "Configurações"
     },
+    "resourceTypes": {
+      "guide": "Guia",
+      "caseStudy": "Estudo de Caso",
+      "report": "Relatório",
+      "dataset": "Conjunto de Dados",
+      "tool": "Ferramenta",
+      "policy": "Resumo de Política",
+      "template": "Modelo",
+      "infographic": "Infográfico",
+      "other": "Outro"
+    },
     "quickActions": "Ações Rápidas",
     "addResource": "Adicionar Recurso",
     "uploadFile": "Enviar Arquivo",

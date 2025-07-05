@@ -582,6 +582,17 @@
       "next": "Next",
       "page": "Page"
     },
+    "resourceTypes": {
+      "guide": "Guide",
+      "caseStudy": "Case Study",
+      "report": "Report",
+      "dataset": "Dataset",
+      "tool": "Tool",
+      "policy": "Policy Brief",
+      "template": "Template",
+      "infographic": "Infographic",
+      "other": "Other"
+    },
     "users": {
       "title": "User Management",
       "subtitle": "Manage user accounts, roles, and permissions",

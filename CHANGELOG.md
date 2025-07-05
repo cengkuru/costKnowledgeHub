@@ -4,6 +4,22 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 19:30:00 UTC
+- **🌐 Translation Keys: Fixed validation key paths and hardcoded text**
+  - Updated resource-type-modal to use correct validation key paths under admin.settings.validation (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.ts:113-125)
+  - Fixed hardcoded resource type options in resource management dropdown (src/app/admin/components/resources/resource-management.component.html:68-76)
+  - Added translation keys for all resource types in dropdown in all three languages:
+    - English: admin.resourceTypes.guide, caseStudy, report, dataset, tool, policy, template, infographic, other (src/assets/i18n/en.json:585-594)
+    - Spanish: Same keys with translations (src/assets/i18n/es.json:284-293)
+    - Portuguese: Same keys with translations (src/assets/i18n/pt.json:284-293)
+  - **Keys Fixed**:
+    - validation.required → admin.settings.validation.required
+    - validation.minLength → admin.settings.validation.minLength
+    - validation.idPattern → admin.settings.validation.idPattern
+    - validation.duplicate → admin.settings.validation.duplicate
+    - validation.min → admin.settings.validation.min
+  - **Result**: All validation messages display correctly, dropdown options are fully translated, no hardcoded text remains
+
 ### Added - 2025-07-05 19:00:00 UTC
 - **🎯 Resource Type Edit Modal: Implemented full CRUD functionality for resource types**
   - Created ResourceTypeModalComponent with form validation (src/app/admin/components/settings/components/resource-type-modal/resource-type-modal.component.ts)
