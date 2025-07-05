@@ -4,6 +4,14 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-07-05 00:00:00 UTC
 
+### Fixed - 2025-07-05 21:45:00 UTC
+- **🔧 Settings Data Loss: Fixed resource types being overwritten on save**
+  - Changed `setDoc` to use `{ merge: true }` option to preserve existing data (src/app/admin/components/settings/services/settings.service.ts:156)
+  - Added logging to track settings updates and debug data flow
+  - Updated resource type list to display cover images instead of icons
+  - Fixed template to handle resources without defaultCover gracefully
+  - **Result**: Resource types are now preserved when adding/editing, no more data loss
+
 ### Fixed - 2025-07-05 21:30:00 UTC
 - **✅ AI Image Generation: Successfully deployed and working**
   - Cloud Function `generateCoverImage` successfully deployed after simplification

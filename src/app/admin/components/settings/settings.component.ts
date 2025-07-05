@@ -430,7 +430,15 @@ import {
                       <div *ngFor="let type of resourceTypes$ | async" 
                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                         <div class="flex items-center space-x-3">
-                          <span class="material-icons text-cost-cyan">{{ type.icon }}</span>
+                          <img 
+                            *ngIf="type.defaultCover"
+                            [src]="type.defaultCover" 
+                            alt="{{ type.label }}" 
+                            class="w-12 h-12 object-cover rounded"
+                          />
+                          <div *ngIf="!type.defaultCover" class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                            <span class="material-icons text-gray-400">image</span>
+                          </div>
                           <div>
                             <p class="font-medium text-cost-charcoal">{{ type.label }}</p>
                             <p class="text-sm text-gray-600">{{ type.description }}</p>

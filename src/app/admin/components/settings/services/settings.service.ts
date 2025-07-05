@@ -148,9 +148,12 @@ export class SettingsService {
       version: this.generateVersion()
     };
 
+    console.log('Saving settings to Firestore:', updatedSettings);
+    console.log('Resource types being saved:', updatedSettings.contentManagement?.resourceTypes);
+
     const docRef = doc(this.firestore, this.SETTINGS_COLLECTION, this.SETTINGS_DOC_ID);
     
-    return from(setDoc(docRef, updatedSettings)).pipe(
+    return from(setDoc(docRef, updatedSettings, { merge: true })).pipe(
       tap(() => {
         this.settingsSubject.next(updatedSettings);
         this.logSettingsChange('settings_updated', updatedSettings);
@@ -356,6 +359,9 @@ export class SettingsService {
     if (!currentSettings) {
       return throwError(() => new Error('Settings not loaded'));
     }
+
+    console.log('Updating resource types:', resourceTypes);
+    console.log('Current settings before update:', currentSettings);
 
     const updatedContentManagement: ContentManagementSettings = {
       ...currentSettings.contentManagement,
