@@ -1,18 +1,23 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, BehaviorSubject, throwError, of, from, firstValueFrom } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
-import { 
-  Firestore, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  serverTimestamp 
+import {
+  Firestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs,
+  writeBatch
 } from '@angular/fire/firestore';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ActivityService } from '../../../../core/services/activity.service';
-import { 
-  SettingsData, 
-  ApplicationSettings, 
+import {
+  SettingsData,
+  ApplicationSettings,
   UserSecuritySettings,
   ContentManagementSettings,
   SystemAdministrationSettings,
@@ -61,15 +66,15 @@ export class SettingsService {
    */
   loadSettings(): Observable<SettingsData> {
     this.loadingSubject.next(true);
-    
+
     // Check if user is authenticated (basic check)
     const currentUser = this.authService.currentUser;
     if (!currentUser) {
       console.warn('Settings accessed without authentication - loading defaults');
     }
-    
+
     const docRef = doc(this.firestore, this.SETTINGS_COLLECTION, this.SETTINGS_DOC_ID);
-    
+
     return from(getDoc(docRef)).pipe(
       map(docSnapshot => {
         if (docSnapshot.exists()) {
@@ -80,13 +85,13 @@ export class SettingsService {
           // Create default settings if none exist
           const defaultSettings = this.getDefaultSettings();
           this.settingsSubject.next(defaultSettings);
-          
+
           // Save default settings asynchronously without blocking the current observable
           this.saveSettings(defaultSettings).subscribe({
             next: () => console.log('Default settings saved'),
             error: (error) => console.error('Failed to save default settings:', error)
           });
-          
+
           return defaultSettings;
         }
       }),
@@ -106,7 +111,7 @@ export class SettingsService {
    */
   saveSettings(settings: SettingsData): Observable<void> {
     this.loadingSubject.next(true);
-    
+
     const currentUser = this.authService.currentUser;
     if (!currentUser) {
       this.loadingSubject.next(false);
@@ -124,7 +129,7 @@ export class SettingsService {
     return from(currentUser.getIdTokenResult()).pipe(
       switchMap(tokenResult => {
         console.log('User token claims:', tokenResult.claims);
-        
+
         if (!tokenResult.claims['admin']) {
           this.loadingSubject.next(false);
           return throwError(() => new Error('Admin privileges required to save settings'));
@@ -152,7 +157,7 @@ export class SettingsService {
     console.log('Resource types being saved:', updatedSettings.contentManagement?.resourceTypes);
 
     const docRef = doc(this.firestore, this.SETTINGS_COLLECTION, this.SETTINGS_DOC_ID);
-    
+
     return from(setDoc(docRef, updatedSettings, { merge: true })).pipe(
       tap(() => {
         this.settingsSubject.next(updatedSettings);
@@ -210,9 +215,15 @@ export class SettingsService {
       return throwError(() => new Error('Settings not loaded'));
     }
 
+    // Merge the incoming changes with the existing contentManagement object instead of overwriting it entirely
+    const mergedContentManagement: ContentManagementSettings = {
+      ...currentSettings.contentManagement,
+      ...settings
+    } as ContentManagementSettings;
+
     const updatedSettings: SettingsData = {
       ...currentSettings,
-      contentManagement: settings
+      contentManagement: mergedContentManagement
     };
 
     return this.saveSettings(updatedSettings);
@@ -220,20 +231,21 @@ export class SettingsService {
 
   /**
    * Update system administration settings
+   * @deprecated System administration tab has been removed
    */
-  updateSystemAdministrationSettings(settings: SystemAdministrationSettings): Observable<void> {
-    const currentSettings = this.settingsSubject.value;
-    if (!currentSettings) {
-      return throwError(() => new Error('Settings not loaded'));
-    }
+  // updateSystemAdministrationSettings(settings: SystemAdministrationSettings): Observable<void> {
+  //   const currentSettings = this.settingsSubject.value;
+  //   if (!currentSettings) {
+  //     return throwError(() => new Error('Settings not loaded'));
+  //   }
 
-    const updatedSettings: SettingsData = {
-      ...currentSettings,
-      systemAdministration: settings
-    };
+  //   const updatedSettings: SettingsData = {
+  //     ...currentSettings,
+  //     systemAdministration: settings
+  //   };
 
-    return this.saveSettings(updatedSettings);
-  }
+  //   return this.saveSettings(updatedSettings);
+  // }
 
   /**
    * Update integration settings
@@ -276,7 +288,7 @@ export class SettingsService {
     }
 
     // File size validation
-    if (settings.contentManagement.mediaSettings?.maxFileUploadSizeMB && 
+    if (settings.contentManagement.mediaSettings?.maxFileUploadSizeMB &&
         settings.contentManagement.mediaSettings.maxFileUploadSizeMB > 100) {
       errors.push({
         field: 'contentManagement.mediaSettings.maxFileUploadSizeMB',
@@ -396,11 +408,98 @@ export class SettingsService {
     }
 
     const resourceTypes = currentSettings.contentManagement.resourceTypes || [];
-    const updatedTypes = resourceTypes.map(type => 
+    const updatedTypes = resourceTypes.map(type =>
       type.id === id ? { ...type, ...updates } : type
     );
 
     return this.updateResourceTypes(updatedTypes);
+  }
+
+  /**
+   * Delete a resource type and migrate resources to 'other'
+   */
+  deleteResourceType(typeId: string): Observable<void> {
+    const currentSettings = this.settingsSubject.value;
+    if (!currentSettings) {
+      return throwError(() => new Error('Settings not loaded'));
+    }
+
+    // Prevent deletion of 'other' type
+    if (typeId === 'other') {
+      return throwError(() => new Error('Cannot delete the "Other" resource type'));
+    }
+
+    const resourceTypes = currentSettings.contentManagement.resourceTypes || [];
+    const updatedTypes = resourceTypes.filter(type => type.id !== typeId);
+
+    // First update the resource types
+    return this.updateResourceTypes(updatedTypes).pipe(
+      tap(() => {
+        // Trigger resource migration in the background
+        this.migrateResourcesFromDeletedType(typeId).subscribe({
+          next: (count) => {
+            console.log(`Successfully migrated ${count} resources from type ${typeId} to 'other'`);
+          },
+          error: (error) => {
+            console.error('Error migrating resources:', error);
+          }
+        });
+      })
+    );
+  }
+
+  /**
+   * Get count of resources by type
+   */
+  getResourceCountByType(typeId: string): Observable<number> {
+    const collectionRef = collection(this.firestore, 'resources');
+    const q = query(collectionRef, where('type', '==', typeId));
+    
+    return from(getDocs(q)).pipe(
+      map(snapshot => snapshot.size),
+      catchError(error => {
+        console.error('Error counting resources:', error);
+        return of(0);
+      })
+    );
+  }
+
+  /**
+   * Migrate resources from deleted type to 'other'
+   */
+  private migrateResourcesFromDeletedType(fromTypeId: string): Observable<number> {
+    const batch = writeBatch(this.firestore);
+    const collectionRef = collection(this.firestore, 'resources');
+    const q = query(collectionRef, where('type', '==', fromTypeId));
+    
+    return from(getDocs(q)).pipe(
+      map(snapshot => {
+        let count = 0;
+        snapshot.forEach(docSnapshot => {
+          const docRef = doc(this.firestore, 'resources', docSnapshot.id);
+          batch.update(docRef, { 
+            type: 'other',
+            lastUpdated: serverTimestamp(),
+            updatedBy: this.authService.currentUser?.uid || 'system'
+          });
+          count++;
+        });
+
+        if (count > 0) {
+          // Commit the batch update
+          from(batch.commit()).subscribe({
+            next: () => console.log(`Batch update completed for ${count} resources`),
+            error: (error) => console.error('Batch update failed:', error)
+          });
+        }
+
+        return count;
+      }),
+      catchError(error => {
+        console.error('Error migrating resources:', error);
+        return of(0);
+      })
+    );
   }
 
   /**
@@ -555,22 +654,22 @@ export class SettingsService {
   async restoreDefaultResourceTypes(): Promise<void> {
     const defaultTypes = this.getDefaultResourceTypes();
     const typesWithCovers: ResourceTypeSettings[] = [];
-    
+
     for (const type of defaultTypes) {
       // Generate a unique seed for each resource type based on its properties
       const seed = `${type.id}-${type.label}-${type.description}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
       const width = 800;
       const height = 400;
-      
+
       // Use Lorem Picsum with consistent seed for each type
       const coverUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
-      
+
       typesWithCovers.push({
         ...type,
         defaultCover: coverUrl
       });
     }
-    
+
     // Update all resource types at once
     await firstValueFrom(this.updateResourceTypes(typesWithCovers));
   }
@@ -580,7 +679,7 @@ export class SettingsService {
    */
   private getDefaultSettings(): SettingsData {
     const currentUser = this.authService.currentUser;
-    
+
     return {
       application: {
         siteTitle: 'CoST Knowledge Hub',
@@ -608,7 +707,7 @@ export class SettingsService {
         // Resource Types
         resourceTypes: this.getDefaultResourceTypes(),
         defaultResourceType: 'guidance',
-        
+
         // Tag Management
         tagManagement: {
           tags: this.getDefaultTags(),
@@ -616,7 +715,7 @@ export class SettingsService {
           enableAutoTagging: false,
           maxTagsPerResource: 10
         },
-        
+
         // Publishing
         autoPublishResources: false,
         requireApprovalForPublishing: true,
@@ -626,7 +725,7 @@ export class SettingsService {
           requireApproval: true,
           approvalLevels: 1
         },
-        
+
         // Media Settings
         mediaSettings: {
           maxFileUploadSizeMB: 25,
@@ -640,7 +739,7 @@ export class SettingsService {
           imageOptimization: true,
           cdnEnabled: false
         },
-        
+
         // AI Settings
         aiSettings: {
           enableAISummaries: false,
@@ -649,7 +748,7 @@ export class SettingsService {
           aiProvider: 'gemini',
           defaultPrompts: {}
         },
-        
+
         // Search Settings
         searchSettings: {
           searchProvider: 'firestore',
@@ -663,7 +762,7 @@ export class SettingsService {
           enableFeaturedResults: true,
           autocompleteSuggestions: 5
         },
-        
+
         // Homepage Settings
         homepageSettings: {
           heroContent: {
@@ -675,7 +774,7 @@ export class SettingsService {
           showStatistics: true,
           customBlocks: []
         },
-        
+
         // Analytics Settings
         analyticsSettings: {
           enableAnalytics: false,
@@ -684,7 +783,7 @@ export class SettingsService {
           exportFormats: ['csv', 'excel', 'pdf'],
           dashboardWidgets: ['pageViews', 'downloads', 'topResources', 'searchTerms']
         },
-        
+
         // Language Settings
         languageSettings: {
           supportedLanguages: [
@@ -695,7 +794,7 @@ export class SettingsService {
           defaultLanguage: 'en',
           autoTranslate: false
         },
-        
+
         // Legacy fields
         enableContentVersioning: true,
         duplicateContentCheck: true
@@ -739,13 +838,13 @@ export class SettingsService {
       { id: 'monitoring', name: 'Monitoring', color: '#8B5CF6', icon: 'assessment', enabled: true, category: 'topics' },
       { id: 'stakeholder', name: 'Stakeholder Engagement', color: '#EC4899', icon: 'groups', enabled: true, category: 'topics' },
       { id: 'accountability', name: 'Accountability', color: '#14B8A6', icon: 'account_balance', enabled: true, category: 'topics' },
-      
+
       // Regions
       { id: 'africa', name: 'Africa', color: '#F97316', icon: 'public', enabled: true, category: 'regions' },
       { id: 'asia', name: 'Asia', color: '#06B6D4', icon: 'public', enabled: true, category: 'regions' },
       { id: 'europe', name: 'Europe', color: '#6366F1', icon: 'public', enabled: true, category: 'regions' },
       { id: 'americas', name: 'Americas', color: '#84CC16', icon: 'public', enabled: true, category: 'regions' },
-      
+
       // Types
       { id: 'best-practice', name: 'Best Practice', color: '#059669', icon: 'star', enabled: true, category: 'content-type' },
       { id: 'research', name: 'Research', color: '#7C3AED', icon: 'science', enabled: true, category: 'content-type' },
@@ -813,7 +912,7 @@ export class SettingsService {
    */
   private logSettingsChange(action: string, settings: SettingsData): void {
     const currentUser = this.authService.currentUser;
-    
+
     this.activityService.trackActivity(
       'user_login' as any, // Using closest available type
       {

@@ -11,10 +11,16 @@ functional, and user-focused.
 
 ## Core Design Principles
 
-### 1. Simplicity First
+### 1. Simplicity First (Occam's Razor)
 
 Every element must justify its existence. If it doesn't serve the user's
-needs, remove it.
+needs, remove it. The simplest solution with the fewest assumptions is often
+the most correct. This principle guides us to:
+
+- **Simplify navigation**: Streamline menus, group similar items, use clear labels
+- **Reduce cognitive load**: Limit information presented, break complex tasks into steps
+- **Minimize user input**: Reduce form fields, use smart defaults, employ autofill
+- **Remove unnecessary elements**: Eliminate features that don't directly contribute to goals
 
 ### 2. Interface as Product
 
@@ -24,10 +30,13 @@ their perception.
 ### 3. Function Drives Form
 
 Design decisions must improve how something works, not just how it looks.
+Prioritize usability over aesthetics - functionality comes first.
 
 ### 4. Progressive Disclosure
 
 Show only what's needed when it's needed. Complexity should unfold naturally.
+This reduces cognitive overload and follows Occam's Razor by presenting the
+simplest interface first.
 
 ### 5. Immediate Response
 
@@ -59,6 +68,26 @@ Predictability builds trust
 
 Make success feel earned, not given
 
+## Occam's Razor Implementation Guide
+
+### Why Occam's Razor in UX Design?
+
+Occam's Razor promotes simplicity and clarity by focusing on essential elements
+and minimizing complexity. This leads to:
+
+- **Higher user satisfaction**: Intuitive interfaces reduce frustration
+- **Better retention**: Simple systems are easier to learn and remember
+- **Increased efficiency**: Users complete tasks faster with fewer errors
+- **Greater accessibility**: Simpler interfaces work better for all users
+
+### How to Apply Occam's Razor:
+
+1. **Emphasize clarity and consistency**: Use consistent visual elements throughout
+2. **Optimize for mobile**: Design responsive, touch-friendly interfaces
+3. **Test and iterate**: Conduct user testing and refine based on feedback
+4. **Question every addition**: Does this element simplify or complicate?
+5. **Choose the simplest path**: When multiple solutions exist, pick the simplest
+
 ## Interface Quality Checklist
 
 Before shipping any interface, verify:
@@ -73,6 +102,7 @@ Before shipping any interface, verify:
 - [ ] Is information presented progressively?
 - [ ] Are error states helpful, not punitive?
 - [ ] Would removing any element make it better?
+- [ ] Have you applied Occam's Razor - is this the simplest solution?
 
 ## Visual Language
 
@@ -310,8 +340,19 @@ When making design decisions, ask:
 1. **Does this simplify or complicate?** (Da Vinci)
 2. **How does this shape user perception?** (Raskin)
 3. **Does this improve function?** (Jobs)
+4. **Is this the simplest solution with fewest assumptions?** (Occam's Razor)
 
 If the answer to any is negative, reconsider.
+
+### The Occam's Razor Test:
+
+Before implementing any design:
+
+- **Remove assumptions**: Challenge every "users will understand this" assumption
+- **Compare alternatives**: Is there a simpler way to achieve the same goal?
+- **Count interactions**: Can you reduce the number of steps/clicks?
+- **Measure complexity**: Does this add or reduce cognitive load?
+- **Validate necessity**: Is this feature essential for the user's primary goal?
 
 ---
 

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UnsplashService, UnsplashImage, ImageSearchContext } from '../../../core/services/unsplash.service';
@@ -17,15 +17,14 @@ export interface ImageSelectionEvent {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './image-gallery.component.html',
-  styleUrl: './image-gallery.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './image-gallery.component.scss'
 })
 export class ImageGalleryComponent implements OnInit {
   @Input() searchContext: ImageSearchContext | null | undefined = undefined;
   @Input() selectedImageUrl: string | null | undefined = undefined;
   @Input() allowManualUpload = true;
   @Input() maxImages = 9;
-  
+
   @Output() imageSelected = new EventEmitter<ImageSelectionEvent>();
   @Output() imageCleared = new EventEmitter<void>();
 
@@ -34,17 +33,17 @@ export class ImageGalleryComponent implements OnInit {
   isLoading = false;
   isUploading = false;
   searchQuery = '';
-  
+
   // Image collections
   suggestedImages: UnsplashImage[] = [];
   searchResults: UnsplashImage[] = [];
   selectedImage: UnsplashImage | null = null;
-  
+
   // UI state
   showImagePreview = false;
   previewImage: UnsplashImage | null = null;
   dragOverActive = false;
-  
+
   constructor(
     private unsplashService: UnsplashService,
     private storageService: StorageService,
@@ -110,10 +109,10 @@ export class ImageGalleryComponent implements OnInit {
    */
   selectImage(image: UnsplashImage): void {
     this.selectedImage = image;
-    
+
     // Track download with Unsplash (required by API terms)
     this.unsplashService.downloadImage(image).subscribe();
-    
+
     // Emit selection event
     this.imageSelected.emit({
       image,
@@ -128,7 +127,7 @@ export class ImageGalleryComponent implements OnInit {
   async handleFileUpload(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    
+
     if (!file) return;
 
     // Validate file type
@@ -166,7 +165,7 @@ export class ImageGalleryComponent implements OnInit {
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
-      
+
       if (file.type.startsWith('image/')) {
         await this.uploadFile(file);
       } else {
@@ -181,7 +180,7 @@ export class ImageGalleryComponent implements OnInit {
   private async uploadFile(file: File): Promise<void> {
     try {
       this.isUploading = true;
-      
+
       const userId = this.authService.userId;
       if (!userId) {
         throw new Error('User not authenticated');
@@ -214,7 +213,7 @@ export class ImageGalleryComponent implements OnInit {
         };
 
         this.selectedImage = uploadedImage;
-        
+
         this.imageSelected.emit({
           image: uploadedImage,
           url: result.downloadUrl,
@@ -258,7 +257,7 @@ export class ImageGalleryComponent implements OnInit {
    */
   setMode(mode: 'ai-suggestions' | 'manual-upload' | 'search'): void {
     this.mode = mode;
-    
+
     if (mode === 'ai-suggestions' && this.suggestedImages.length === 0) {
       this.generateSuggestions();
     }
@@ -317,7 +316,7 @@ export class ImageGalleryComponent implements OnInit {
   onSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value;
-    
+
     // Simple debouncing
     setTimeout(() => {
       if (this.searchQuery === input.value && this.searchQuery.trim()) {

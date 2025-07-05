@@ -7,14 +7,15 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 
 import { SettingsService } from './services/settings.service';
 import { I18nService } from '../../../core/services/i18n.service';
+import { environment } from '../../../../environments/environment';
 import { ResourceTypeModalComponent } from './components/resource-type-modal/resource-type-modal.component';
+import { TagModalComponent } from './components/tag-modal/tag-modal.component';
+import { CategoryModalComponent } from './components/category-modal/category-modal.component';
 import { 
-  SettingsData, 
   SettingsTab, 
   ApplicationSettings, 
   UserSecuritySettings,
   ContentManagementSettings,
-  SystemAdministrationSettings,
   ResourceTypeSettings,
   TagSettings,
   CategorySettings
@@ -23,7 +24,7 @@ import {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ResourceTypeModalComponent, DragDropModule],
+  imports: [CommonModule, ReactiveFormsModule, ResourceTypeModalComponent, TagModalComponent, CategoryModalComponent, DragDropModule],
   template: `
     <div class="min-h-screen bg-cost-gray">
       <!-- Header -->
@@ -137,74 +138,6 @@ import {
                           <option value="Europe/London">London</option>
                           <option value="Europe/Paris">Paris</option>
                         </select>
-                      </div>
-
-                      <!-- Email Notifications -->
-                      <div class="sm:col-span-2">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="emailNotifications"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.application.emailNotifications') }}
-                          </label>
-                        </div>
-                      </div>
-
-                      <!-- Analytics Enabled -->
-                      <div class="sm:col-span-2">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="analyticsEnabled"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.application.analyticsEnabled') }}
-                          </label>
-                        </div>
-                      </div>
-
-                      <!-- Analytics Tracking ID -->
-                      <div class="sm:col-span-2" *ngIf="applicationForm.get('analyticsEnabled')?.value">
-                        <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settingsPage.application.analyticsTrackingId') }}
-                        </label>
-                        <input 
-                          type="text" 
-                          formControlName="analyticsTrackingId"
-                          class="input-field"
-                          placeholder="UA-XXXXXXXXX-X"
-                        >
-                      </div>
-
-                      <!-- Maintenance Mode -->
-                      <div class="sm:col-span-2">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="maintenanceMode"
-                            class="h-4 w-4 text-cost-amber focus:ring-cost-amber border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.application.maintenanceMode') }}
-                          </label>
-                        </div>
-                      </div>
-
-                      <!-- Maintenance Message -->
-                      <div class="sm:col-span-2" *ngIf="applicationForm.get('maintenanceMode')?.value">
-                        <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                          {{ i18nService.t('admin.settingsPage.application.maintenanceMessage') }}
-                        </label>
-                        <textarea 
-                          formControlName="maintenanceMessage"
-                          rows="3"
-                          class="input-field"
-                          [placeholder]="i18nService.t('admin.settingsPage.application.maintenanceMessage')"
-                        ></textarea>
                       </div>
                     </div>
 
@@ -442,7 +375,9 @@ import {
                         <!-- Drag Handle -->
                         <div class="flex items-center space-x-3">
                           <div cdkDragHandle class="cursor-move p-1 hover:bg-gray-100 rounded">
-                            <span class="material-icons text-gray-400">drag_indicator</span>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                            </svg>
                           </div>
                           <img 
                             *ngIf="type.defaultCover"
@@ -451,7 +386,9 @@ import {
                             class="w-12 h-12 object-cover rounded"
                           />
                           <div *ngIf="!type.defaultCover" class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                            <span class="material-icons text-gray-400">image</span>
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
                           </div>
                           <div>
                             <p class="font-medium text-cost-charcoal">{{ type.label }}</p>
@@ -474,8 +411,22 @@ import {
                             type="button"
                             (click)="editResourceType(type)"
                             class="text-cost-cyan hover:text-cost-teal"
+                            [attr.aria-label]="'Edit ' + type.label"
                           >
-                            <span class="material-icons">edit</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
+                          <button 
+                            type="button"
+                            *ngIf="type.id !== 'other'"
+                            (click)="deleteResourceType(type)"
+                            class="text-red-600 hover:text-red-700"
+                            [attr.aria-label]="'Delete ' + type.label"
+                          >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
                           </button>
                         </div>
                       </div>
@@ -485,18 +436,19 @@ import {
                         (click)="addNewResourceType()"
                         class="btn-secondary w-full"
                       >
-                        <span class="material-icons mr-2">add</span>
+                        <span class="text-lg mr-2">+</span>
                         {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.add') }}
                       </button>
                       
-                      <button 
+                      <!-- Restore All Defaults button hidden as a fail-safe -->
+                      <!-- <button 
                         type="button"
                         (click)="restoreDefaultResourceTypes()"
                         class="btn-primary w-full"
                       >
                         <span class="material-icons mr-2">restore</span>
                         {{ i18nService.t('admin.settingsPage.contentManagement.resourceTypes.restoreDefaults') }}
-                      </button>
+                      </button> -->
                     </div>
                   </div>
                 </div>
@@ -504,25 +456,98 @@ import {
                 <!-- Tags & Categories Section -->
                 <div class="bg-white shadow rounded-lg">
                   <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                      {{ i18nService.t('admin.settingsPage.contentManagement.tags.title') }}
-                    </h3>
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-lg leading-6 font-medium text-cost-charcoal">
+                        {{ i18nService.t('admin.settingsPage.contentManagement.tags.title') }}
+                      </h3>
+                      <button 
+                        type="button"
+                        (click)="generateAISuggestions()"
+                        class="btn-primary flex items-center"
+                        [disabled]="generatingAI"
+                      >
+                        <svg *ngIf="!generatingAI" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <svg *ngIf="generatingAI" class="animate-spin w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {{ generatingAI ? i18nService.t('admin.settingsPage.contentManagement.tags.generating') : i18nService.t('admin.settingsPage.contentManagement.tags.aiSuggest') }}
+                      </button>
+                    </div>
                     
                     <!-- Categories -->
                     <div class="mb-6">
-                      <h4 class="text-sm font-medium text-cost-charcoal mb-3">
-                        {{ i18nService.t('admin.settingsPage.contentManagement.tags.categories') }}
-                      </h4>
-                      <div class="space-y-2">
-                        <div *ngFor="let category of tagCategories$ | async" 
-                             class="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span class="font-medium text-sm">{{ category.name }}</span>
+                      <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-medium text-cost-charcoal">
+                          {{ i18nService.t('admin.settingsPage.contentManagement.tags.categories') }}
+                        </h4>
+                        <div class="flex items-center space-x-2">
                           <button 
                             type="button"
-                            (click)="editCategory(category)"
-                            class="text-cost-cyan hover:text-cost-teal"
+                            (click)="suggestCategoriesWithAI()"
+                            class="text-sm text-cost-amber hover:text-amber-600 flex items-center"
+                            [disabled]="generatingAI"
+                            title="{{ i18nService.t('admin.settingsPage.contentManagement.categories.aiSuggestTooltip') }}"
                           >
-                            <span class="material-icons text-sm">edit</span>
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            {{ i18nService.t('admin.settingsPage.contentManagement.categories.aiSuggest') }}
+                          </button>
+                          <button 
+                            type="button"
+                            (click)="addNewCategory()"
+                            class="text-sm text-cost-cyan hover:text-cost-teal flex items-center"
+                          >
+                            <span class="text-sm mr-1">+</span>
+                            {{ i18nService.t('admin.settingsPage.contentManagement.categories.add') }}
+                          </button>
+                        </div>
+                      </div>
+                      <div class="space-y-2">
+                        <div *ngFor="let category of tagCategories$ | async; trackBy: trackByCategory" 
+                             class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-all duration-200">
+                          <div class="flex-1">
+                            <h4 class="font-medium text-sm text-cost-charcoal">{{ category.name }}</h4>
+                            <p *ngIf="category.description" class="text-xs text-gray-500 mt-0.5">{{ category.description }}</p>
+                          </div>
+                          <div class="flex items-center space-x-2">
+                            <button 
+                              type="button"
+                              (click)="editCategory(category)"
+                              class="text-cost-cyan hover:text-cost-teal transition-colors duration-150 p-1 rounded hover:bg-gray-100"
+                              [attr.aria-label]="'Edit ' + category.name"
+                            >
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            </button>
+                            <button 
+                              type="button"
+                              (click)="deleteCategory(category)"
+                              class="text-red-600 hover:text-red-700 transition-colors duration-150 p-1 rounded hover:bg-red-50"
+                              [attr.aria-label]="'Delete ' + category.name"
+                            >
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div *ngIf="(tagCategories$ | async)?.length === 0" 
+                             class="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                          <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path>
+                          </svg>
+                          <p class="text-gray-500 text-sm mb-3">{{ i18nService.t('admin.settingsPage.contentManagement.categories.empty') }}</p>
+                          <button 
+                            type="button"
+                            (click)="addNewCategory()"
+                            class="text-sm text-cost-cyan hover:text-cost-teal font-medium"
+                          >
+                            {{ i18nService.t('admin.settingsPage.contentManagement.categories.addFirst') }}
                           </button>
                         </div>
                       </div>
@@ -530,31 +555,82 @@ import {
                     
                     <!-- Tags -->
                     <div>
-                      <h4 class="text-sm font-medium text-cost-charcoal mb-3">
-                        {{ i18nService.t('admin.settingsPage.contentManagement.tags.tags') }}
-                      </h4>
-                      <div class="flex flex-wrap gap-2">
-                        <span *ngFor="let tag of tags$ | async" 
-                              class="inline-flex items-center px-3 py-1 rounded-full text-sm"
-                              [style.background-color]="tag.color + '20'"
-                              [style.color]="tag.color">
-                          <span class="material-icons mr-1 text-sm">{{ tag.icon || 'label' }}</span>
-                          {{ tag.name }}
+                      <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-medium text-cost-charcoal">
+                          {{ i18nService.t('admin.settingsPage.contentManagement.tags.tags') }}
+                        </h4>
+                        <div class="flex items-center space-x-2">
                           <button 
                             type="button"
-                            (click)="editTag(tag)"
-                            class="ml-2 hover:opacity-70"
+                            (click)="suggestTagsWithAI()"
+                            class="text-sm text-cost-amber hover:text-amber-600 flex items-center"
+                            [disabled]="generatingAI"
+                            title="{{ i18nService.t('admin.settingsPage.contentManagement.tags.aiSuggestTooltip') }}"
                           >
-                            <span class="material-icons text-sm">edit</span>
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            {{ i18nService.t('admin.settingsPage.contentManagement.tags.aiSuggestTags') }}
                           </button>
+                        </div>
+                      </div>
+                      <div class="flex flex-wrap gap-2">
+                        <span *ngFor="let tag of tags$ | async; trackBy: trackByTag" 
+                              class="inline-flex items-center px-3 py-1.5 rounded-full text-sm transition-all duration-200 hover:shadow-md cursor-pointer group"
+                              [style.background-color]="tag.color + '20'"
+                              [style.color]="tag.color"
+                              [style.border]="'1px solid ' + tag.color + '40'">
+                          <svg *ngIf="!tag.icon" class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                          </svg>
+                          <span *ngIf="tag.icon" class="mr-1.5 text-sm">{{ tag.icon }}</span>
+                          <span class="font-medium">{{ tag.name }}</span>
+                          <span *ngIf="tag.category" class="ml-2 text-xs opacity-70">({{ getCategoryName(tag.category) }})</span>
+                          <div class="ml-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                            <button 
+                              type="button"
+                              (click)="editTag(tag); $event.stopPropagation()"
+                              class="hover:opacity-70 p-0.5 rounded"
+                              [attr.aria-label]="'Edit ' + tag.name"
+                            >
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            </button>
+                            <button 
+                              type="button"
+                              (click)="deleteTag(tag); $event.stopPropagation()"
+                              class="hover:opacity-70 p-0.5 rounded"
+                              [attr.aria-label]="'Delete ' + tag.name"
+                            >
+                              <span class="text-sm">×</span>
+                            </button>
+                          </div>
                         </span>
                         <button 
                           type="button"
                           (click)="addNewTag()"
                           class="inline-flex items-center px-3 py-1 border border-dashed border-gray-400 rounded-full text-sm text-gray-600 hover:border-cost-cyan hover:text-cost-cyan"
                         >
-                          <span class="material-icons mr-1 text-sm">add</span>
+                          <span class="text-sm mr-1">+</span>
                           {{ i18nService.t('admin.settingsPage.contentManagement.tags.add') }}
+                        </button>
+                      </div>
+                      
+                      <!-- Empty state for tags -->
+                      <div *ngIf="(tags$ | async)?.length === 0" 
+                           class="mt-4 text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                        <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"></path>
+                        </svg>
+                        <p class="text-gray-500 text-sm mb-3">{{ i18nService.t('admin.settingsPage.contentManagement.tags.empty') }}</p>
+                        <button 
+                          type="button"
+                          (click)="addNewTag()"
+                          class="text-sm text-cost-cyan hover:text-cost-teal font-medium"
+                        >
+                          {{ i18nService.t('admin.settingsPage.contentManagement.tags.addFirst') }}
                         </button>
                       </div>
                     </div>
@@ -697,188 +773,6 @@ import {
                 </div>
               </div>
 
-              <!-- System Administration Settings -->
-              <div *ngIf="activeTab === 'systemAdministration'" class="bg-white shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                  <h3 class="text-lg leading-6 font-medium text-cost-charcoal mb-4">
-                    {{ i18nService.t('admin.settingsPage.systemAdministration.title') }}
-                  </h3>
-                  
-                  <form [formGroup]="systemAdministrationForm" (ngSubmit)="saveSystemAdministrationSettings()">
-                    <div class="space-y-6">
-                      <!-- Logging Settings -->
-                      <div>
-                        <div class="flex items-center mb-4">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enableSystemLogs"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableSystemLogs') }}
-                          </label>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2" *ngIf="systemAdministrationForm.get('enableSystemLogs')?.value">
-                          <div>
-                            <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settingsPage.systemAdministration.logLevel') }}
-                            </label>
-                            <select formControlName="logLevel" class="input-field">
-                              <option value="error">Error</option>
-                              <option value="warn">Warning</option>
-                              <option value="info">Info</option>
-                              <option value="debug">Debug</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settingsPage.systemAdministration.logRetentionDays') }}
-                            </label>
-                            <input 
-                              type="number" 
-                              formControlName="logRetentionDays"
-                              min="1"
-                              max="365"
-                              class="input-field"
-                            >
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Performance & Monitoring -->
-                      <div class="space-y-3">
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enablePerformanceMonitoring"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.enablePerformanceMonitoring') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enableCacheOptimization"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableCacheOptimization') }}
-                          </label>
-                        </div>
-
-                        <div class="flex items-center">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enableRateLimiting"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableRateLimiting') }}
-                          </label>
-                        </div>
-                      </div>
-
-                      <!-- Cache & Rate Limiting Settings -->
-                      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div *ngIf="systemAdministrationForm.get('enableCacheOptimization')?.value">
-                          <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.cacheExpirationMinutes') }}
-                          </label>
-                          <input 
-                            type="number" 
-                            formControlName="cacheExpirationMinutes"
-                            min="1"
-                            max="1440"
-                            class="input-field"
-                          >
-                        </div>
-
-                        <div *ngIf="systemAdministrationForm.get('enableRateLimiting')?.value">
-                          <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.apiRateLimitPerMinute') }}
-                          </label>
-                          <input 
-                            type="number" 
-                            formControlName="apiRateLimitPerMinute"
-                            min="10"
-                            max="1000"
-                            class="input-field"
-                          >
-                        </div>
-                      </div>
-
-                      <!-- Backup Settings -->
-                      <div>
-                        <div class="flex items-center mb-4">
-                          <input 
-                            type="checkbox" 
-                            formControlName="enableAutoBackup"
-                            class="h-4 w-4 text-cost-cyan focus:ring-cost-cyan border-gray-300 rounded"
-                          >
-                          <label class="ml-2 block text-sm text-cost-charcoal">
-                            {{ i18nService.t('admin.settingsPage.systemAdministration.enableAutoBackup') }}
-                          </label>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2" *ngIf="systemAdministrationForm.get('enableAutoBackup')?.value">
-                          <div>
-                            <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settingsPage.systemAdministration.backupFrequency') }}
-                            </label>
-                            <select formControlName="backupFrequency" class="input-field">
-                              <option value="daily">Daily</option>
-                              <option value="weekly">Weekly</option>
-                              <option value="monthly">Monthly</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label class="block text-sm font-medium text-cost-charcoal mb-1">
-                              {{ i18nService.t('admin.settingsPage.systemAdministration.backupRetentionDays') }}
-                            </label>
-                            <input 
-                              type="number" 
-                              formControlName="backupRetentionDays"
-                              min="1"
-                              max="365"
-                              class="input-field"
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Form Actions -->
-                    <div class="mt-6 flex justify-end space-x-3">
-                      <button 
-                        type="button"
-                        (click)="resetForm('systemAdministration')"
-                        class="btn-secondary"
-                      >
-                        {{ i18nService.t('admin.settingsPage.actions.reset') }}
-                      </button>
-                      <button 
-                        type="submit"
-                        [disabled]="systemAdministrationForm.invalid || saving"
-                        [class.opacity-50]="systemAdministrationForm.invalid || saving"
-                        class="btn-primary"
-                      >
-                        <span *ngIf="!saving">{{ i18nService.t('admin.settingsPage.actions.save') }}</span>
-                        <span *ngIf="saving" class="flex items-center">
-                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {{ i18nService.t('admin.settingsPage.actions.savingSettings') }}
-                        </span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
               <!-- Export/Import Settings -->
               <div class="bg-white shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
@@ -926,13 +820,23 @@ import {
       </div>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div *ngIf="showSuccessMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg">
-      {{ successMessage }}
+    <!-- Success/Error Messages with animations -->
+    <div *ngIf="showSuccessMessage" 
+         class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg flex items-center space-x-2"
+         style="animation: fadeInUp 0.3s ease-out">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>{{ successMessage }}</span>
     </div>
 
-    <div *ngIf="showErrorMessage" class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-md shadow-lg">
-      {{ errorMessage }}
+    <div *ngIf="showErrorMessage" 
+         class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-md shadow-lg flex items-center space-x-2"
+         style="animation: fadeInUp 0.3s ease-out">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>{{ errorMessage }}</span>
     </div>
 
     <!-- Resource Type Modal -->
@@ -943,6 +847,23 @@ import {
       (closeModal)="closeResourceTypeModal()"
       (saveResourceType)="saveResourceType($event)"
     ></app-resource-type-modal>
+
+    <!-- Tag Modal -->
+    <app-tag-modal
+      [isOpen]="isTagModalOpen"
+      [tag]="selectedTag"
+      [categories]="(tagCategories$ | async) || []"
+      (close)="closeTagModal()"
+      (saveTag)="saveTag($event)"
+    ></app-tag-modal>
+
+    <!-- Category Modal -->
+    <app-category-modal
+      [isOpen]="isCategoryModalOpen"
+      [category]="selectedCategory"
+      (close)="closeCategoryModal()"
+      (saveCategory)="saveCategory($event)"
+    ></app-category-modal>
   `,
   styles: [`
     .btn-primary {
@@ -963,6 +884,38 @@ import {
 
     .tab-inactive {
       @apply text-gray-600 hover:text-cost-charcoal hover:bg-gray-50;
+    }
+
+    /* Success animation for feedback */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /* Tag and category hover effects */
+    .tag-item:hover {
+      transform: translateY(-1px);
+      transition: all 150ms ease-out;
+    }
+
+    /* Loading pulse for operations */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .loading-state {
+      animation: pulse 1.5s ease-in-out infinite;
     }
 
     .tab-icon-active {
@@ -1009,14 +962,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   applicationForm!: FormGroup;
   userSecurityForm!: FormGroup;
   contentManagementForm!: FormGroup;
-  systemAdministrationForm!: FormGroup;
 
   // Tabs configuration
   tabs: SettingsTab[] = [
     { id: 'application', label: 'Application', icon: 'cog', active: true, hasChanges: false },
     { id: 'userSecurity', label: 'User & Security', icon: 'shield', active: false, hasChanges: false },
-    { id: 'contentManagement', label: 'Content Management', icon: 'folder', active: false, hasChanges: false },
-    { id: 'systemAdministration', label: 'System Administration', icon: 'server', active: false, hasChanges: false }
+    { id: 'contentManagement', label: 'Content Management', icon: 'folder', active: false, hasChanges: false }
   ];
 
   // Content Management Data
@@ -1027,6 +978,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
   // Modal state
   isResourceTypeModalOpen = false;
   selectedResourceType: ResourceTypeSettings | null = null;
+  
+  // Tag and Category modal properties
+  isTagModalOpen = false;
+  selectedTag: TagSettings | undefined = undefined;
+  isCategoryModalOpen = false;
+  selectedCategory: CategorySettings | undefined = undefined;
+  
+  // AI generation state
+  generatingAI = false;
 
   ngOnInit(): void {
     this.initializeForms();
@@ -1051,12 +1011,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       siteTitle: ['', Validators.required],
       siteDescription: [''],
       defaultLanguage: ['en'],
-      timezone: ['UTC'],
-      emailNotifications: [true],
-      analyticsEnabled: [false],
-      analyticsTrackingId: [''],
-      maintenanceMode: [false],
-      maintenanceMessage: ['']
+      timezone: ['UTC']
     });
 
     this.userSecurityForm = this.fb.group({
@@ -1085,19 +1040,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
       duplicateContentCheck: [true]
     });
 
-    this.systemAdministrationForm = this.fb.group({
-      enableSystemLogs: [true],
-      logLevel: ['info'],
-      logRetentionDays: [30, [Validators.min(1), Validators.max(365)]],
-      enablePerformanceMonitoring: [true],
-      enableAutoBackup: [true],
-      backupFrequency: ['daily'],
-      backupRetentionDays: [7, [Validators.min(1), Validators.max(365)]],
-      enableCacheOptimization: [true],
-      cacheExpirationMinutes: [60, [Validators.min(1), Validators.max(1440)]],
-      enableRateLimiting: [true],
-      apiRateLimitPerMinute: [100, [Validators.min(10), Validators.max(1000)]]
-    });
   }
 
   private loadSettings(): void {
@@ -1108,7 +1050,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.applicationForm.patchValue(settings.application);
           this.userSecurityForm.patchValue(settings.userSecurity);
           this.contentManagementForm.patchValue(settings.contentManagement);
-          this.systemAdministrationForm.patchValue(settings.systemAdministration);
         }
       });
   }
@@ -1117,15 +1058,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     combineLatest([
       this.applicationForm.valueChanges.pipe(startWith(null)),
       this.userSecurityForm.valueChanges.pipe(startWith(null)),
-      this.contentManagementForm.valueChanges.pipe(startWith(null)),
-      this.systemAdministrationForm.valueChanges.pipe(startWith(null))
+      this.contentManagementForm.valueChanges.pipe(startWith(null))
     ]).pipe(
       takeUntil(this.destroy$),
-      map(([app, user, content, system]) => ({
+      map(([app, user, content]) => ({
         application: this.applicationForm.dirty,
         userSecurity: this.userSecurityForm.dirty,
-        contentManagement: this.contentManagementForm.dirty,
-        systemAdministration: this.systemAdministrationForm.dirty
+        contentManagement: this.contentManagementForm.dirty
       }))
     ).subscribe(changes => {
       this.tabs.forEach(tab => {
@@ -1200,23 +1139,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async saveSystemAdministrationSettings(): Promise<void> {
-    if (this.systemAdministrationForm.invalid) return;
-
-    this.saving = true;
-    const settings: SystemAdministrationSettings = this.systemAdministrationForm.value;
-
-    try {
-      await firstValueFrom(this.settingsService.updateSystemAdministrationSettings(settings));
-      this.showSuccess(this.i18nService.t('admin.settingsPage.actions.settingsSaved'));
-      this.systemAdministrationForm.markAsPristine();
-    } catch (error) {
-      this.showError(this.i18nService.t('admin.settingsPage.actions.errorSaving'));
-    } finally {
-      this.saving = false;
-    }
-  }
-
   resetForm(formType: string): void {
     const confirmed = confirm(this.i18nService.t('admin.settingsPage.actions.confirmReset'));
     if (!confirmed) return;
@@ -1230,9 +1152,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
         break;
       case 'contentManagement':
         this.contentManagementForm.reset();
-        break;
-      case 'systemAdministration':
-        this.systemAdministrationForm.reset();
         break;
     }
 
@@ -1348,18 +1267,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
   
-  async restoreDefaultResourceTypes(): Promise<void> {
-    try {
-      this.saving = true;
-      await this.settingsService.restoreDefaultResourceTypes();
-      this.showSuccess('Default resource types restored successfully with AI-generated cover images');
-    } catch (error) {
-      console.error('Error restoring default resource types:', error);
-      this.showError('Failed to restore default resource types');
-    } finally {
-      this.saving = false;
-    }
-  }
+  // Restore default resource types method - commented out as a fail-safe
+  // async restoreDefaultResourceTypes(): Promise<void> {
+  //   try {
+  //     this.saving = true;
+  //     await this.settingsService.restoreDefaultResourceTypes();
+  //     this.showSuccess('Default resource types restored successfully with AI-generated cover images');
+  //   } catch (error) {
+  //     console.error('Error restoring default resource types:', error);
+  //     this.showError('Failed to restore default resource types');
+  //   } finally {
+  //     this.saving = false;
+  //   }
+  // }
   
   async dropResourceType(event: CdkDragDrop<ResourceTypeSettings[]>): Promise<void> {
     moveItemInArray(this.resourceTypes, event.previousIndex, event.currentIndex);
@@ -1381,25 +1301,213 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
+  async deleteResourceType(type: ResourceTypeSettings): Promise<void> {
+    // Prevent deletion of "other" type
+    if (type.id === 'other') {
+      this.showError(this.i18nService.t('admin.settingsPage.actions.cannotDeleteOther'));
+      return;
+    }
+
+    // Count resources that will be affected
+    const resourceCount = await firstValueFrom(this.settingsService.getResourceCountByType(type.id));
+    
+    const messageKey = resourceCount > 0 
+      ? 'admin.settingsPage.actions.confirmDeleteResourceType'
+      : 'admin.settingsPage.actions.confirmDeleteResourceTypeNoResources';
+    
+    const message = this.i18nService.t(messageKey, { name: type.label, count: resourceCount });
+    
+    if (confirm(message)) {
+      try {
+        this.saving = true;
+        await firstValueFrom(this.settingsService.deleteResourceType(type.id));
+        this.showSuccess(this.i18nService.t('admin.settingsPage.actions.resourceTypeDeleted', { name: type.label }));
+      } catch (error) {
+        console.error('Error deleting resource type:', error);
+        this.showError(this.i18nService.t('admin.settingsPage.actions.failedToDeleteResourceType'));
+      } finally {
+        this.saving = false;
+      }
+    }
+  }
+
   // Tag Management Methods
   editTag(tag: TagSettings): void {
-    // TODO: Open modal/dialog for editing tag
-    console.log('Edit tag:', tag);
-    // This would typically open a modal with a form to edit the tag
-    this.showSuccess('Tag editing not yet implemented');
+    this.selectedTag = { ...tag };
+    this.isTagModalOpen = true;
   }
 
   addNewTag(): void {
-    // TODO: Open modal/dialog for adding new tag
-    console.log('Add new tag');
-    // This would typically open a modal with a form to create a new tag
-    this.showSuccess('Adding new tags not yet implemented');
+    this.selectedTag = undefined;
+    this.isTagModalOpen = true;
   }
 
   editCategory(category: CategorySettings): void {
-    // TODO: Open modal/dialog for editing category
-    console.log('Edit category:', category);
-    // This would typically open a modal with a form to edit the category
-    this.showSuccess('Category editing not yet implemented');
+    this.selectedCategory = { ...category };
+    this.isCategoryModalOpen = true;
+  }
+
+  // Tag Modal Methods
+  closeTagModal(): void {
+    this.isTagModalOpen = false;
+    this.selectedTag = undefined;
+  }
+
+  async saveTag(tag: TagSettings): Promise<void> {
+    try {
+      const tags = await firstValueFrom(this.tags$);
+      const updatedTags = this.selectedTag 
+        ? tags.map(t => t.id === tag.id ? tag : t)
+        : [...tags, tag];
+      
+      await firstValueFrom(this.settingsService.updateTags(updatedTags));
+      this.showSuccess(this.selectedTag ? 'Tag updated successfully' : 'Tag added successfully');
+      this.closeTagModal();
+    } catch (error) {
+      console.error('Error saving tag:', error);
+      this.showError('Failed to save tag');
+    }
+  }
+
+  // Category Modal Methods
+  closeCategoryModal(): void {
+    this.isCategoryModalOpen = false;
+    this.selectedCategory = undefined;
+  }
+
+  async saveCategory(category: CategorySettings): Promise<void> {
+    try {
+      const categories = await firstValueFrom(this.tagCategories$);
+      const updatedCategories = this.selectedCategory
+        ? categories.map(c => c.id === category.id ? category : c)
+        : [...categories, category];
+      
+      await firstValueFrom(this.settingsService.updateCategories(updatedCategories));
+      this.showSuccess(this.selectedCategory ? 'Category updated successfully' : 'Category added successfully');
+      this.closeCategoryModal();
+    } catch (error) {
+      console.error('Error saving category:', error);
+      this.showError('Failed to save category');
+    }
+  }
+
+  // Add new category method
+  addNewCategory(): void {
+    this.selectedCategory = undefined;
+    this.isCategoryModalOpen = true;
+  }
+
+  // Delete methods
+  async deleteTag(tag: TagSettings): Promise<void> {
+    if (confirm(`Are you sure you want to delete the tag "${tag.name}"?`)) {
+      try {
+        const tags = await firstValueFrom(this.tags$);
+        const updatedTags = tags.filter(t => t.id !== tag.id);
+        await firstValueFrom(this.settingsService.updateTags(updatedTags));
+        this.showSuccess(`Tag "${tag.name}" deleted successfully`);
+      } catch (error) {
+        console.error('Error deleting tag:', error);
+        this.showError('Failed to delete tag');
+      }
+    }
+  }
+
+  async deleteCategory(category: CategorySettings): Promise<void> {
+    if (confirm(`Are you sure you want to delete the category "${category.name}"?`)) {
+      try {
+        const categories = await firstValueFrom(this.tagCategories$);
+        const updatedCategories = categories.filter(c => c.id !== category.id);
+        await firstValueFrom(this.settingsService.updateCategories(updatedCategories));
+        this.showSuccess(`Category "${category.name}" deleted successfully`);
+      } catch (error) {
+        console.error('Error deleting category:', error);
+        this.showError('Failed to delete category');
+      }
+    }
+  }
+
+  // Helper methods
+  getCategoryName(categoryId: string): string {
+    // This is a synchronous helper for the template
+    // In a real app, you might want to handle this differently
+    return '';
+  }
+
+  trackByTag(index: number, tag: TagSettings): string {
+    return tag.id;
+  }
+
+  trackByCategory(index: number, category: CategorySettings): string {
+    return category.id;
+  }
+
+  // AI Suggestion Methods
+  async generateAISuggestions(): Promise<void> {
+    if (confirm('Generate comprehensive categories and tags using AI? This will analyze CoST goals and create relevant suggestions.')) {
+      try {
+        this.generatingAI = true;
+        
+        // Get authentication token
+        const authService = (this.settingsService as any).authService;
+        const user = authService.currentUser;
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+        const idToken = await user.getIdToken();
+        
+        const functionUrl = environment.production 
+          ? 'https://suggestcategoriesandtags-knowledgehub-2ed2f.cloudfunctions.net'
+          : 'http://localhost:5001/knowledgehub-2ed2f/us-central1/suggestCategoriesAndTags';
+        
+        const response = await fetch(functionUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
+          body: JSON.stringify({ generateDefaults: true })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to generate suggestions');
+        }
+        
+        const result = await response.json();
+        const { categories, tags } = result.result;
+        
+        // Show preview and confirm
+        const message = `AI generated ${categories.length} categories and ${tags.length} tags. Do you want to add them?`;
+        if (confirm(message)) {
+          // Get current categories and tags
+          const currentCategories = await firstValueFrom(this.tagCategories$);
+          const currentTags = await firstValueFrom(this.tags$);
+          
+          // Merge with new suggestions
+          const updatedCategories = [...currentCategories, ...categories];
+          const updatedTags = [...currentTags, ...tags];
+          
+          // Update using existing methods
+          await firstValueFrom(this.settingsService.updateCategories(updatedCategories));
+          await firstValueFrom(this.settingsService.updateTags(updatedTags));
+          
+          this.showSuccess(`Successfully added ${categories.length} categories and ${tags.length} tags`);
+        }
+      } catch (error) {
+        console.error('Error generating AI suggestions:', error);
+        this.showError('Failed to generate AI suggestions');
+      } finally {
+        this.generatingAI = false;
+      }
+    }
+  }
+  
+  async suggestCategoriesWithAI(): Promise<void> {
+    // Similar to generateAISuggestions but only for categories
+    this.showSuccess('Category suggestions coming soon!');
+  }
+  
+  async suggestTagsWithAI(): Promise<void> {
+    // Similar to generateAISuggestions but only for tags
+    this.showSuccess('Tag suggestions coming soon!');
   }
 }

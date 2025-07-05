@@ -5,7 +5,8 @@ import { ModalComponent } from '../../../../../shared/components/modal/modal.com
 import { ResourceTypeSettings } from '../../models/settings.model';
 import { I18nService } from '../../../../../core/services/i18n.service';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { HttpClient } from '@angular/common/http';
+import { Auth } from '@angular/fire/auth';
 import { inject } from '@angular/core';
 
 @Component({
@@ -21,42 +22,43 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
   @Input() existingTypes: ResourceTypeSettings[] = [];
   @Output() closeModal = new EventEmitter<void>();
   @Output() saveResourceType = new EventEmitter<ResourceTypeSettings>();
-  
+
   form!: FormGroup;
   isEditMode = false;
-  
+
   // File upload properties
   private storage = inject(Storage);
-  private functions = inject(Functions);
+  private http = inject(HttpClient);
+  private auth = inject(Auth);
   isUploading = false;
   uploadProgress = 0;
   selectedFile: File | null = null;
   isGeneratingAI = false;
-  
-  
+
+
   constructor(
     private fb: FormBuilder,
     public i18nService: I18nService
   ) {}
-  
+
   ngOnInit() {
     this.initForm();
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['resourceType'] && !changes['resourceType'].firstChange) {
       this.initForm();
     }
-    
+
     if (changes['isOpen'] && changes['isOpen'].currentValue === true) {
       // Re-initialize form when modal opens
       this.initForm();
     }
   }
-  
+
   initForm() {
     this.isEditMode = !!this.resourceType;
-    
+
     this.form = this.fb.group({
       id: [this.resourceType?.id || '', [Validators.required, Validators.pattern(/^[a-z][a-zA-Z0-9]*$/)]],
       label: [this.resourceType?.label || '', [Validators.required, Validators.minLength(3)]],
@@ -65,7 +67,7 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       order: [this.resourceType?.order || this.getNextOrder(), [Validators.required, Validators.min(0)]],
       defaultCover: [this.resourceType?.defaultCover || '']
     });
-    
+
     // Auto-generate ID from label when adding new
     if (!this.isEditMode) {
       this.form.get('label')?.valueChanges.subscribe(label => {
@@ -76,7 +78,7 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       });
     }
   }
-  
+
   private generateIdFromLabel(label: string): string {
     return label
       .toLowerCase()
@@ -84,35 +86,35 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       .replace(/^-+|-+$/g, '')
       .replace(/-+/g, '-');
   }
-  
+
   getNextOrder(): number {
     if (!this.existingTypes || this.existingTypes.length === 0) {
       return 0;
     }
     return Math.max(...this.existingTypes.map(t => t.order || 0)) + 1;
   }
-  
+
   onClose() {
     this.form.reset();
     this.closeModal.emit();
   }
-  
+
   onSave() {
     // Validate required cover image
     if (!this.form.get('defaultCover')?.value) {
       this.form.get('defaultCover')?.setErrors({ required: true });
       this.form.get('defaultCover')?.markAsTouched();
     }
-    
+
     if (this.form.valid && this.form.get('defaultCover')?.value) {
       const formValue = this.form.getRawValue();
-      
+
       // Check for duplicate ID when adding new
       if (!this.isEditMode && this.existingTypes.some(t => t.id === formValue.id)) {
         this.form.get('id')?.setErrors({ duplicate: true });
         return;
       }
-      
+
       this.saveResourceType.emit(formValue);
       this.form.reset();
     } else {
@@ -122,13 +124,13 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       });
     }
   }
-  
+
   getFieldError(fieldName: string): string {
     const control = this.form.get(fieldName);
     if (!control || !control.touched || !control.errors) {
       return '';
     }
-    
+
     const errors = control.errors;
     if (errors['required']) {
       return this.i18nService.t('admin.settingsPage.validation.required');
@@ -145,57 +147,57 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
     if (errors['min']) {
       return this.i18nService.t('admin.settingsPage.validation.min', { min: errors['min'].min });
     }
-    
+
     return '';
   }
-  
+
   get coverImageUrl(): string | null {
     return this.form.get('defaultCover')?.value || null;
   }
-  
+
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     console.error('Image failed to load:', img.src);
     // You could set a fallback image here if needed
   }
-  
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file');
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
         return;
       }
-      
+
       this.selectedFile = file;
       this.uploadFile();
     }
   }
-  
+
   async uploadFile(): Promise<void> {
     if (!this.selectedFile) return;
-    
+
     this.isUploading = true;
     this.uploadProgress = 0;
-    
+
     try {
       // Create a unique file name
       const timestamp = Date.now();
       const fileName = `resource-covers/${timestamp}_${this.selectedFile.name}`;
       const storageRef = ref(this.storage, fileName);
-      
+
       // Upload file
       const uploadTask = uploadBytesResumable(storageRef, this.selectedFile);
-      
+
       uploadTask.on('state_changed',
         (snapshot) => {
           // Update progress
@@ -223,18 +225,18 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       alert('Upload failed. Please try again.');
     }
   }
-  
+
   async generateWithAI(): Promise<void> {
     const title = this.form.get('label')?.value;
     const description = this.form.get('description')?.value;
-    
+
     if (!title || !description) {
       alert('Please fill in the label and description fields first');
       return;
     }
-    
+
     this.isGeneratingAI = true;
-    
+
     try {
       // Generate contextually relevant image based on resource type
       const imageUrl = await this.generateContextualImage(title, description);
@@ -254,13 +256,42 @@ export class ResourceTypeModalComponent implements OnInit, OnChanges {
       this.isGeneratingAI = false;
     }
   }
-  
+
   private async generateContextualImage(title: string, description: string): Promise<string> {
-    // Skip Cloud Function for now due to authentication issues
-    // Directly use Lorem Picsum with consistent seed
-    return this.generateFallbackImage(title, description);
+    try {
+      // Get the current user's ID token
+      const user = this.auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const idToken = await user.getIdToken();
+
+      // Call the HTTP function directly with AI enabled
+      const response = await this.http.post<{ result: { success: boolean; imageUrl?: string } }>(
+        'https://us-central1-knowledgehub-2ed2f.cloudfunctions.net/generateCoverImage',
+        { data: { title, description } },
+        {
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      ).toPromise();
+
+      if (response?.result?.success && response.result.imageUrl) {
+        return response.result.imageUrl;
+      }
+
+      // If the function did not return an image URL, fall back
+      return this.generateFallbackImage(title, description);
+    } catch (error) {
+      console.error('generateContextualImage error:', error);
+      // On any error, fall back to deterministic placeholder
+      return this.generateFallbackImage(title, description);
+    }
   }
-  
+
   private generateFallbackImage(title: string, description: string): string {
     // Generate consistent seed from title and description
     const keywords = [title, description].join(' ').toLowerCase();

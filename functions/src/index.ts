@@ -21,6 +21,7 @@ export { makeFirstAdminHTTP } from './admin/makeFirstAdminHTTP';
 export { generateMultiLanguageSummary, suggestTags, healthCheck as aiHealthCheck } from './ai';
 export { extractUrlMetadata } from './ai/extractUrlMetadata';
 export { generateCoverImage } from './ai/generateCoverImage';
+export { suggestCategoriesAndTags } from './ai/suggestCategoriesAndTags';
 
 // Export email functions
 export {

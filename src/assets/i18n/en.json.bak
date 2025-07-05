@@ -62,24 +62,19 @@
     "subscribe": "Subscribe"
   },
   "footer": {
-    "title": "CoST Knowledge Hub",
-    "description": "Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability.",
-    "knowledge": "Knowledge",
-    "implementationGuides": "Implementation Guides",
+    "description": "Building transparency in public infrastructure projects worldwide through multi-stakeholder initiatives and data-driven accountability.",
+    "resources": "Resources",
+    "guides": "Implementation Guides",
     "caseStudies": "Case Studies",
-    "researchReports": "Research Reports",
-    "policyBriefs": "Policy Briefs",
-    "topics": "Topics",
-    "dataDisclosure": "Data Disclosure",
-    "independentAssurance": "Independent Review",
-    "publicProcurement": "Public Procurement",
-    "projectMonitoring": "Project Monitoring",
+    "tools": "Tools & Templates",
+    "datasets": "Datasets",
+    "about": "About CoST",
+    "mission": "Our Mission",
+    "members": "Member Countries",
+    "impact": "Impact Stories",
+    "contact": "Contact Us",
     "connect": "Connect",
-    "aboutCost": "About CoST",
-    "contactUs": "Contact Us",
-    "newsletter": "Newsletter",
-    "socialMedia": "Social Media",
-    "copyright": "© 2025 CoST Knowledge Hub. All rights reserved."
+    "rights": "All rights reserved."
   },
   "resourceTypes": {
     "guidance": "Implementation Guide",
@@ -165,6 +160,43 @@
     "createAccount": "Create Account"
   },
   "register": {
+    "title": "Create Your Account",
+    "subtitle": "Already have an account?",
+    "signInLink": "Sign in",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your name",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Create a password (min. 6 characters)",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "passwordStrength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "terms": {
+      "prefix": "I agree to the",
+      "link": "Terms and Conditions",
+      "suffix": "and Privacy Policy"
+    },
+    "submitButton": "Create Account",
+    "loading": "Creating account...",
+    "success": "Account created successfully! Redirecting...",
+    "backToHome": "← Back to Home",
+    "errors": {
+      "requiredFields": "Please fill in all required fields",
+      "passwordsDontMatch": "Passwords do not match",
+      "acceptTerms": "Please accept the terms and conditions",
+      "emailInUse": "This email is already registered. Please sign in instead.",
+      "invalidEmail": "Please enter a valid email address",
+      "weakPassword": "Password is too weak. Please use at least 6 characters.",
+      "operationNotAllowed": "Registration is currently disabled. Please contact support.",
+      "genericError": "An error occurred during registration"
+    }
+  },
+  "register": {
     "title": "Create Admin Account",
     "subtitle": "Register the first administrator for the Knowledge Hub",
     "displayName": "Display Name",
@@ -235,6 +267,26 @@
     "filters": "Filters",
     "adjustSearch": "Try adjusting your search terms or filters.",
     "loadMore": "Load More Resources"
+  },
+  "footer": {
+    "title": "CoST Knowledge Hub",
+    "description": "Leading insight and practical resources to help all infrastructure stakeholders improve transparency and accountability.",
+    "knowledge": "Knowledge",
+    "implementationGuides": "Implementation Guides",
+    "caseStudies": "Case Studies",
+    "researchReports": "Research Reports",
+    "policyBriefs": "Policy Briefs",
+    "topics": "Topics",
+    "dataDisclosure": "Data Disclosure",
+    "independentAssurance": "Independent Review",
+    "publicProcurement": "Public Procurement",
+    "projectMonitoring": "Project Monitoring",
+    "connect": "Connect",
+    "aboutCost": "About CoST",
+    "contactUs": "Contact Us",
+    "newsletter": "Newsletter",
+    "socialMedia": "Social Media",
+    "copyright": "© 2025 CoST Knowledge Hub. All rights reserved."
   },
   "login": {
     "errors": {
@@ -489,12 +541,7 @@
         "errorSaving": "Error saving settings",
         "errorLoading": "Error loading settings",
         "validationError": "Please fix validation errors before saving",
-        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
-        "confirmDeleteResourceType": "Are you sure you want to delete \"{{name}}\"? {{count}} resources will be changed to \"Other\" type.",
-        "confirmDeleteResourceTypeNoResources": "Are you sure you want to delete \"{{name}}\"?",
-        "cannotDeleteOther": "Cannot delete the \"Other\" resource type",
-        "resourceTypeDeleted": "Resource type \"{{name}}\" deleted successfully",
-        "failedToDeleteResourceType": "Failed to delete resource type"
+        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
       },
       "validation": {
         "required": "This field is required",
@@ -557,9 +604,9 @@
       "page": "Page"
     },
     "resourceTypes": {
-      "guide": "Implementation Guide",
+      "guide": "Guide",
       "caseStudy": "Case Study",
-      "report": "Research Report",
+      "report": "Report",
       "dataset": "Dataset",
       "tool": "Tool",
       "policy": "Policy Brief",
@@ -664,7 +711,7 @@
         "externalLinkPlaceholder": "https://example.com/resource",
         "thumbnailPreview": "Thumbnail Preview",
         "coverImage": "Cover Image",
-        "selectCoverImage": "Select Cover Image",
+        "selectCoverImage": "Select Cover Image", 
         "changeCoverImage": "Change Image",
         "clearSelection": "Clear Selection",
         "selectedImage": "Selected Image",
@@ -763,6 +810,17 @@
       "monitoring": "Project Monitoring",
       "stakeholder": "Multi-stakeholder Working",
       "accountability": "Social Accountability"
+    },
+    "resourceTypes": {
+      "guide": "Implementation Guide",
+      "caseStudy": "Case Study",
+      "report": "Research Report",
+      "dataset": "Dataset",
+      "tool": "Tool",
+      "policy": "Policy Brief",
+      "template": "Template",
+      "infographic": "Infographic",
+      "other": "Other"
     }
   },
   "profileSetup": {

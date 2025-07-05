@@ -23,7 +23,8 @@
     "saving": "Guardando...",
     "add": "Agregar",
     "cancel": "Cancelar",
-    "generating": "Generando"
+    "generating": "Generando",
+    "optional": "Opcional"
   },
   "navigation": {
     "home": "Inicio",
@@ -61,19 +62,24 @@
     "subscribe": "Suscribirse"
   },
   "footer": {
-    "description": "Construyendo transparencia en proyectos de infraestructura pública en todo el mundo a través de iniciativas multi-actor y rendición de cuentas basada en datos.",
-    "resources": "Recursos",
-    "guides": "Guías de Implementación",
+    "title": "CoST Knowledge Hub",
+    "description": "Perspectivas líderes y recursos prácticos para ayudar a todos los actores de infraestructura a mejorar transparencia y rendición de cuentas.",
+    "knowledge": "Conocimiento",
+    "implementationGuides": "Guías de Implementación",
     "caseStudies": "Casos de Estudio",
-    "tools": "Herramientas y Plantillas",
-    "datasets": "Conjuntos de Datos",
-    "about": "Acerca de CoST",
-    "mission": "Nuestra Misión",
-    "members": "Países Miembros",
-    "impact": "Historias de Impacto",
-    "contact": "Contáctanos",
+    "researchReports": "Informes de Investigación",
+    "policyBriefs": "Informes de Política",
+    "topics": "Temas",
+    "dataDisclosure": "Divulgación de Datos",
+    "independentAssurance": "Revisión Independiente",
+    "publicProcurement": "Contratación Pública",
+    "projectMonitoring": "Monitoreo de Proyectos",
     "connect": "Conectar",
-    "rights": "Todos los derechos reservados."
+    "aboutCost": "Acerca de CoST",
+    "contactUs": "Contáctanos",
+    "newsletter": "Boletín",
+    "socialMedia": "Redes Sociales",
+    "copyright": "© 2025 CoST Knowledge Hub. Todos los derechos reservados."
   },
   "resourceTypes": {
     "guidance": "Guía de Implementación",
@@ -230,26 +236,6 @@
     "adjustSearch": "Intenta ajustar tus términos de búsqueda o filtros.",
     "loadMore": "Cargar Más Recursos"
   },
-  "footer": {
-    "title": "CoST Knowledge Hub",
-    "description": "Perspectivas líderes y recursos prácticos para ayudar a todos los actores de infraestructura a mejorar transparencia y rendición de cuentas.",
-    "knowledge": "Conocimiento",
-    "implementationGuides": "Guías de Implementación",
-    "caseStudies": "Casos de Estudio",
-    "researchReports": "Informes de Investigación",
-    "policyBriefs": "Informes de Política",
-    "topics": "Temas",
-    "dataDisclosure": "Divulgación de Datos",
-    "independentAssurance": "Revisión Independiente",
-    "publicProcurement": "Contratación Pública",
-    "projectMonitoring": "Monitoreo de Proyectos",
-    "connect": "Conectar",
-    "aboutCost": "Acerca de CoST",
-    "contactUs": "Contáctanos",
-    "newsletter": "Boletín",
-    "socialMedia": "Redes Sociales",
-    "copyright": "© 2025 CoST Knowledge Hub. Todos los derechos reservados."
-  },
   "login": {
     "errors": {
       "requiredFields": "Por favor ingrese el correo electrónico y la contraseña.",
@@ -325,8 +311,7 @@
       "tabs": {
         "application": "Aplicación",
         "userSecurity": "Usuario y Seguridad",
-        "contentManagement": "Gestión de Contenido",
-        "systemAdministration": "Administración del Sistema"
+        "contentManagement": "Gestión de Contenido"
       },
       "application": {
         "title": "Configuración de la Aplicación",
@@ -404,22 +389,37 @@
           "title": "Etiquetas y Categorías",
           "categories": "Categorías",
           "tags": "Etiquetas",
-          "add": "Agregar Etiqueta"
+          "add": "Agregar Etiqueta",
+          "edit": "Editar Etiqueta",
+          "name": "Nombre de Etiqueta",
+          "namePlaceholder": "Ingrese el nombre de la etiqueta",
+          "color": "Color",
+          "icon": "Icono (nombre de Material Icon)",
+          "iconHelp": "Ingrese un nombre de Material Icons (ej: label, bookmark, star)",
+          "category": "Categoría",
+          "noCategory": "Sin Categoría",
+          "preview": "Vista Previa",
+          "empty": "No hay etiquetas aún. Cree su primera etiqueta para organizar recursos.",
+          "addFirst": "Crear tu primera etiqueta",
+          "aiSuggest": "Sugerencias de IA",
+          "aiSuggestTags": "Sugerir Etiquetas",
+          "aiSuggestTooltip": "Usar IA para sugerir etiquetas relevantes",
+          "generating": "Generando..."
+        },
+        "categories": {
+          "add": "Agregar Categoría",
+          "edit": "Editar Categoría",
+          "name": "Nombre de Categoría",
+          "namePlaceholder": "Ingrese el nombre de la categoría",
+          "description": "Descripción",
+          "descriptionPlaceholder": "Ingrese la descripción de la categoría",
+          "order": "Orden de Visualización",
+          "orderHelp": "Los números más bajos aparecen primero",
+          "empty": "No hay categorías aún. Agregue una para organizar sus etiquetas.",
+          "addFirst": "Crear tu primera categoría",
+          "aiSuggest": "Sugerencias de IA",
+          "aiSuggestTooltip": "Usar IA para sugerir categorías relevantes"
         }
-      },
-      "systemAdministration": {
-        "title": "Configuración de Administración del Sistema",
-        "enableSystemLogs": "Habilitar Registros del Sistema",
-        "logLevel": "Nivel de Registro",
-        "logRetentionDays": "Retención de Registros (días)",
-        "enablePerformanceMonitoring": "Habilitar Monitoreo de Rendimiento",
-        "enableAutoBackup": "Habilitar Respaldo Automático",
-        "backupFrequency": "Frecuencia de Respaldo",
-        "backupRetentionDays": "Retención de Respaldos (días)",
-        "enableCacheOptimization": "Habilitar Optimización de Caché",
-        "cacheExpirationMinutes": "Expiración de Caché (minutos)",
-        "enableRateLimiting": "Habilitar Límite de Velocidad",
-        "apiRateLimitPerMinute": "Límite de API (por minuto)"
       },
       "actions": {
         "save": "Guardar Configuración",
@@ -438,7 +438,12 @@
         "errorSaving": "Error al guardar configuración",
         "errorLoading": "Error al cargar configuración",
         "validationError": "Por favor corrija los errores de validación antes de guardar",
-        "unsavedChanges": "Tiene cambios sin guardar. ¿Está seguro de que desea salir?"
+        "unsavedChanges": "Tiene cambios sin guardar. ¿Está seguro de que desea salir?",
+        "confirmDeleteResourceType": "¿Está seguro de que desea eliminar \"{{name}}\"? {{count}} recursos cambiarán al tipo \"Otro\".",
+        "confirmDeleteResourceTypeNoResources": "¿Está seguro de que desea eliminar \"{{name}}\"?",
+        "cannotDeleteOther": "No se puede eliminar el tipo de recurso \"Otro\"",
+        "resourceTypeDeleted": "Tipo de recurso \"{{name}}\" eliminado exitosamente",
+        "failedToDeleteResourceType": "Error al eliminar el tipo de recurso"
       },
       "validation": {
         "required": "Este campo es requerido",

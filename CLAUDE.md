@@ -3,19 +3,25 @@
 **MANDATORY**: Always reference these core files for design and development decisions:
 
 ### Core Documentation Files:
-1. **CLAUDE_CORE/EMOTIONAL_DESIGN_SYSTEM.md** - Professional design principles (Simplicity First, Function Drives Form)
+1. **CLAUDE_CORE/EMOTIONAL_DESIGN_SYSTEM.md** - Professional design principles (Simplicity First with Occam's Razor, Function Drives Form)
 2. **CLAUDE_CORE/TS_PATTERNS.md** - TypeScript patterns and best practices
 3. **CLAUDE_CORE/DEVELOPMENT_GUIDELINES.md** - Development standards and workflows
 4. **CLAUDE_CORE/CLOUD_FUNCTIONS_GUIDE.md** - Firebase Cloud Functions implementation
 5. **CLAUDE_CORE/AI_IMPLEMENTATION_GUIDE.md** - AI integration patterns
 6. **src/app/admin/CLAUDE_ADMIN.md** - Complete admin module documentation
 
-### Design Philosophy:
+### Design Philosophy (Occam's Razor Applied):
 - **Professional Tone**: This is a serious infrastructure transparency platform, not a consumer app
-- **Simplicity First**: Every element must justify its existence
-- **Function Over Form**: Design decisions must improve functionality
+- **Simplicity First (Occam's Razor)**: Every element must justify its existence - the simplest solution with fewest assumptions is best
+  - Simplify navigation with clear labels and logical grouping
+  - Reduce cognitive load by limiting information density
+  - Minimize user input through smart defaults and autofill
+  - Remove any element that doesn't directly serve user goals
+- **Function Over Form**: Design decisions must improve functionality - prioritize usability over aesthetics
 - **Subtle Interactions**: Minimal animations (200-250ms), 1-2px movements only
 - **No Decorative Elements**: Remove floating animations, gradient texts, excessive transforms
+- **Mobile-First**: Optimize for responsive, touch-friendly interfaces
+- **Test and Iterate**: Continuously refine based on user feedback
 
 ### Key Design Changes Applied:
 - Removed playful hover effects (scale transforms)
@@ -146,15 +152,22 @@ Run this command anytime to verify App Engine safety:
 ./check-app-engine-status.sh
 ```
 
-### UI/UX Design Principles (Jony Ive-Inspired)
-1. **Simplicity First**: Remove unnecessary elements, focus on essential functionality
+### UI/UX Design Principles (Jony Ive-Inspired + Occam's Razor)
+1. **Simplicity First (Occam's Razor)**: Remove unnecessary elements, focus on essential functionality
+   - Apply the simplest solution that works
+   - Question every addition: does it simplify or complicate?
+   - Choose clarity over cleverness
 2. **Generous White Space**: Use ample padding and margins for breathing room
 3. **Subtle Shadows**: Use soft, barely-visible shadows (e.g., `shadow-sm` in Tailwind)
 4. **Clean Typography**: Stick to system fonts or clean sans-serif fonts
+   - Maintain consistency across the interface
+   - Use clear, readable type hierarchies
 5. **Minimal Borders**: Use light borders sparingly, prefer white space for separation
 6. **Smooth Transitions**: Add subtle animations (200-300ms) for interactions
 7. **Consistent Radius**: Use small, consistent border radius (4-8px)
 8. **Monochromatic Focus**: Let content shine, use color sparingly for emphasis
+9. **Progressive Disclosure**: Show only what's needed when it's needed
+10. **Test Simplicity**: Can new users understand without documentation?
 
 ## 🎨 CoST Brand Theme & Tailwind Configuration
 
