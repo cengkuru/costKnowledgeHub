@@ -1,0 +1,195 @@
+@if (searchService.loading()) {
+  <div class="flex flex-col items-center justify-center rounded-lg border border-cost-neutral-100 bg-white py-16">
+    <div class="relative flex h-12 w-12 items-center justify-center">
+      <svg class="h-10 w-10 animate-spin text-cost-red" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8h0a8 8 0 018 8h-4a4 4 0 00-8 0H4z"></path>
+      </svg>
+    </div>
+    <p class="mt-4 text-sm text-cost-neutral-600">Searching…</p>
+  </div>
+}
+
+@if (searchService.error()) {
+  <div class="rounded-lg border border-red-200 bg-red-50 px-5 py-4">
+    <p class="text-sm text-red-700">{{ searchService.error() }}</p>
+  </div>
+}
+
+@if (searchService.items().length > 0 && !searchService.loading()) {
+  <section class="space-y-5">
+    <header class="flex items-baseline justify-between border-b border-cost-neutral-100 pb-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.2em] text-cost-neutral-600 font-semibold">Supporting Evidence</p>
+        <p class="mt-1 text-sm text-cost-neutral-500">
+          Documents that inform the answer above
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-cost-neutral-600">
+        <button
+          type="button"
+          (click)="previousPage()"
+          [disabled]="!searchService.canGoPrevious()"
+          class="inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-3 py-1.5 transition hover:border-cost-red hover:text-cost-red disabled:cursor-not-allowed disabled:border-cost-neutral-100 disabled:text-cost-neutral-300"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Previous
+        </button>
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="!searchService.canGoNext()"
+          class="inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-3 py-1.5 transition hover:border-cost-red hover:text-cost-red disabled:cursor-not-allowed disabled:border-cost-neutral-100 disabled:text-cost-neutral-300"
+        >
+          Next
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="space-y-4">
+      @for (item of searchService.items(); track item.id; let idx = $index) {
+        <article
+          class="group relative overflow-hidden rounded-2xl border border-cost-neutral-100 bg-white/90 transition hover:border-cost-red/30 hover:shadow-md"
+        >
+          <div class="flex flex-col gap-4 p-5">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div class="flex items-start gap-3">
+                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-cost-neutral-50 text-xs font-semibold text-cost-neutral-600">
+                  {{ getStartIndex() + idx }}
+                </div>
+                <div>
+                  <a
+                    [href]="item.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-base font-medium text-cost-neutral-900 underline-offset-4 transition group-hover:text-cost-red group-hover:underline"
+                  >
+                    {{ item.title }}
+                  </a>
+                  <div class="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-cost-neutral-600">
+                    <span [class]="'inline-flex items-center gap-1 rounded-full border px-2 py-1 font-medium ' + getResourceTypeColor(item.type)">
+                      {{ item.type }}
+                    </span>
+                    @if (item.country) {
+                      <span class="inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-2 py-1">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a9 9 0 00-9 9 9.003 9.003 0 008.25 8.95V22l3.084-3.7A9.004 9.004 0 0021 11a9 9 0 00-9-9z"></path>
+                        </svg>
+                        {{ item.country }}
+                      </span>
+                    }
+                    @if (item.year) {
+                      <span class="inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-2 py-1">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        {{ item.year }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  (click)="toggleExpand(item.id)"
+                  class="inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-3 py-1.5 text-xs font-medium text-cost-neutral-600 transition hover:border-cost-red hover:text-cost-red"
+                >
+                  @if (isExpanded(item.id)) {
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                    </svg>
+                    Hide preview
+                  } @else {
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+                    </svg>
+                    Quick preview
+                  }
+                </button>
+                <button
+                  type="button"
+                  (click)="toggleSelection(item)"
+                  [class]="isSelected(item.id)
+                    ? 'inline-flex items-center gap-1 rounded-full border border-cost-red bg-cost-red px-4 py-1.5 text-xs font-semibold text-white transition focus-visible:ring-2 focus-visible:ring-cost-red/40'
+                    : 'inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 px-4 py-1.5 text-xs font-semibold text-cost-neutral-700 transition hover:border-cost-red hover:text-cost-red focus-visible:ring-2 focus-visible:ring-cost-red/20'"
+                >
+                  @if (isSelected(item.id)) {
+                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    Included
+                  } @else {
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+                    </svg>
+                    Include
+                  }
+                </button>
+              </div>
+            </div>
+
+            @if (isExpanded(item.id)) {
+              <div class="group/preview overflow-hidden rounded-2xl border border-cost-neutral-100 bg-gradient-to-br from-white to-cost-neutral-50/30 shadow-sm">
+                <!-- AI-Generated Insight -->
+                <div class="px-5 pt-4 pb-3">
+                  <div class="mb-2 flex items-center gap-2">
+                    <div class="flex h-5 w-5 items-center justify-center rounded-md bg-gradient-to-br from-cost-red/10 to-cost-red/5">
+                      <svg class="h-3 w-3 text-cost-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-[0.15em] text-cost-red">
+                      AI Insight
+                    </span>
+                  </div>
+                  <p class="text-[13.5px] font-light leading-relaxed text-cost-neutral-800">
+                    {{ item.summary }}
+                  </p>
+                </div>
+
+                <!-- Divider -->
+                <div class="h-px bg-gradient-to-r from-transparent via-cost-neutral-100 to-transparent"></div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-between px-5 py-3 bg-white/40">
+                  <span class="text-[11px] text-cost-neutral-500">
+                    Source {{ idx + 1 }} of {{ searchService.items().length }}
+                  </span>
+                  <a
+                    [href]="item.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group/link inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-cost-red transition hover:bg-cost-red hover:text-white"
+                  >
+                    <span>Open document</span>
+                    <svg class="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+}
+
+@if (searchService.items().length === 0 && !searchService.loading() && !searchService.error()) {
+  <div class="rounded-2xl border border-cost-neutral-100 bg-white px-8 py-16 text-center">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-cost-neutral-50 text-cost-neutral-600">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-light text-cost-neutral-900">We didn’t find anything yet</h3>
+    <p class="mt-2 text-sm text-cost-neutral-600">Try adjusting the wording or apply a different filter combination.</p>
+  </div>
+}

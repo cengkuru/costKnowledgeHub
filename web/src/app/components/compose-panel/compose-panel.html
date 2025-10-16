@@ -1,0 +1,190 @@
+<div class="rounded-3xl border border-cost-neutral-100 bg-white/90 shadow-[0_20px_60px_-45px_rgba(28,41,56,0.45)]">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b border-cost-neutral-100 px-5 py-4">
+    <h2 class="text-sm font-medium text-cost-neutral-900">
+      Selected items
+    </h2>
+    <button
+      type="button"
+      (click)="togglePanel()"
+      class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-cost-neutral-600 hover:text-cost-red transition"
+    >
+      @if (panelOpen()) {
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+        </svg>
+      } @else {
+        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+        </svg>
+      }
+    </button>
+  </div>
+
+  @if (!panelOpen() && selectionService.selectedCount() === 0 && !recommendationsService.hasRecommendations()) {
+    <div class="px-5 py-8 text-center">
+      <p class="text-sm text-cost-neutral-600">No items selected</p>
+    </div>
+  } @else {
+    <div class="px-6 py-5 space-y-6">
+
+      <!-- Selection Summary -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-semibold uppercase tracking-[0.12em] text-cost-neutral-700">
+            Selection basket
+          </h3>
+          <span class="text-[11px] text-cost-neutral-500">
+            {{ selectionService.selectedCount() }} {{ selectionService.selectedCount() === 1 ? 'item' : 'items' }}
+          </span>
+        </div>
+
+        @if (selectionService.selectedItems().length > 0) {
+          <div class="rounded-2xl border border-cost-neutral-100 bg-cost-neutral-50/60 p-4">
+            <div class="flex flex-wrap items-center gap-2 text-[11px] text-cost-neutral-600">
+              @for (insight of getSelectionInsights(); track insight.type) {
+                <span class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 font-medium shadow-sm">
+                  {{ insight.count }}× {{ insight.type }}
+                </span>
+              }
+              @if (getUniqueCountries() > 0) {
+                <span class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm">
+                  <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a9 9 0 00-9 9 9.003 9.003 0 008.25 8.95V22l3.084-3.7A9.004 9.004 0 0021 11a9 9 0 00-9-9z"></path>
+                  </svg>
+                  {{ getUniqueCountries() }} {{ getUniqueCountries() === 1 ? 'country' : 'countries' }}
+                </span>
+              }
+              @if (hasGaps()) {
+                <span class="inline-flex items-center gap-1 rounded-full bg-cost-red/10 px-3 py-1 font-medium text-cost-red">
+                  Consider balancing document types
+                </span>
+              }
+            </div>
+
+            <div class="mt-4 space-y-3">
+              @for (item of selectionService.selectedItems(); track item.id) {
+                <div class="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-3 shadow-sm">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-cost-neutral-900 leading-snug break-words">{{ item.title }}</p>
+                    <div class="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-cost-neutral-600">
+                      <span [class]="'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-medium ' + getResourceTypeColor(item.type)">
+                        {{ item.type }}
+                      </span>
+                      @if (item.year) {
+                        <span>{{ item.year }}</span>
+                      }
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="removeItem(item.id)"
+                    class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-cost-neutral-200 text-cost-neutral-500 transition hover:border-cost-red hover:text-cost-red"
+                    aria-label="Remove {{ item.title }}"
+                  >
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="rounded-2xl border border-dashed border-cost-neutral-200 px-4 py-8 text-center text-sm text-cost-neutral-600">
+            No items selected yet. Use “Include” on any result to start a reading pack.
+          </div>
+        }
+      </section>
+
+      <!-- Export -->
+      <section>
+        <button
+          type="button"
+          (click)="exportSelection()"
+          [disabled]="(selectionService.selectedItems().length === 0 && searchService.answer().length === 0) || isExporting"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cost-red px-4 py-2.5 text-sm font-medium text-white transition hover:bg-cost-red/90 disabled:cursor-not-allowed disabled:bg-cost-red/50"
+        >
+          @if (isExporting) {
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Exporting…
+          } @else {
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Export PDF
+          }
+        </button>
+      </section>
+
+      <!-- Recommendations -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-semibold uppercase tracking-[0.12em] text-cost-neutral-700">
+            Recommendations
+          </h3>
+          @if (recommendationsService.loading()) {
+            <div class="h-3 w-3 animate-spin rounded-full border-2 border-cost-red border-t-transparent"></div>
+          }
+        </div>
+
+        @if (recommendationsService.loading() && !recommendationsService.hasRecommendations()) {
+          <div class="rounded-2xl border border-cost-neutral-100 px-4 py-6 text-center text-xs text-cost-neutral-600">
+            Finding complementary resources…
+          </div>
+        }
+
+        @if (recommendationsService.error()) {
+          <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-xs text-red-700">
+            {{ recommendationsService.error() }}
+          </div>
+        }
+
+        @if (recommendationsService.hasRecommendations() && !recommendationsService.error()) {
+          <div class="space-y-2">
+            @for (rec of recommendationsService.recommendations(); track rec.id; let idx = $index) {
+              <button
+                type="button"
+                (click)="executeRecommendation(rec)"
+                class="group flex w-full items-start justify-between gap-3 rounded-2xl border border-cost-neutral-100 bg-white px-4 py-3 text-left transition hover:border-cost-red/40 hover:shadow"
+              >
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start gap-2">
+                    <span class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-cost-red/10 text-[11px] font-semibold text-cost-red">
+                      {{ idx + 1 }}
+                    </span>
+                    <p class="text-sm font-medium text-cost-neutral-900 group-hover:text-cost-red leading-snug break-words flex-1">
+                      {{ rec.title }}
+                    </p>
+                  </div>
+                  <p class="mt-1 text-[11px] text-cost-neutral-600">
+                    {{ rec.reason }}
+                  </p>
+                </div>
+                <div class="flex flex-col items-end gap-1 text-[11px] text-cost-neutral-500">
+                  <span [class]="'inline-flex items-center rounded-full border px-2 py-0.5 font-medium ' + getResourceTypeColor(rec.type)">
+                    {{ rec.type }}
+                  </span>
+                  <span>{{ getRelevancePercent(rec.relevanceScore) }} relevant</span>
+                </div>
+              </button>
+            }
+          </div>
+          <p class="text-[10px] text-cost-neutral-500">
+            Updates as your query and selections change.
+          </p>
+        }
+
+        @if (!recommendationsService.hasRecommendations() && !recommendationsService.loading() && !recommendationsService.error()) {
+          <div class="rounded-2xl border border-cost-neutral-100 px-4 py-6 text-center text-xs text-cost-neutral-600">
+            Recommendations will appear here after your first search.
+          </div>
+        }
+      </section>
+    </div>
+  }
+</div>

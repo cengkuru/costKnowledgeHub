@@ -1,0 +1,86 @@
+<!-- CoST Knowledge Hub - Purposeful, Guided Experience -->
+<div class="min-h-screen bg-gradient-to-b from-cost-neutral-50 via-white to-white">
+
+  <!-- Header with Search -->
+  <app-header (openFilters)="toggleFilters()" />
+
+  <main>
+    <div class="container mx-auto px-4 lg:px-8 py-10">
+
+      <!-- Starter Questions - Only show when no results -->
+      @if (showEmptyState()) {
+        <app-empty-state (quickStartSelected)="onQuickStartSelected($event)" />
+      }
+
+      <!-- Results Surface -->
+      @if (!showEmptyState()) {
+        <section class="space-y-6">
+
+          <!-- Results Toolbar -->
+          <div class="flex items-center justify-between rounded-lg border border-cost-neutral-100 bg-white px-5 py-3">
+            <div>
+              <h2 class="text-base text-cost-neutral-900">
+                {{ searchService.getQuery() }}
+              </h2>
+            </div>
+            <div class="text-xs text-cost-neutral-500">
+              {{ searchService.items().length }} results found
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+
+            <div class="space-y-6">
+              <app-answer-block />
+              <app-results-list />
+            </div>
+
+            <div class="space-y-8">
+              <app-compose-panel />
+              <app-smart-collections />
+            </div>
+
+          </div>
+        </section>
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-cost-neutral-100 bg-white mt-16">
+    <div class="container mx-auto px-4 lg:px-8 py-4">
+      <div class="flex items-center justify-between text-xs text-cost-neutral-600">
+        <span>CoST Knowledge Hub</span>
+        <span>v1.0.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Filters Overlay -->
+  @if (filtersOpen()) {
+    <div class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 py-10">
+      <button
+        type="button"
+        class="absolute inset-0 cursor-default"
+        (click)="closeFilters()"
+        aria-label="Close filters overlay"
+      ></button>
+      <div class="relative w-full max-w-md">
+        <div class="absolute -top-12 right-0">
+          <button
+            type="button"
+            (click)="closeFilters()"
+            class="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/80 px-4 py-2 text-xs font-medium text-cost-neutral-700 shadow-sm hover:text-cost-red hover:border-cost-red/40 transition"
+          >
+            Close
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <app-filters-drawer />
+      </div>
+    </div>
+  }
+
+</div>

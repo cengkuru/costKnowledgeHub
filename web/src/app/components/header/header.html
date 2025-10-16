@@ -1,0 +1,78 @@
+<header class="sticky top-0 z-50 border-b border-cost-neutral-100 bg-white/90 backdrop-blur-lg">
+  <div class="container mx-auto flex flex-col gap-5 px-4 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+
+    <!-- Brand -->
+    <div class="flex flex-col leading-tight">
+      <span class="text-lg font-semibold uppercase tracking-[0.35em] text-cost-neutral-900">
+        Knowledge Hub
+      </span>
+    </div>
+
+    <!-- Search & actions -->
+    <div class="flex w-full flex-col gap-3 lg:max-w-3xl">
+      <div class="flex items-center gap-3">
+        <div class="group relative flex-1">
+          <div class="pointer-events-none absolute inset-0 rounded-full border border-cost-neutral-200 bg-white/95 shadow-[0_18px_45px_-35px_rgba(28,41,56,0.45)] transition-all duration-200 group-focus-within:border-cost-red/60 group-focus-within:shadow-[0_25px_55px_-30px_rgba(220,20,60,0.35)]"></div>
+          <div class="relative flex min-h-[52px] w-full items-center gap-3 px-5">
+            <span class="pointer-events-none text-cost-neutral-400">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </span>
+            <input
+              type="search"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearchSubmit()"
+              placeholder="Ask something precise… (e.g., OC4IDS risk mitigation)"
+              autocomplete="off"
+              class="flex-1 appearance-none rounded-full border-none bg-transparent text-[15px] text-cost-neutral-900 placeholder:text-cost-neutral-500 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              autofocus
+            />
+            <div class="pointer-events-none">
+              <kbd class="hidden sm:inline-flex items-center gap-1 rounded-full border border-cost-neutral-200 bg-cost-neutral-50 px-3 py-1 text-[11px] font-medium text-cost-neutral-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <span class="text-xs">⌘</span>K
+              </kbd>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="showFiltersPanel()"
+          class="inline-flex items-center gap-2 rounded-full border border-cost-neutral-200 bg-white px-4 py-2 text-xs font-semibold text-cost-neutral-700 shadow-[0_12px_30px_-28px_rgba(28,41,56,0.6)] transition hover:border-cost-red/40 hover:text-cost-red"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h10m-6 12h6M4 6h.01M4 12h16M4 18h.01"></path>
+          </svg>
+          Filters
+        </button>
+        <div class="relative">
+          <button
+            type="button"
+            (click)="toggleHelp()"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cost-neutral-200 bg-white text-cost-neutral-600 shadow-[0_12px_30px_-28px_rgba(28,41,56,0.6)] transition hover:border-cost-red/40 hover:text-cost-red"
+            aria-label="Show help"
+          >
+            <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </button>
+          @if (showHelp) {
+            <div class="absolute right-0 top-12 w-60 rounded-[20px] border border-cost-neutral-200 bg-white/95 p-4 text-xs text-cost-neutral-600 shadow-[0_25px_60px_-35px_rgba(28,41,56,0.55)] backdrop-blur-lg">
+              <p class="font-semibold text-cost-neutral-900">Crafting great prompts</p>
+              <ul class="mt-2 space-y-2">
+                <li>• Anchor with a specific country, project, or year.</li>
+                <li>• State the desired output (brief, risks, lessons learned).</li>
+                <li>• Apply filters after your first search to refine the corpus.</li>
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-cost-neutral-500">
+        <span>Tip: start narrow, then open filters to refine context.</span>
+        <span>Press “Enter” to run search</span>
+      </div>
+    </div>
+
+  </div>
+</header>

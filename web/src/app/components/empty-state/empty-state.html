@@ -1,0 +1,107 @@
+<!--
+  Jony Ive-Inspired Empty State
+  Design Principles:
+  - Extreme minimalism with purposeful elements
+  - Generous white space for breathing room
+  - Subtle animations that delight
+  - Focus on clarity and simplicity
+  - "Design is not just what it looks like, design is how it works"
+-->
+
+<div class="min-h-screen flex flex-col items-center justify-center px-4 relative">
+  <!-- Subtle gradient background overlay -->
+  <div class="gradient-fade absolute inset-0"></div>
+
+  <!-- Main content container with elegant spacing -->
+  <div class="max-w-4xl w-full space-y-12 relative z-10">
+
+    <!-- Hero Section: Mission Statement -->
+    <div class="text-center space-y-6">
+      <!-- Elegant typography with perfect hierarchy -->
+      <h1 class="text-5xl md:text-6xl font-extralight text-gray-900 tracking-tight">
+        Knowledge Hub
+      </h1>
+
+      <!-- Subtle divider line -->
+      <div class="w-24 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto"></div>
+
+      <!-- Mission statement with refined typography -->
+      <p class="text-lg md:text-xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed">
+        Discover insights on infrastructure transparency, standards, and global impact through our intelligent knowledge platform.
+      </p>
+    </div>
+
+    <!-- Quick Topics Section -->
+    <div class="space-y-6">
+      <!-- Section header with subtle styling -->
+      <div class="text-center">
+        <p class="text-sm uppercase tracking-wider text-gray-500 font-medium">
+          Quick Explore
+        </p>
+      </div>
+
+      <!-- Loading State: Elegant skeleton -->
+      @if (loading()) {
+        <div class="flex flex-wrap justify-center gap-3 px-4">
+          @for (placeholder of loadingPlaceholders; track placeholder.id) {
+            <div
+              class="skeleton h-11 rounded-full"
+              [style.width.px]="placeholder.width"
+            ></div>
+          }
+        </div>
+      }
+
+      <!-- Error State: Minimal and helpful -->
+      @else if (error()) {
+        <div class="text-center py-8">
+          <p class="text-gray-500 font-light">
+            Unable to load topics. Please try refreshing.
+          </p>
+        </div>
+      }
+
+      <!-- Topics Grid: Clean and organized -->
+      @else {
+        <div class="flex flex-wrap justify-center gap-3 px-4">
+          @for (topic of quickTopics(); track topic.query) {
+            <button
+              (click)="selectQuickTopic(topic.query)"
+              class="topic-pill group inline-flex items-center gap-2.5 rounded-full
+                     bg-white border border-gray-200 px-5 py-2.5 text-sm
+                     hover:border-cost-red/30 hover:bg-gradient-to-r
+                     hover:from-cost-red/5 hover:to-transparent
+                     focus-visible:ring-2 focus-visible:ring-cost-red/20
+                     cursor-pointer select-none"
+              [attr.aria-label]="'Explore ' + topic.label"
+              [attr.data-category]="topic.category"
+            >
+              <!-- Icon with micro-animation -->
+              <span class="topic-icon text-base leading-none">
+                {{ topic.icon }}
+              </span>
+
+              <!-- Label with refined typography -->
+              <span class="font-medium text-gray-700 group-hover:text-cost-red transition-colors duration-300">
+                {{ topic.label }}
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Optional: Subtle hint text -->
+    <div class="text-center pt-8">
+      <p class="text-xs text-gray-400 font-light">
+        Select a topic or use the search above to begin exploring
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Bottom gradient fade for depth -->
+  <div class="absolute bottom-0 left-0 right-0 h-32
+              bg-gradient-to-t from-gray-50/50 to-transparent pointer-events-none">
+  </div>
+</div>
