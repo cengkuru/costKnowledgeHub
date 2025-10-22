@@ -62,7 +62,7 @@ export interface SearchFilters {
 }
 
 /**
- * Search service for CoST Knowledge Hub
+ * Search service for ALFRED
  *
  * Provides two search modes:
  * 1. search() - Fast cached RAG over indexed corpus

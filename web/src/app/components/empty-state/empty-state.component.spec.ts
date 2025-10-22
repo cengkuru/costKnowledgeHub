@@ -65,7 +65,7 @@ describe('EmptyState Component', () => {
       fixture.detectChanges();
 
       const title = fixture.debugElement.query(By.css('h1'));
-      expect(title.nativeElement.textContent).toContain('Knowledge Hub');
+      expect(title.nativeElement.textContent).toContain('ALFRED');
 
       const mission = fixture.debugElement.query(By.css('p.text-lg'));
       expect(mission.nativeElement.textContent).toContain('infrastructure transparency');

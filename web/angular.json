@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "cost-knowledge-hub": {
+    "alfred": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -65,10 +65,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "cost-knowledge-hub:build:production"
+              "buildTarget": "alfred:build:production"
             },
             "development": {
-              "buildTarget": "cost-knowledge-hub:build:development"
+              "buildTarget": "alfred:build:development"
             }
           },
           "defaultConfiguration": "development"

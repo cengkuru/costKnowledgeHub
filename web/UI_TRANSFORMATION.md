@@ -13,7 +13,7 @@ This document illustrates the transformation from a functional interface to an *
 ### BEFORE: Utilitarian Entry
 ```
 ┌────────────────────────────────────────────┐
-│ CoST Knowledge Hub                         │
+│ ALFRED                                      │
 │ ┌────────────────────────────────────────┐ │
 │ │ [ Search field........................ ] │
 │ └────────────────────────────────────────┘ │
@@ -30,7 +30,7 @@ This document illustrates the transformation from a functional interface to an *
 ### AFTER: Guided, Purposeful
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  CoST Knowledge Hub                                          │
+│  ALFRED                                                       │
 │  Research clarity, instantly.                                │
 │                                                              │
 │   • AI-synthesised answers   • ~0.45s vector search          │
@@ -560,5 +560,5 @@ As Jony Ive would say:
 
 **Next Steps**: Monitor user behavior, gather feedback, iterate continuously.
 
-**Maintained By**: CoST Knowledge Hub Team
+**Maintained By**: ALFRED Team
 **Last Updated**: October 2025

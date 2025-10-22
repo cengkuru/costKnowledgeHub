@@ -1,4 +1,4 @@
-# CoST Knowledge Hub - Design System
+# ALFRED - Design System
 ## Inspired by Jony Ive's Design Philosophy
 
 *"Simplicity is not the absence of clutter. That's a consequence of simplicity. Simplicity is somehow essentially describing the purpose and place of an object and product."* — Jony Ive
@@ -365,4 +365,4 @@ Based on 4px grid:
 ---
 
 **Last Updated**: October 2025
-**Maintained By**: CoST Knowledge Hub Team
+**Maintained By**: ALFRED Team

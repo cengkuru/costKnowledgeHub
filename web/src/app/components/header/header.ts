@@ -41,6 +41,12 @@ export class Header implements OnInit, OnDestroy {
     this.showHelp = !this.showHelp;
   }
 
+  goToHome() {
+    // Clear search query and results to return to landing page
+    this.searchQuery = '';
+    this.searchService.clear();
+  }
+
   handleKeyboardShortcut(event: KeyboardEvent) {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
       event.preventDefault();

@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The CoST Knowledge Hub web frontend is now **fully integrated** with the API backend, featuring an **elegant, Jony Ive-inspired UI** that presents AI-synthesized answers with inline citations.
+The ALFRED web frontend is now **fully integrated** with the API backend, featuring an **elegant, Jony Ive-inspired UI** that presents AI-synthesized answers with inline citations.
 
 ---
 

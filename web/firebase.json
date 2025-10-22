@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/cost-knowledge-hub/browser",
+    "public": "dist/alfred/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
