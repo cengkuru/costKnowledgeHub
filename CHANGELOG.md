@@ -2,7 +2,43 @@
 
 All notable changes to the CoST Knowledge Hub project will be documented in this file.
 
-## [Unreleased] - 2025-01-03 19:45:00 UTC
+## [Unreleased] - 2025-10-23 10:00:00 UTC
+
+### Fixed - 2025-10-23 10:00:00 UTC
+- **🔍 Search Response Relevance: Implemented intelligent search with relevance scoring**
+  - **Problem Identified**: Search results were sorted by date, not relevance to user query
+    - Simple substring matching caused false positives and missed relevant content
+    - No tokenization: "data disclosure" didn't match "disclosure data"
+    - No stemming: "procurement" didn't match "procure" or "procuring"
+    - No synonym expansion: "guide" didn't find "manual" or "handbook"
+    - Results always sorted by datePublished, never by relevance
+  - **Root Causes Found**:
+    - resource.service.ts:71-78: Basic `.includes()` substring matching only
+    - No relevance scoring algorithm (TF-IDF, BM25, or similar)
+    - No query preprocessing or intelligent parsing
+    - Gemini AI client exists but not integrated with search
+    - filter.model.ts defines `sortBy: 'relevance'` but never implemented
+  - **Implemented Solutions**:
+    - Added TF-IDF relevance scoring algorithm to SearchService
+    - Implemented query tokenization and preprocessing
+    - Added stemming support using Porter Stemmer algorithm
+    - Created synonym expansion service with CoST domain vocabulary
+    - Implemented result ranking by relevance score
+    - Added query normalization (lowercase, trim, remove special chars)
+    - Enhanced ResourceService to use new relevance scoring
+    - Updated UI to show results sorted by relevance by default
+  - **Files Modified**:
+    - src/app/core/services/search.service.ts: Added relevance scoring and query preprocessing
+    - src/app/core/services/resource.service.ts: Integrated relevance scoring into filter pipeline
+    - src/app/core/models/filter.model.ts: Enhanced search query interface
+  - **Performance Improvements**:
+    - Tokenized queries match word order independently
+    - Multi-word queries score higher when all terms present
+    - Title matches weighted higher than description or tag matches
+    - Exact phrase matches given bonus weighting
+  - **Result**: Search now returns highly relevant results matching user intent, not just recent documents
+
+## [Previous] - 2025-01-03 19:45:00 UTC
 
 ### Added - 2025-01-03 21:00:00 UTC
 - **🤖 AI-Powered Resource Documentation Features: Implemented Gemini AI integration**

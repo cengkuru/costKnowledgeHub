@@ -6,6 +6,7 @@ import { FilterGroup, ActiveFilters, DEFAULT_FILTERS } from '../models/filter.mo
 import { COST_TOPICS } from '../models/topic.model';
 import { COST_COUNTRIES } from '../models/country.model';
 import { FirestoreService } from './firestore.service';
+import { matchesSearchQuery, scoreAndRankResources } from '../utils/relevance-scoring.util';
 
 @Injectable({
   providedIn: 'root'
@@ -67,16 +68,6 @@ export class ResourceService {
       map(([resources, activeFilters]) => {
         let filteredResources = [...resources];
 
-        // Apply search query
-        if (activeFilters.searchQuery) {
-          const query = activeFilters.searchQuery.toLowerCase();
-          filteredResources = filteredResources.filter(resource =>
-            Object.values(resource.title).some(title => title.toLowerCase().includes(query)) ||
-            Object.values(resource.description).some(desc => desc.toLowerCase().includes(query)) ||
-            resource.tags.some(tag => tag.toLowerCase().includes(query))
-          );
-        }
-
         // Apply type filter
         if (activeFilters.type.length > 0) {
           filteredResources = filteredResources.filter(resource =>
@@ -103,6 +94,23 @@ export class ResourceService {
           filteredResources = filteredResources.filter(resource =>
             resource.topics.some(topic => activeFilters.topic.includes(topic))
           );
+        }
+
+        // Apply intelligent search query with relevance scoring
+        if (activeFilters.searchQuery) {
+          // First filter: only include resources that match the query
+          filteredResources = filteredResources.filter(resource =>
+            matchesSearchQuery(resource, activeFilters.searchQuery)
+          );
+
+          // Then rank by relevance score
+          const scoredResources = scoreAndRankResources(
+            filteredResources,
+            activeFilters.searchQuery
+          );
+
+          // Remove relevanceScore property for returned resources
+          filteredResources = scoredResources.map(({ relevanceScore, ...resource }) => resource as Resource);
         }
 
         return {

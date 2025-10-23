@@ -6,6 +6,13 @@ import { SearchSuggestion, SearchQuery, ActiveFilters } from '../models/filter.m
 import { Resource } from '../models/resource.model';
 import { COST_TOPICS } from '../models/topic.model';
 import { COST_COUNTRIES } from '../models/country.model';
+import {
+  preprocessQuery,
+  stem,
+  expandQueryWithSynonyms,
+  calculateRelevanceScore,
+  scoreAndRankResources
+} from '../utils/relevance-scoring.util';
 
 @Injectable({
   providedIn: 'root'
@@ -231,5 +238,47 @@ export class SearchService {
   trackSearch(query: string, resultCount: number): void {
     console.log(`Search tracked: "${query}" (${resultCount} results)`);
     // Future: Send to analytics service
+  }
+
+  // ============================================================================
+  // RELEVANCE SCORING & QUERY PREPROCESSING
+  // Note: Core implementations are in relevance-scoring.util.ts
+  // These methods provide convenient access for this service
+  // ============================================================================
+
+  /**
+   * Preprocess query for better matching
+   * Delegates to utility function
+   */
+  preprocessQuery(query: string): string[] {
+    return preprocessQuery(query);
+  }
+
+  /**
+   * Expand query with synonyms specific to CoST domain
+   * Delegates to utility function
+   */
+  expandQueryWithSynonyms(tokens: string[]): string[] {
+    return expandQueryWithSynonyms(tokens);
+  }
+
+  /**
+   * Calculate TF-IDF relevance score for a resource against a query
+   * Delegates to utility function
+   */
+  calculateRelevanceScore(
+    resource: Resource,
+    queryTokens: string[],
+    allResources: Resource[]
+  ): number {
+    return calculateRelevanceScore(resource, queryTokens, allResources);
+  }
+
+  /**
+   * Score and rank resources by relevance to query
+   * Delegates to utility function
+   */
+  scoreAndRankResources(resources: Resource[], query: string): Array<Resource & { relevanceScore: number }> {
+    return scoreAndRankResources(resources, query);
   }
 }
