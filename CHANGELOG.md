@@ -4,6 +4,20 @@ All notable changes to the CoST Knowledge Hub project will be documented in this
 
 ## [Unreleased] - 2025-01-03 19:45:00 UTC
 
+### Added - 2025-10-23 14:30:00 UTC
+- **🤖 AI Confidence Scoring System: Implemented low-confidence response rejection**
+  - Created Cloud Function validateResourceContent for AI-powered content validation (functions/src/validation.ts)
+  - Added ContentValidationService for frontend-backend communication (src/app/core/services/content-validation.service.ts)
+  - Updated Resource model with confidence metadata fields (score, level, feedback)
+  - Enhanced resource form with real-time confidence indicators and warnings
+  - Implemented publishing guard to prevent submission of low-confidence resources
+  - Added confidence scoring translations for EN, ES, PT languages
+  - Confidence levels: high (80-100), medium (50-79), low (<50)
+  - Validation criteria: content completeness, clarity, topic relevance, cross-field consistency
+  - **Security**: Integrated with existing GeminiClient with retry logic and error handling
+  - **UX**: Real-time validation feedback with actionable recommendations
+  - **Result**: Prevents publication of low-quality resources, maintains content standards
+
 ### Added - 2025-01-03 21:00:00 UTC
 - **🤖 AI-Powered Resource Documentation Features: Implemented Gemini AI integration**
   - Created AI service for frontend-backend communication (src/app/core/services/ai.service.ts)

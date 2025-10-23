@@ -230,5 +230,47 @@
       "title": "Restablecer tu contraseña",
       "description": "Ingresa tu dirección de correo electrónico y te enviaremos instrucciones para restablecer tu contraseña."
     }
+  },
+  "admin": {
+    "resourceForm": {
+      "confidence": {
+        "title": "Puntuación de Calidad del Contenido",
+        "subtitle": "La validación impulsada por IA ayuda a garantizar recursos de alta calidad",
+        "validating": "Validando la calidad del contenido...",
+        "validateButton": "Verificar Calidad del Contenido",
+        "revalidateButton": "Volver a Verificar Calidad",
+        "score": "Puntuación de Calidad",
+        "level": {
+          "high": "Alta Calidad",
+          "medium": "Buena Calidad",
+          "low": "Necesita Mejoras"
+        },
+        "levelDescription": {
+          "high": "¡Excelente! Este recurso cumple con altos estándares de calidad.",
+          "medium": "Buen contenido con mejoras menores posibles.",
+          "low": "Este recurso necesita mejoras significativas antes de publicarse."
+        },
+        "details": {
+          "completeness": "Integridad",
+          "clarity": "Claridad",
+          "relevance": "Relevancia",
+          "consistency": "Consistencia"
+        },
+        "feedback": "Retroalimentación",
+        "recommendations": "Recomendaciones para Mejorar",
+        "warnings": {
+          "lowConfidence": "Se detectó una puntuación de calidad baja. Por favor revisa la retroalimentación a continuación.",
+          "cannotPublish": "Los recursos con puntuaciones de calidad bajas no pueden publicarse.",
+          "improveBeforePublishing": "Por favor mejora el contenido según las recomendaciones antes de publicar."
+        },
+        "errors": {
+          "validationFailed": "No se pudo validar el contenido. Por favor intenta de nuevo.",
+          "networkError": "Error de red. Por favor verifica tu conexión e intenta de nuevo."
+        },
+        "noValidation": "El contenido no ha sido validado aún. Haz clic en 'Verificar Calidad del Contenido' para validar.",
+        "lastValidated": "Última validación",
+        "validationCacheExpired": "La puntuación de calidad puede estar desactualizada. Haz clic para volver a validar."
+      }
+    }
   }
 }

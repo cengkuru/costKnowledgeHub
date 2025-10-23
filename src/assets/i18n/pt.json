@@ -230,5 +230,47 @@
       "title": "Redefinir sua senha",
       "description": "Digite seu endereço de email e enviaremos instruções para redefinir sua senha."
     }
+  },
+  "admin": {
+    "resourceForm": {
+      "confidence": {
+        "title": "Pontuação de Qualidade do Conteúdo",
+        "subtitle": "A validação impulsionada por IA ajuda a garantir recursos de alta qualidade",
+        "validating": "Validando a qualidade do conteúdo...",
+        "validateButton": "Verificar Qualidade do Conteúdo",
+        "revalidateButton": "Verificar Novamente a Qualidade",
+        "score": "Pontuação de Qualidade",
+        "level": {
+          "high": "Alta Qualidade",
+          "medium": "Boa Qualidade",
+          "low": "Precisa de Melhorias"
+        },
+        "levelDescription": {
+          "high": "Excelente! Este recurso atende aos altos padrões de qualidade.",
+          "medium": "Bom conteúdo com pequenas melhorias possíveis.",
+          "low": "Este recurso precisa de melhorias significativas antes de ser publicado."
+        },
+        "details": {
+          "completeness": "Integridade",
+          "clarity": "Clareza",
+          "relevance": "Relevância",
+          "consistency": "Consistência"
+        },
+        "feedback": "Feedback",
+        "recommendations": "Recomendações para Melhoria",
+        "warnings": {
+          "lowConfidence": "Pontuação de qualidade baixa detectada. Por favor, revise o feedback abaixo.",
+          "cannotPublish": "Recursos com pontuações de qualidade baixas não podem ser publicados.",
+          "improveBeforePublishing": "Por favor, melhore o conteúdo com base nas recomendações antes de publicar."
+        },
+        "errors": {
+          "validationFailed": "Não foi possível validar o conteúdo. Por favor, tente novamente.",
+          "networkError": "Erro de rede. Por favor, verifique sua conexão e tente novamente."
+        },
+        "noValidation": "O conteúdo ainda não foi validado. Clique em 'Verificar Qualidade do Conteúdo' para validar.",
+        "lastValidated": "Última validação",
+        "validationCacheExpired": "A pontuação de qualidade pode estar desatualizada. Clique para validar novamente."
+      }
+    }
   }
 }

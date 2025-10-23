@@ -487,6 +487,44 @@
         "selectTopic": "Please select at least one topic 📌",
         "fillRequired": "Please fill in all required fields ✨"
       },
+      "confidence": {
+        "title": "Content Quality Score",
+        "subtitle": "AI-powered validation helps ensure high-quality resources",
+        "validating": "Validating content quality...",
+        "validateButton": "Check Content Quality",
+        "revalidateButton": "Re-check Quality",
+        "score": "Quality Score",
+        "level": {
+          "high": "High Quality",
+          "medium": "Good Quality",
+          "low": "Needs Improvement"
+        },
+        "levelDescription": {
+          "high": "Excellent! This resource meets high quality standards.",
+          "medium": "Good content with minor improvements possible.",
+          "low": "This resource needs significant improvements before publishing."
+        },
+        "details": {
+          "completeness": "Completeness",
+          "clarity": "Clarity",
+          "relevance": "Relevance",
+          "consistency": "Consistency"
+        },
+        "feedback": "Feedback",
+        "recommendations": "Recommendations for Improvement",
+        "warnings": {
+          "lowConfidence": "Low quality score detected. Please review the feedback below.",
+          "cannotPublish": "Resources with low quality scores cannot be published.",
+          "improveBeforePublishing": "Please improve the content based on recommendations before publishing."
+        },
+        "errors": {
+          "validationFailed": "Unable to validate content. Please try again.",
+          "networkError": "Network error. Please check your connection and try again."
+        },
+        "noValidation": "Content has not been validated yet. Click 'Check Content Quality' to validate.",
+        "lastValidated": "Last validated",
+        "validationCacheExpired": "Quality score may be outdated. Click to re-validate."
+      },
       "success": {
         "created": "Resource created successfully! 🎉",
         "updated": "Resource updated successfully! 🎉",

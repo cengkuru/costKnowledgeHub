@@ -52,6 +52,20 @@ export interface Resource {
   createdAt: Timestamp;
   updatedBy?: string; // User ID who last updated
   updatedAt?: Timestamp;
+  // AI-powered content validation
+  confidence?: {
+    score: number; // 0-100 confidence score
+    level: 'high' | 'medium' | 'low'; // Confidence level category
+    feedback: string[]; // Specific feedback messages
+    recommendations?: string[]; // Actionable improvement suggestions
+    validatedAt?: Timestamp; // When validation was performed
+    validationDetails?: {
+      completeness: number; // 0-100 content completeness score
+      clarity: number; // 0-100 clarity and coherence score
+      relevance: number; // 0-100 topic relevance score
+      consistency: number; // 0-100 cross-field consistency score
+    };
+  };
   // CoST-specific impact metrics
   impact?: {
     savings?: string; // e.g., "$360 million"

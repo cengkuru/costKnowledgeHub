@@ -14,3 +14,6 @@ admin.initializeApp();
 
 // Export admin functions
 export { setAdminClaim, createFirstAdmin } from './admin';
+
+// Export validation functions
+export { validateResourceContent } from './validation';
