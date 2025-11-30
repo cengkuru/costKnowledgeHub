@@ -1,0 +1,45 @@
+<a [routerLink]="['/resource', resource.id]" (click)="onCardClick($event)"
+  class="bg-white rounded-2xl shadow-sm border border-cost-light/30 hover:shadow-lg hover:border-cost-blue/30 transition-all duration-300 overflow-hidden group animate-fade-in cursor-pointer block h-full"
+  [attr.aria-label]="'View ' + resource.title + ' details'">
+  <div class="p-5 flex flex-col h-full">
+    <!-- Header with type badge and popularity -->
+    <div class="flex items-start justify-between mb-3">
+      <button (click)="onTypeClick($event)"
+        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-cost-red/10 text-cost-red hover:bg-cost-red/20 transition-colors">
+        {{ resource.type }}
+      </button>
+
+      @if (isPopular) {
+      <span class="flex items-center gap-1 text-amber-500" title="Popular resource">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+        </svg>
+      </span>
+      }
+    </div>
+
+    <!-- Title -->
+    <h3 class="font-semibold text-cost-dark group-hover:text-cost-blue transition-colors duration-300 mb-3 flex-1 line-clamp-2">
+      {{ resource.title }}
+    </h3>
+
+    <!-- Footer with tags and access link -->
+    <div class="flex items-center justify-between pt-3 border-t border-cost-light/30 mt-auto">
+      <div class="flex flex-wrap gap-1.5">
+        @for (tag of (resource.tags || []).slice(0, 2); track tag) {
+        <button (click)="onTagClick($event, tag)"
+          class="text-xs px-2 py-0.5 bg-cost-light/30 text-cost-medium rounded-full hover:bg-cost-blue/20 hover:text-cost-blue transition-colors">
+          {{ tag }}
+        </button>
+        }
+      </div>
+      <span class="flex items-center gap-1 text-cost-blue group-hover:text-cost-red font-medium text-sm transition-colors duration-300 whitespace-nowrap ml-2">
+        {{ accessLabel }}
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+</a>

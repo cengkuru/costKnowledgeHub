@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "infralens-b1eed"
+  },
+  "targets": {
+    "infralens-b1eed": {
+      "hosting": {
+        "web": ["infralens-b1eed"],
+        "admin": ["cost-knowledge-hub-admin"]
+      }
+    }
+  }
+}

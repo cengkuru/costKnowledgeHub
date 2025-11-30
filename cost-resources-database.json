@@ -1,0 +1,1066 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated": "2025-11-29",
+    "total_resources": 32,
+    "sources": [
+      "infrastructuretransparency.org",
+      "standard.open-contracting.org",
+      "infrastructuretransparencyindex.org",
+      "open-contracting.org"
+    ],
+    "last_updated": "2025-11-29"
+  },
+  "resources": [
+    {
+      "id": "cost-disclosure-manual",
+      "title": "CoST Disclosure Manual",
+      "description": "Comprehensive guidance to help design and strengthen disclosure processes that ensure timely and reliable disclosure of data by public infrastructure procuring entities. Contains guidance and tools for anyone interested in CoST disclosure processes, primarily aimed at CoST member secretariats.",
+      "url": "https://infrastructuretransparency.org/resource/cost-disclosure-manual/",
+      "resource_type": "guidance",
+      "themes": [
+        "disclosure",
+        "transparency",
+        "data_standards",
+        "infrastructure_governance"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "proactive disclosure",
+        "reactive disclosure",
+        "CoST IDS",
+        "OC4IDS",
+        "project lifecycle"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    },
+    {
+      "id": "disclosure-guidance-note",
+      "title": "Disclosure Guidance Note",
+      "description": "Sets out the key requirements, questions and steps for the disclosure process under a national or sub-national CoST programme. Supplements the more detailed CoST Disclosure Manual and explains how to publish infrastructure data at key stages of the project lifecycle.",
+      "url": "https://infrastructuretransparency.org/resource/disclosure-guidance-note/",
+      "pdf_url": "https://infrastructuretransparency.org/wp-content/uploads/2021/03/Disclosure-Guidance.pdf",
+      "resource_type": "guidance",
+      "themes": [
+        "disclosure",
+        "project_lifecycle",
+        "data_standards",
+        "transparency"
+      ],
+      "languages": ["English", "Spanish"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "key stages of disclosure",
+        "CoST IDS elements (40 data points)",
+        "OC4IDS format",
+        "project cycle disclosure"
+      ],
+      "publication_date": "2021",
+      "status": "active"
+    },
+    {
+      "id": "assurance-guidance-note",
+      "title": "Assurance Guidance Note",
+      "description": "Provides guidance on the CoST assurance process - an independent review of published infrastructure data. Explains how assurance teams identify key issues, gaps in data, and areas of good practice, translating technical information into plain language for social accountability.",
+      "url": "https://infrastructuretransparency.org/resource/assurance-guidance-note/",
+      "pdf_url": "https://infrastructuretransparency.org/wp-content/uploads/2020/09/Assurance-Guidance-Note-FINAL-1.pdf",
+      "resource_type": "guidance",
+      "themes": [
+        "assurance",
+        "data_quality",
+        "transparency",
+        "social_accountability"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "independent data review",
+        "issue identification",
+        "data gap analysis",
+        "social accountability",
+        "sector reform"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-toolkit-getting-started",
+      "title": "OC4IDS Getting Started Guide",
+      "description": "Introductory guide to the Open Contracting for Infrastructure Data Standard. Explains foundational concepts, project definitions, scope, and how to begin implementing OC4IDS for infrastructure transparency.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/projects/",
+      "resource_type": "guidance",
+      "themes": [
+        "OC4IDS",
+        "data_standards",
+        "open_contracting",
+        "infrastructure_data"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "project identification",
+        "scope definition",
+        "foundational concepts",
+        "standard overview"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-implementation-models",
+      "title": "OC4IDS Implementation Models Guide",
+      "description": "Describes practical examples of implementation models used by OC4IDS publishers. Covers Direct Entry Model (CoST Honduras, West Lombok), Extended Procurement System Model (Uganda), and Hybrid Models for infrastructure transparency.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/guidance/implementation/",
+      "resource_type": "guidance",
+      "themes": [
+        "implementation",
+        "OC4IDS",
+        "procurement_systems",
+        "infrastructure_transparency"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [
+        "Honduras",
+        "Uganda",
+        "Indonesia (West Lombok)",
+        "Mexico (Nuevo León)"
+      ],
+      "content_focus": [
+        "direct entry model",
+        "extended procurement system",
+        "hybrid implementation",
+        "infrastructure transparency portal",
+        "data publication workflow"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-schema-reference",
+      "title": "OC4IDS Schema Reference",
+      "description": "Technical specifications and data validation reference for the Open Contracting for Infrastructure Data Standard. Includes interactive schema browser, detailed field descriptions, and structured data models.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/",
+      "resource_type": "technical_reference",
+      "themes": [
+        "OC4IDS",
+        "data_standards",
+        "schema",
+        "technical_specifications"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "schema structure",
+        "field definitions",
+        "data types",
+        "validation rules"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-codelists",
+      "title": "OC4IDS Codelists Reference",
+      "description": "Complete reference of standardized codelists for OC4IDS implementation. Provides standardized codes for project sectors, party roles, document types, and other infrastructure data elements to ensure data comparability across publishers.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/reference/codelists/",
+      "resource_type": "technical_reference",
+      "themes": [
+        "OC4IDS",
+        "codelists",
+        "data_standardization",
+        "technical_reference"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "project sector codes",
+        "party role codes",
+        "document type codes",
+        "standardized values"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "ocds-to-oc4ids-mapping",
+      "title": "OCDS to OC4IDS Mapping Guide",
+      "description": "Comprehensive guide for mapping Open Contracting Data Standard (OCDS) data to OC4IDS format. Explains how to convert existing procurement data to infrastructure transparency standards, with mapping tools and conversion guidance.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/cost/ocds/",
+      "resource_type": "guidance",
+      "themes": [
+        "OCDS",
+        "OC4IDS",
+        "data_mapping",
+        "data_conversion"
+      ],
+      "languages": ["English", "Spanish"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "OCDS to OC4IDS conversion",
+        "field mapping",
+        "data transformation",
+        "procurement system integration"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-ids-oc4ids-mapping",
+      "title": "CoST IDS & OC4IDS Mapping",
+      "description": "Explains the relationship between the CoST Infrastructure Data Standard (IDS) and OC4IDS. Shows how OC4IDS can be used to meet CoST IDS disclosure requirements (40 data elements) across the infrastructure project lifecycle.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/cost/",
+      "resource_type": "guidance",
+      "themes": [
+        "CoST IDS",
+        "OC4IDS",
+        "data_mapping",
+        "standards_alignment"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "40 CoST IDS elements",
+        "project identification",
+        "project preparation",
+        "project implementation",
+        "project completion",
+        "OC4IDS alignment"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-publishing-guide",
+      "title": "Publishing Data from Infrastructure Transparency Portal Guide",
+      "description": "Step-by-step guide for publishing standardized infrastructure project data from transparency portals in OC4IDS format. Includes field-level mapping templates and data publication workflows.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/guidance/publishing/",
+      "resource_type": "guidance",
+      "themes": [
+        "data_publication",
+        "OC4IDS",
+        "infrastructure_transparency",
+        "open_data"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [
+        "Honduras",
+        "Uganda",
+        "Indonesia (West Lombok)"
+      ],
+      "content_focus": [
+        "data mapping",
+        "JSON publishing",
+        "field-level mapping template",
+        "data review tool usage"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-examples",
+      "title": "OC4IDS Worked Examples",
+      "description": "Fully completed and annotated worked examples of OC4IDS implementations. Provides reference implementations that publishers and users can use as templates for their own data structures and mappings.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/guidance/example/",
+      "resource_type": "example",
+      "themes": [
+        "OC4IDS",
+        "examples",
+        "implementation",
+        "reference_data"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "sample JSON files",
+        "complete implementations",
+        "data structure examples",
+        "field population"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-data-review-tool",
+      "title": "OC4IDS Data Review Tool",
+      "description": "Self-service online tool for validating OC4IDS data quality. Provides automated feedback on structural correctness and data quality against OC4IDS standards. Used by implementers and the support helpdesk.",
+      "url": "https://www.open-contracting.org/resources/oc4ids-data-review-tool/",
+      "resource_type": "tool",
+      "themes": [
+        "data_validation",
+        "OC4IDS",
+        "quality_assurance",
+        "data_review"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "JSON validation",
+        "data quality checks",
+        "structural validation",
+        "error reporting"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "infrastructure-transparency-index-manual-2025",
+      "title": "Infrastructure Transparency Index (ITI) Manual 2025",
+      "description": "Comprehensive manual for the Infrastructure Transparency Index - CoST's measurement tool for transparency levels in public infrastructure. Enables any region to implement and assess infrastructure transparency using the four dimensions: enabling environment, capacities and processes, citizen participation, and data publication.",
+      "url": "https://infrastructuretransparencyindex.org/iti-manual-25/",
+      "resource_type": "manual",
+      "themes": [
+        "transparency_assessment",
+        "infrastructure_governance",
+        "capacity_building",
+        "monitoring_evaluation"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "enabling environment dimension",
+        "capacities and processes",
+        "citizen participation",
+        "data publication dimension",
+        "assessment methodology",
+        "implementation guidance"
+      ],
+      "publication_date": "2025",
+      "status": "active"
+    },
+    {
+      "id": "costa-rica-iti-report-2025",
+      "title": "Costa Rica Infrastructure Transparency Index Report 2025",
+      "description": "National assessment report for Costa Rica's third Infrastructure Transparency Index evaluation. Demonstrates Costa Rica as an international leader in infrastructure information dissemination and transparency practices.",
+      "url": "https://infrastructuretransparencyindex.org/costa-rica-iti-2025/",
+      "resource_type": "case_study",
+      "themes": [
+        "transparency_assessment",
+        "best_practices",
+        "country_comparison",
+        "governance"
+      ],
+      "languages": ["Spanish", "English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": ["Costa Rica"],
+      "content_focus": [
+        "national assessment results",
+        "transparency indicators",
+        "best practice examples",
+        "policy recommendations"
+      ],
+      "publication_date": "2025",
+      "status": "active"
+    },
+    {
+      "id": "nuevo-leon-oc4ids-case-study",
+      "title": "Technical Case Study: OC4IDS and OCDS Implementation in Nuevo León, Mexico",
+      "description": "Detailed technical case study documenting the implementation of OC4IDS and OCDS standards in Nuevo León state government. Shows practical application of standards in the Infraestructura Abierta platform for infrastructure data publication.",
+      "url": "https://www.open-contracting.org/resources/technical-case-study-oc4ids-and-ocds-implementation-in-nuevo-leon-mexico/",
+      "resource_type": "case_study",
+      "themes": [
+        "OC4IDS",
+        "OCDS",
+        "implementation",
+        "open_data_portal"
+      ],
+      "languages": ["Spanish", "English"],
+      "organizations": ["Open Contracting Partnership", "CoST"],
+      "country_programs": ["Mexico (Nuevo León)"],
+      "content_focus": [
+        "platform architecture",
+        "data integration",
+        "user interface",
+        "lessons learned"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-information-pack",
+      "title": "Construction Sector Transparency Initiative Information Pack",
+      "description": "Comprehensive information package about the CoST initiative covering its origins, approach, framework, and implementation across member countries. Provides overview of how CoST works to improve infrastructure transparency.",
+      "url": "https://infrastructuretransparency.org/wp-content/uploads/2018/06/37_CoST_Information_Pack.pdf",
+      "resource_type": "overview",
+      "themes": [
+        "infrastructure_transparency",
+        "governance",
+        "multi_stakeholder",
+        "organizational_structure"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "CoST origins",
+        "framework overview",
+        "disclosure process",
+        "assurance approach",
+        "multi-stakeholder engagement",
+        "social accountability"
+      ],
+      "publication_date": "2018",
+      "status": "active"
+    },
+    {
+      "id": "cost-assurance-impact-report",
+      "title": "Turning Infrastructure Data into Compelling Information: CoST Assurance Process as Catalyst for Sector Reform",
+      "description": "Research report explaining how the CoST assurance process translates technical infrastructure data into compelling information for social accountability. Documents how assurance complements audit mechanisms and drives sector reforms.",
+      "url": "https://infrastructuretransparency.org/resource/turning-infrastructure-data-into-compelling-information-how-the-cost-assurance-process-can-be-a-catalyst-for-sector-reform/",
+      "resource_type": "research",
+      "themes": [
+        "assurance",
+        "social_accountability",
+        "sector_reform",
+        "data_analysis"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi"
+      ],
+      "content_focus": [
+        "assurance outcomes",
+        "sector reform examples",
+        "accountability mechanisms",
+        "impact documentation"
+      ],
+      "publication_date": "2021",
+      "status": "active"
+    },
+    {
+      "id": "open-contracting-tools-directory",
+      "title": "Open Contracting Tools Directory",
+      "description": "Comprehensive directory of software tools and resources for creating, using, visualizing and analyzing OCDS and OC4IDS data. Includes open-source tools, platforms, and implementations that can be adapted for infrastructure transparency.",
+      "url": "https://www.open-contracting.org/resources/open-contracting-tools-directory/",
+      "resource_type": "tool_directory",
+      "themes": [
+        "open_source",
+        "tools",
+        "OCDS",
+        "OC4IDS",
+        "data_visualization"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership"],
+      "country_programs": [],
+      "content_focus": [
+        "data creation tools",
+        "analysis platforms",
+        "visualization software",
+        "validation tools",
+        "integration platforms"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "climate-finance-transparency-guidance",
+      "title": "CoST Guidance Note: Climate Finance Infrastructure Transparency",
+      "description": "Specialized guidance on applying CoST principles to climate finance infrastructure projects. Includes prototype and guidance for enhancing transparency in climate-related infrastructure investments.",
+      "url": "https://infrastructuretransparency.org/news/costs-new-prototype-and-guidance-note-enhances-transparency-in-climate-finance/",
+      "resource_type": "guidance",
+      "themes": [
+        "climate_finance",
+        "transparency",
+        "infrastructure",
+        "sustainability"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [],
+      "content_focus": [
+        "climate infrastructure",
+        "green projects",
+        "sustainability disclosure",
+        "climate data standards"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "creating-data-standard-infrastructure-blog",
+      "title": "Creating a Data Standard for Infrastructure Transparency: Building It",
+      "description": "Blog post and article series documenting the development process of OC4IDS standard. Explains the rationale, design decisions, and collaborative process behind creating the infrastructure data standard.",
+      "url": "https://infrastructuretransparency.org/2020/10/07/creating-a-data-standard-for-infrastructure-transparency-building-it/",
+      "resource_type": "article",
+      "themes": [
+        "standard_development",
+        "OC4IDS",
+        "methodology",
+        "collaborative_design"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Open Data Services", "Open Contracting Partnership"],
+      "country_programs": [],
+      "content_focus": [
+        "standard design principles",
+        "stakeholder consultation",
+        "iterative development",
+        "lessons learned"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    },
+    {
+      "id": "open-contracting-model-policy-2023",
+      "title": "Open Contracting Model Policy 2023",
+      "description": "World Economic Forum and Open Contracting Partnership model policy document for implementing open contracting principles in government. Applicable to infrastructure procurement and transparency initiatives.",
+      "url": "https://www3.weforum.org/docs/WEF_Open_Contracting_Model_Policy_2023.pdf",
+      "resource_type": "policy",
+      "themes": [
+        "open_contracting",
+        "policy_framework",
+        "government_transparency",
+        "procurement_governance"
+      ],
+      "languages": ["English"],
+      "organizations": ["World Economic Forum", "Open Contracting Partnership"],
+      "country_programs": [],
+      "content_focus": [
+        "policy recommendations",
+        "legislative framework",
+        "implementation standards",
+        "governance principles"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "infrastructure-transparency-approach",
+      "title": "CoST Approach: Disclosure, Assurance, Multi-Stakeholder Engagement",
+      "description": "Comprehensive overview of CoST's three-pillar approach to infrastructure transparency: disclosure of infrastructure data, independent assurance of published data, and multi-stakeholder engagement for social accountability.",
+      "url": "https://infrastructuretransparency.org/our-approach/",
+      "resource_type": "overview",
+      "themes": [
+        "multi_stakeholder",
+        "transparency",
+        "assurance",
+        "disclosure",
+        "social_accountability"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "disclosure process",
+        "assurance mechanism",
+        "stakeholder roles",
+        "social accountability",
+        "multi-stakeholder working groups"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    },
+    {
+      "id": "disclosure-process-design-guidance",
+      "title": "Guidance Note: Designing a Disclosure Process",
+      "description": "Practical guidance for designing and implementing disclosure processes for infrastructure projects. Covers institutional arrangements, stakeholder roles, and process design for CoST programs.",
+      "url": "https://infrastructuretransparency.org/wp-content/uploads/2011/12/31_CoST_Guidance_Note_6_Proof.pdf",
+      "resource_type": "guidance",
+      "themes": [
+        "disclosure",
+        "process_design",
+        "institutional_arrangement",
+        "governance"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "institutional framework",
+        "stakeholder roles",
+        "process workflows",
+        "implementation phases"
+      ],
+      "publication_date": "2011",
+      "status": "active"
+    },
+    {
+      "id": "cost-guidance-hub",
+      "title": "CoST Guidance Hub",
+      "description": "Central repository of all CoST guidance documents, tools, and resources. Includes disclosure manual, assurance notes, implementation guidance, and country-specific materials for CoST programs.",
+      "url": "https://infrastructuretransparency.org/cost-guidance/",
+      "resource_type": "resource_hub",
+      "themes": [
+        "guidance",
+        "resources",
+        "disclosure",
+        "assurance",
+        "implementation"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "guidance documents",
+        "tools",
+        "case studies",
+        "resources",
+        "publications"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-resources-page",
+      "title": "CoST Resources Page",
+      "description": "Main resources portal for CoST providing access to guidance documents, case studies, assurance reports, tools, and research materials from across CoST programs and member countries.",
+      "url": "https://infrastructuretransparency.org/resources/",
+      "resource_type": "resource_hub",
+      "themes": [
+        "resources",
+        "guidance",
+        "case_studies",
+        "research",
+        "tools"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "all resource types",
+        "guidance documents",
+        "case studies",
+        "research papers",
+        "tools and platforms",
+        "country programs"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-standard-toolkit",
+      "title": "Open Contracting for Infrastructure Data Standards Toolkit",
+      "description": "Complete toolkit documenting how OCDS and OC4IDS can represent infrastructure project and procurement information according to CoST IDS requirements. Includes documentation, schema, examples, and implementation guidance.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/about/",
+      "resource_type": "toolkit",
+      "themes": [
+        "OC4IDS",
+        "OCDS",
+        "data_standards",
+        "toolkit",
+        "documentation"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "schema documentation",
+        "implementation guidance",
+        "examples",
+        "codelists",
+        "field mapping"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "infrastructure-transparency-index-main",
+      "title": "Infrastructure Transparency Index (ITI) Platform",
+      "description": "Interactive platform for assessing and comparing infrastructure transparency levels across countries and regions. Based on CoST's four-dimension framework for measuring transparency in public infrastructure.",
+      "url": "https://infrastructuretransparencyindex.org/",
+      "resource_type": "platform",
+      "themes": [
+        "transparency_assessment",
+        "monitoring_evaluation",
+        "benchmarking",
+        "country_comparison"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "country assessments",
+        "transparency scores",
+        "comparative analysis",
+        "trend tracking",
+        "best practices"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "open-contracting-partnership-main",
+      "title": "Open Contracting Partnership Hub",
+      "description": "Main hub for Open Contracting Partnership providing resources, tools, and guidance for open contracting implementation globally. Includes infrastructure, tools directory, training materials, and community support.",
+      "url": "https://www.open-contracting.org/",
+      "resource_type": "resource_hub",
+      "themes": [
+        "open_contracting",
+        "OCDS",
+        "resources",
+        "tools",
+        "advocacy"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership"],
+      "country_programs": [],
+      "content_focus": [
+        "OCDS standard",
+        "implementation guidance",
+        "tools directory",
+        "case studies",
+        "training resources"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-main-website",
+      "title": "CoST - Infrastructure Transparency Initiative Main Website",
+      "description": "Official website for CoST (Infrastructure Transparency Initiative) with information about the organization, member programs, approach, resources, and news. Central hub for all CoST-related information and resources.",
+      "url": "https://infrastructuretransparency.org/",
+      "resource_type": "resource_hub",
+      "themes": [
+        "infrastructure_transparency",
+        "governance",
+        "disclosure",
+        "assurance",
+        "multi_stakeholder"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": [
+        "Costa Rica",
+        "El Salvador",
+        "Ethiopia",
+        "Guatemala",
+        "Honduras",
+        "Malawi",
+        "Tanzania",
+        "Thailand",
+        "Uganda",
+        "UK",
+        "Ukraine"
+      ],
+      "content_focus": [
+        "organization overview",
+        "member programs",
+        "approach explanation",
+        "resources",
+        "news and updates",
+        "contact information"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "oc4ids-infrastructure-about",
+      "title": "About OC4IDS - Open Contracting for Infrastructure Data Standard",
+      "description": "Overview of the Open Contracting for Infrastructure Data Standard, explaining its purpose, design, and relationship to OCDS and CoST IDS. Describes the collaborative development process and key features.",
+      "url": "https://standard.open-contracting.org/infrastructure/latest/en/about/",
+      "resource_type": "overview",
+      "themes": [
+        "OC4IDS",
+        "OCDS",
+        "CoST IDS",
+        "standard_overview",
+        "architecture"
+      ],
+      "languages": ["English"],
+      "organizations": ["Open Contracting Partnership", "CoST", "Open Data Services"],
+      "country_programs": [],
+      "content_focus": [
+        "standard overview",
+        "design principles",
+        "use cases",
+        "integration approach",
+        "development history"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-malawi-case-study",
+      "title": "CoST Malawi: Empowering Citizens to Demand Infrastructure Transparency",
+      "description": "Case study documenting CoST Malawi's implementation and impact on infrastructure transparency. Shows how transparency initiatives empower citizens and civil society to hold governments accountable for infrastructure projects.",
+      "url": "https://whatson.unodc.org/whatson/en/featured-human-story-cost-malawi-empowers-citizens-to-demand-infrastructure-transparency.html",
+      "resource_type": "case_study",
+      "themes": [
+        "citizen_engagement",
+        "transparency",
+        "social_accountability",
+        "country_program"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "UNODC"],
+      "country_programs": ["Malawi"],
+      "content_focus": [
+        "citizen empowerment",
+        "transparency outcomes",
+        "accountability mechanisms",
+        "program impact"
+      ],
+      "publication_date": "2023",
+      "status": "active"
+    },
+    {
+      "id": "cost-guatemala-case-study",
+      "title": "CoST Guatemala: Multi-Stakeholder Transparency in Construction",
+      "description": "Case study of CoST Guatemala program showing how multi-stakeholder approach to transparency has improved construction sector accountability. Documents government, private sector, and civil society collaboration on infrastructure transparency.",
+      "url": "https://infrastructuretransparency.org/",
+      "resource_type": "case_study",
+      "themes": [
+        "multi_stakeholder",
+        "transparency",
+        "construction_sector",
+        "country_program"
+      ],
+      "languages": ["Spanish", "English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": ["Guatemala"],
+      "content_focus": [
+        "multi-stakeholder engagement",
+        "sector reforms",
+        "budget implementation",
+        "accountability outcomes"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    },
+    {
+      "id": "cost-ethiopia-case-study",
+      "title": "CoST Ethiopia: Infrastructure Data Transparency Driving Sector Reform",
+      "description": "Case study of CoST Ethiopia program demonstrating how infrastructure data transparency and assurance processes drive sector-wide improvements. Documents impact of data disclosure on project implementation and accountability.",
+      "url": "https://infrastructuretransparency.org/",
+      "resource_type": "case_study",
+      "themes": [
+        "transparency",
+        "sector_reform",
+        "assurance",
+        "country_program"
+      ],
+      "languages": ["English"],
+      "organizations": ["CoST", "Infrastructure Transparency Initiative"],
+      "country_programs": ["Ethiopia"],
+      "content_focus": [
+        "data disclosure impact",
+        "assurance outcomes",
+        "government agency collaboration",
+        "accountability improvements"
+      ],
+      "publication_date": "2020",
+      "status": "active"
+    }
+  ],
+  "categories": {
+    "guidance": "Instructional guides and best practice documents for implementing CoST and OC4IDS",
+    "technical_reference": "Technical documentation, schemas, and specifications",
+    "tool": "Software tools and platforms for data management",
+    "tool_directory": "Directory of available tools and software",
+    "case_study": "Real-world implementation examples and country program experiences",
+    "research": "Research papers and analytical reports",
+    "article": "Blog posts and articles",
+    "overview": "General informational overviews and summaries",
+    "manual": "Comprehensive manuals and guidebooks",
+    "policy": "Policy documents and recommendations",
+    "resource_hub": "Central repositories of multiple resource types",
+    "platform": "Interactive online platforms",
+    "toolkit": "Complete toolkits with multiple integrated resources",
+    "example": "Example data and implementation templates"
+  },
+  "themes": {
+    "disclosure": "Publication and disclosure of infrastructure project data",
+    "transparency": "Infrastructure transparency and accountability",
+    "assurance": "Independent verification and assurance of infrastructure data",
+    "data_standards": "Standardized data schemas and formats",
+    "OC4IDS": "Open Contracting for Infrastructure Data Standard",
+    "OCDS": "Open Contracting Data Standard",
+    "CoST IDS": "CoST Infrastructure Data Standard",
+    "implementation": "Implementation guidance and strategies",
+    "procurement_systems": "Procurement and contracting processes",
+    "infrastructure_governance": "Infrastructure project management and governance",
+    "multi_stakeholder": "Multi-stakeholder engagement and collaboration",
+    "social_accountability": "Citizens and civil society engagement for accountability",
+    "open_data": "Open data principles and publication",
+    "data_quality": "Data quality assurance and validation",
+    "climate_finance": "Climate-related infrastructure and green finance",
+    "sustainability": "Sustainable development and infrastructure",
+    "gender": "Gender considerations in infrastructure",
+    "citizen_engagement": "Citizen participation and empowerment",
+    "sector_reform": "Infrastructure sector improvements and reforms",
+    "monitoring_evaluation": "Monitoring, evaluation, and assessment tools",
+    "open_contracting": "Open contracting principles and standards",
+    "data_visualization": "Data visualization and analysis tools",
+    "standards_alignment": "Alignment of different data standards",
+    "data_conversion": "Converting between data formats and standards",
+    "data_publication": "Publishing and sharing infrastructure data",
+    "data_validation": "Data quality validation and checking",
+    "open_source": "Open source tools and platforms",
+    "governance": "Government transparency and accountability",
+    "country_program": "Country-specific program implementations",
+    "policy_framework": "Policy and legislative frameworks",
+    "collaborative_design": "Collaborative approach to standard development",
+    "procurement_governance": "Procurement governance and transparency",
+    "government_transparency": "Government transparency initiatives",
+    "comparative_benchmarking": "Comparing performance across countries",
+    "best_practices": "Best practice examples and standards",
+    "institutional_arrangement": "Institutional structures and arrangements",
+    "process_design": "Process design and workflows"
+  },
+  "country_programs": [
+    "Costa Rica",
+    "El Salvador",
+    "Ethiopia",
+    "Guatemala",
+    "Honduras",
+    "Malawi",
+    "Tanzania",
+    "Thailand",
+    "Uganda",
+    "UK",
+    "Ukraine",
+    "Mexico (Nuevo León)",
+    "Indonesia (West Lombok)"
+  ]
+}

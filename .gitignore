@@ -21,10 +21,14 @@ coverage/
 api/.env
 api/.env.*
 api/env.yaml
+Api/.env
+Api/.env.*
+Api/env.yaml
 api/node_modules/
 api/dist/
 api/logs/
 api/vector-index-config.json
+**/env.yaml
 
 # Web specific
 web/.env

@@ -1,0 +1,347 @@
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { GoogleGenAI, Type } from '@google/genai';
+import { ResourceItem, SearchResultGroup, Language } from './types';
+import { connectToDatabase } from './db';
+import { Resource, COLLECTION_NAME } from './models/Resource';
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Configure CORS with allowed origins from environment
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:4200'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+app.use(express.json());
+
+// Initialize Gemini
+const apiKey = process.env.API_KEY;
+if (!apiKey) {
+    console.warn("Warning: API_KEY not found in environment variables. AI features will not work.");
+}
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+
+// Initialize MongoDB connection
+let dbInitialized = false;
+
+async function initializeDb() {
+    if (!dbInitialized) {
+        await connectToDatabase();
+        dbInitialized = true;
+    }
+}
+
+// --- Routes ---
+
+// GET /api/resources
+app.get('/api/resources', async (req: Request, res: Response) => {
+    try {
+        await initializeDb();
+        const db = await import('./db').then(m => m.getDatabase());
+        const collection = db.collection<Resource>(COLLECTION_NAME);
+
+        // Get query params for filtering
+        const { category, type } = req.query;
+
+        const filter: any = {};
+        if (category && category !== 'All Topics') {
+            filter.category = category;
+        }
+        if (type && type !== 'All Types') {
+            filter.type = type;
+        }
+
+        const resources = await collection
+            .find(filter)
+            .sort({ date: -1 })
+            .toArray();
+
+        // Transform MongoDB documents to ResourceItem format
+        const resourceItems: ResourceItem[] = resources.map(r => ({
+            id: r.id,
+            title: r.title,
+            description: r.description,
+            url: r.url,
+            category: r.category,
+            type: r.type,
+            date: r.date
+        }));
+
+        res.json(resourceItems);
+    } catch (error) {
+        console.error('Error fetching resources:', error);
+        res.status(500).json({ error: 'Failed to fetch resources' });
+    }
+});
+
+// POST /api/interact/:id
+app.post('/api/interact/:id', async (req: Request, res: Response) => {
+    try {
+        await initializeDb();
+        const db = await import('./db').then(m => m.getDatabase());
+        const collection = db.collection<Resource>(COLLECTION_NAME);
+        const { id } = req.params;
+
+        // Increment clicks
+        const result = await collection.findOneAndUpdate(
+            { id },
+            { $inc: { clicks: 1 }, $set: { updatedAt: new Date() } },
+            { returnDocument: 'after' }
+        );
+
+        if (!result) {
+            res.status(404).json({ error: 'Resource not found' });
+            return;
+        }
+
+        res.json({ success: true, clicks: result.clicks || 0 });
+    } catch (error) {
+        console.error('Error updating clicks:', error);
+        res.status(500).json({ error: 'Failed to update clicks' });
+    }
+});
+
+// GET /api/popular
+app.get('/api/popular', async (req: Request, res: Response) => {
+    try {
+        await initializeDb();
+        const db = await import('./db').then(m => m.getDatabase());
+        const collection = db.collection<Resource>(COLLECTION_NAME);
+
+        // Get all resources with clicks
+        const resourcesWithClicks = await collection
+            .find({ clicks: { $gt: 0 } })
+            .sort({ clicks: -1 })
+            .toArray();
+
+        if (resourcesWithClicks.length === 0) {
+            res.json([]);
+            return;
+        }
+
+        // Calculate threshold (same logic as before)
+        const threshold = Math.max(
+            2,
+            resourcesWithClicks[Math.floor(resourcesWithClicks.length * 0.2)]?.clicks || 0
+        );
+
+        const popularIds = resourcesWithClicks
+            .filter(r => (r.clicks || 0) >= threshold)
+            .map(r => r.id);
+
+        res.json(popularIds);
+    } catch (error) {
+        console.error('Error fetching popular resources:', error);
+        res.status(500).json({ error: 'Failed to fetch popular resources' });
+    }
+});
+
+// POST /api/search (Semantic Search)
+app.post('/api/search', async (req: Request, res: Response) => {
+    const { query } = req.body;
+
+    if (!query) {
+        res.status(400).json({ error: 'Query is required' });
+        return;
+    }
+
+    try {
+        await initializeDb();
+        const db = await import('./db').then(m => m.getDatabase());
+        const collection = db.collection<Resource>(COLLECTION_NAME);
+
+        // Fetch all resources from MongoDB
+        const resources = await collection.find({}).toArray();
+
+        // Context for AI
+        const contextData = resources.map(r => ({
+            id: r.id,
+            title: r.title,
+            description: r.description,
+            category: r.category,
+            type: r.type
+        }));
+
+        const prompt = `
+      You are an expert Knowledge Manager for an Infrastructure Transparency initiative.
+      User Query: "${query}"
+
+      Task:
+      1. Select relevant resources from the provided list.
+      2. Organize them into 2-4 logical groups that represent a "User Journey" or "Workflow".
+      3. If the query is vague, group by standard categories.
+      4. Provide a 'title' for the group and a short 'description'.
+
+      Resources:
+      ${JSON.stringify(contextData)}
+
+      Return ONLY a JSON array of Group objects.
+    `;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-pro-preview',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                responseSchema: {
+                    type: Type.ARRAY,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            title: { type: Type.STRING },
+                            description: { type: Type.STRING },
+                            resourceIds: {
+                                type: Type.ARRAY,
+                                items: { type: Type.STRING }
+                            }
+                        },
+                        required: ['title', 'description', 'resourceIds']
+                    }
+                }
+            }
+        });
+
+        const resultGroups = JSON.parse(response.text || '[]');
+        res.json(resultGroups);
+
+    } catch (error) {
+        console.error("Semantic Search Error:", error);
+        res.status(500).json({ error: 'AI Search failed' });
+    }
+});
+
+// POST /api/translate
+app.post('/api/translate', async (req: Request, res: Response) => {
+    const { targetLang } = req.body; // 'es' | 'pt'
+
+    try {
+        await initializeDb();
+        const db = await import('./db').then(m => m.getDatabase());
+        const collection = db.collection<Resource>(COLLECTION_NAME);
+
+        // Fetch all resources
+        const resources = await collection.find({}).toArray();
+
+        if (!targetLang || targetLang === 'en') {
+            const resourceItems: ResourceItem[] = resources.map(r => ({
+                id: r.id,
+                title: r.title,
+                description: r.description,
+                url: r.url,
+                category: r.category,
+                type: r.type,
+                date: r.date
+            }));
+            res.json(resourceItems);
+            return;
+        }
+
+        const itemsToTranslate = resources.map(r => ({
+            id: r.id,
+            title: r.title,
+            description: r.description
+        }));
+
+        const languageName = targetLang === 'es' ? 'Spanish' : 'Portuguese';
+
+        const prompt = `
+      Translate the 'title' and 'description' fields of the following JSON objects into ${languageName}.
+      Keep the 'id' field exactly as is.
+      Return the result as a JSON array of objects.
+
+      Data to translate:
+      ${JSON.stringify(itemsToTranslate)}
+    `;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-pro-preview',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                responseSchema: {
+                    type: Type.ARRAY,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            id: { type: Type.STRING },
+                            title: { type: Type.STRING },
+                            description: { type: Type.STRING }
+                        }
+                    }
+                }
+            }
+        });
+
+        interface TranslatedItem {
+            id: string;
+            title: string;
+            description: string;
+        }
+        const translations = JSON.parse(response.text || '[]') as TranslatedItem[];
+
+        // Merge translations with original data
+        const translationMap = new Map<string, TranslatedItem>(translations.map((t) => [t.id, t]));
+
+        const translatedResources: ResourceItem[] = resources.map(r => {
+            const t = translationMap.get(r.id);
+            if (t) {
+                return {
+                    id: r.id,
+                    title: t.title,
+                    description: t.description,
+                    url: r.url,
+                    category: r.category,
+                    type: r.type,
+                    date: r.date
+                };
+            }
+            return {
+                id: r.id,
+                title: r.title,
+                description: r.description,
+                url: r.url,
+                category: r.category,
+                type: r.type,
+                date: r.date
+            };
+        });
+
+        res.json(translatedResources);
+
+    } catch (error) {
+        console.error("Translation Error:", error);
+        res.status(500).json({ error: 'Translation failed' });
+    }
+});
+
+// Start server and connect to database
+async function startServer() {
+    try {
+        await connectToDatabase();
+        app.listen(port, () => {
+            console.log(`✅ Server running at http://localhost:${port}`);
+        });
+    } catch (error) {
+        console.error('❌ Failed to start server:', error);
+        process.exit(1);
+    }
+}
+
+startServer();
