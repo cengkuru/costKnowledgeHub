@@ -73,7 +73,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'editor' | 'viewer';
+  role: 'admin' | 'user';
+  createdAt?: string;
 }
 
 export interface AuthTokens {

@@ -36,6 +36,7 @@ export function Layout({ children, userEmail = 'user@example.com' }: LayoutProps
           <NavLink href="/" label="Dashboard" />
           <NavLink href="/resources" label="Resources" />
           <NavLink href="/categories" label="Categories" />
+          <NavLink href="/users" label="Users" />
         </div>
       </nav>
 

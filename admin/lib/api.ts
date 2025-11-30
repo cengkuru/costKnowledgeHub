@@ -1,4 +1,4 @@
-import { Resource, Category, LoginResponse, PaginatedResponse } from './types';
+import { Resource, Category, LoginResponse, PaginatedResponse, User } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -149,5 +149,39 @@ export const categoriesApi = {
 
   delete: async (id: string): Promise<void> => {
     return request(`/admin/categories/${id}`, { method: 'DELETE' });
+  },
+};
+
+// Users endpoints
+export const usersApi = {
+  list: async (): Promise<User[]> => {
+    const response = await request<{ users: User[] }>('/admin/users', { method: 'GET' });
+    return response.users;
+  },
+
+  create: async (data: { name: string; email: string }): Promise<User> => {
+    const response = await request<{ user: User }>('/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return response.user;
+  },
+
+  updateRole: async (id: string, role: 'admin' | 'user'): Promise<User> => {
+    const response = await request<{ user: User }>(`/admin/users/${id}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role }),
+    });
+    return response.user;
+  },
+
+  resendWelcome: async (id: string): Promise<void> => {
+    await request(`/admin/users/${id}/resend-welcome`, {
+      method: 'POST',
+    });
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await request(`/admin/users/${id}`, { method: 'DELETE' });
   },
 };
