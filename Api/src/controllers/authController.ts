@@ -168,4 +168,44 @@ export const authController = {
       next(error);
     }
   },
+
+  /**
+   * PUT /api/auth/password
+   * Update user password
+   */
+  async updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+
+      await authService.updatePassword(req.user.id, currentPassword, newPassword);
+
+      res.json({ message: 'Password updated successfully. Please login again.' });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * PUT /api/auth/email
+   * Update user email
+   */
+  async updateEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+      }
+
+      const { email, currentPassword } = req.body;
+
+      const user = await authService.updateEmail(req.user.id, email, currentPassword);
+
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
 };

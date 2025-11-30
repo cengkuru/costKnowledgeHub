@@ -22,6 +22,16 @@ export const UserRegistrationSchema = z.object({
   name: z.string().min(1).max(100),
 });
 
+export const UpdatePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8),
+});
+
+export const UpdateEmailSchema = z.object({
+  email: z.string().email(),
+  currentPassword: z.string().min(1),
+});
+
 // TypeScript interface for User
 export interface User {
   _id?: ObjectId;

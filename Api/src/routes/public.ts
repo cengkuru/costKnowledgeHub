@@ -6,7 +6,7 @@ import { imageController } from '../controllers/imageController';
 import { validateBody } from '../middleware/validation';
 import { authenticate } from '../middleware/auth';
 import { aiLimiter, authLimiter } from '../middleware/rateLimiter';
-import { UserRegistrationSchema, UserLoginSchema } from '../models/User';
+import { UserRegistrationSchema, UserLoginSchema, UpdatePasswordSchema, UpdateEmailSchema } from '../models/User';
 import { z } from 'zod';
 
 const router = Router();
@@ -74,6 +74,8 @@ router.post(
 // Protected auth routes
 router.get('/auth/me', authenticate, authController.getCurrentUser);
 router.put('/auth/me', authenticate, authController.updateCurrentUser);
+router.put('/auth/password', authenticate, validateBody(UpdatePasswordSchema), authController.updatePassword);
+router.put('/auth/email', authenticate, validateBody(UpdateEmailSchema), authController.updateEmail);
 router.post('/auth/logout', authenticate, authController.logout);
 router.post('/auth/logout-all', authenticate, authController.logoutAll);
 

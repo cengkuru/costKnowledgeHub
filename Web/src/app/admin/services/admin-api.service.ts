@@ -285,4 +285,104 @@ export class AdminApiService {
       { confirm: true, action }
     );
   }
+
+  // ==================== User Management ====================
+
+  /**
+   * List all users
+   */
+  listUsers(): Observable<{ data: any[]; total: number }> {
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/admin/users`);
+  }
+
+  /**
+   * Create a new admin user
+   */
+  createUser(email: string, name: string, sendEmail: boolean = true): Observable<{ message: string; user: any; emailSent: boolean; temporaryPassword?: string }> {
+    return this.http.post<{ message: string; user: any; emailSent: boolean; temporaryPassword?: string }>(
+      `${this.apiUrl}/admin/users`,
+      { email, name, sendEmail }
+    );
+  }
+
+  /**
+   * Update user role
+   */
+  updateUserRole(userId: string, role: 'admin' | 'user'): Observable<{ message: string; user: any }> {
+    return this.http.put<{ message: string; user: any }>(`${this.apiUrl}/admin/users/${userId}/role`, { role });
+  }
+
+  /**
+   * Resend welcome email with new temporary password
+   */
+  resendWelcomeEmail(userId: string): Observable<{ message: string; emailSent: boolean; temporaryPassword?: string }> {
+    return this.http.post<{ message: string; emailSent: boolean; temporaryPassword?: string }>(
+      `${this.apiUrl}/admin/users/${userId}/resend-welcome`,
+      {}
+    );
+  }
+
+  /**
+   * Delete a user
+   */
+  deleteUser(userId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/admin/users/${userId}`);
+  }
+
+  // ==================== User Credentials ====================
+
+  /**
+   * Update user password
+   */
+  updatePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/auth/password`, {
+      currentPassword,
+      newPassword
+    });
+  }
+
+  /**
+   * Update user email
+   */
+  updateEmail(email: string, currentPassword: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/auth/email`, {
+      email,
+      currentPassword
+    });
+  }
+
+  // ==================== Usage Analytics ====================
+
+  /**
+   * Get quick usage stats for dashboard
+   */
+  getUsageQuickStats(): Observable<{
+    today: { events: number; users: number; searches: number };
+    thisWeek: { events: number; users: number; searches: number };
+    thisMonth: { events: number; users: number; searches: number };
+  }> {
+    return this.http.get<{
+      today: { events: number; users: number; searches: number };
+      thisWeek: { events: number; users: number; searches: number };
+      thisMonth: { events: number; users: number; searches: number };
+    }>(`${this.apiUrl}/admin/usage/stats`);
+  }
+
+  /**
+   * Get detailed usage analytics
+   */
+  getUsageAnalytics(startDate?: string, endDate?: string): Observable<any> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+    return this.http.get<any>(`${this.apiUrl}/admin/usage/analytics`, { params });
+  }
+
+  /**
+   * Get recent activity feed
+   */
+  getRecentActivity(limit: number = 50): Observable<{ data: any[]; total: number }> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/admin/usage/recent`, { params });
+  }
 }

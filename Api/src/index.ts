@@ -4,9 +4,11 @@ import { config } from './config';
 import { connectToDatabase } from './db';
 import { initializeAI } from './services/aiService';
 import { ensureSearchIndexes } from './utils/ensureSearchIndex';
+import { usageTrackingService } from './services/usageTrackingService';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { apiLimiter } from './middleware/rateLimiter';
+import { trackApiUsage } from './middleware/usageTracking';
 import { startDescriptionJob } from './jobs/descriptionJob';
 
 const app = express();
@@ -35,6 +37,9 @@ app.use(express.urlencoded({ extended: true }));
 // Apply rate limiting to all routes
 app.use(apiLimiter);
 
+// Apply usage tracking middleware
+app.use(trackApiUsage);
+
 // Mount all routes
 app.use(routes);
 
@@ -53,6 +58,10 @@ async function startServer() {
 
     // Initialize search indexes
     await ensureSearchIndexes();
+
+    // Initialize usage tracking indexes
+    await usageTrackingService.ensureIndexes();
+    console.log('✅ Usage tracking initialized');
 
     // Initialize AI service
     initializeAI();

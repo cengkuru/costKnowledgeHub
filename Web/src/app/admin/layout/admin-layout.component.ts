@@ -55,6 +55,17 @@ import { AuthService } from '../services/auth.service';
             </svg>
             Topics
           </a>
+          <a routerLink="/admin/users" routerLinkActive="bg-cost-blue/10 text-cost-blue"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-cost-dark hover:bg-cost-light/30 transition-colors">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Users
+          </a>
         </nav>
 
         <!-- User section -->
@@ -69,6 +80,15 @@ import { AuthService } from '../services/auth.service';
             </div>
           </div>
           <div class="space-y-1">
+            <a routerLink="/admin/settings" routerLinkActive="bg-cost-blue/10 text-cost-blue"
+              class="flex items-center gap-3 px-4 py-2 rounded-xl text-cost-medium hover:bg-cost-light/30 transition-colors text-sm">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m-2 2l-4.2 4.2M23 12h-6m-6 0H1m18.2 5.2l-4.2-4.2m-2-2l-4.2-4.2" />
+              </svg>
+              Settings
+            </a>
             <a routerLink="/"
               class="flex items-center gap-3 px-4 py-2 rounded-xl text-cost-medium hover:bg-cost-light/30 transition-colors text-sm">
               <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"

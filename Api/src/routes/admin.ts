@@ -202,4 +202,15 @@ router.post('/users/:id/resend-welcome', adminController.resendWelcomeEmail);
 // Delete a user
 router.delete('/users/:id', adminController.deleteUser);
 
+// ============ Usage Analytics ============
+
+// Get quick usage stats (for dashboard)
+router.get('/usage/stats', adminController.getUsageQuickStats);
+
+// Get detailed usage analytics
+router.get('/usage/analytics', adminController.getUsageAnalytics);
+
+// Get recent activity feed
+router.get('/usage/recent', adminController.getRecentActivity);
+
 export default router;

@@ -15,6 +15,12 @@ interface DescriptionStats {
   discovery: number;
 }
 
+interface UsageStats {
+  today: { events: number; users: number; searches: number };
+  thisWeek: { events: number; users: number; searches: number };
+  thisMonth: { events: number; users: number; searches: number };
+}
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -206,6 +212,99 @@ interface DescriptionStats {
       </div>
       }
 
+      <!-- Platform Usage Stats -->
+      @if (usageStats()) {
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
+        <h2 class="text-lg font-semibold text-cost-dark mb-4">Platform Usage</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Today -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-cost-blue/10 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-cost-blue" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-cost-medium">Today</p>
+                <p class="text-2xl font-bold text-cost-dark">{{ usageStats()!.today.events }}</p>
+              </div>
+            </div>
+            <div class="space-y-2 pt-4 border-t border-cost-light/30">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Unique Users</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.today.users }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Searches</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.today.searches }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Last 7 Days -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-cost-medium">Last 7 Days</p>
+                <p class="text-2xl font-bold text-green-600">{{ usageStats()!.thisWeek.events }}</p>
+              </div>
+            </div>
+            <div class="space-y-2 pt-4 border-t border-cost-light/30">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Unique Users</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.thisWeek.users }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Searches</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.thisWeek.searches }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Last 30 Days -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-cost-medium">Last 30 Days</p>
+                <p class="text-2xl font-bold text-purple-600">{{ usageStats()!.thisMonth.events }}</p>
+              </div>
+            </div>
+            <div class="space-y-2 pt-4 border-t border-cost-light/30">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Unique Users</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.thisMonth.users }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-cost-medium">Searches</span>
+                <span class="text-sm font-semibold text-cost-dark">{{ usageStats()!.thisMonth.searches }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+
       <!-- Recent Resources -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
         <h2 class="text-lg font-semibold text-cost-dark mb-4">Recent Resources</h2>
@@ -281,6 +380,7 @@ interface DescriptionStats {
 export class DashboardComponent implements OnInit {
   stats = signal<DashboardStats>({ total: 0, published: 0, pending: 0, archived: 0 });
   descriptionStats = signal<DescriptionStats | null>(null);
+  usageStats = signal<UsageStats | null>(null);
   recentResources = signal<AdminResource[]>([]);
   isLoading = signal(true);
   isFillingDescriptions = signal(false);
@@ -308,6 +408,14 @@ export class DashboardComponent implements OnInit {
       next: (stats) => this.descriptionStats.set(stats),
       error: () => {
         // Ignore errors for description stats
+      }
+    });
+
+    // Load usage stats
+    this.adminApi.getUsageQuickStats().subscribe({
+      next: (stats) => this.usageStats.set(stats),
+      error: () => {
+        // Ignore errors for usage stats
       }
     });
 

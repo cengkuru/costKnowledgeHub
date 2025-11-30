@@ -153,6 +153,107 @@ export const authService = {
   },
 
   /**
+   * Update user password
+   */
+  async updatePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    const db = await getDatabase();
+    const collection = db.collection<User>(USERS_COLLECTION_NAME);
+
+    // Get user
+    const user = await collection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!isValidPassword) {
+      throw new ApiError(401, 'Current password is incorrect');
+    }
+
+    // Validate new password is different
+    if (currentPassword === newPassword) {
+      throw new ApiError(400, 'New password must be different from current password');
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await collection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { password: hashedPassword, updatedAt: new Date() } }
+    );
+
+    // Revoke all existing tokens for this user (force re-login on all devices)
+    tokenBlacklistService.revokeAllUserTokens(
+      userId,
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    );
+  },
+
+  /**
+   * Update user email (requires password verification)
+   */
+  async updateEmail(
+    userId: string,
+    newEmail: string,
+    currentPassword: string
+  ): Promise<UserResponse> {
+    const db = await getDatabase();
+    const collection = db.collection<User>(USERS_COLLECTION_NAME);
+
+    // Get user
+    const user = await collection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!isValidPassword) {
+      throw new ApiError(401, 'Current password is incorrect');
+    }
+
+    // Check if new email is same as current
+    if (user.email.toLowerCase() === newEmail.toLowerCase()) {
+      throw new ApiError(400, 'New email must be different from current email');
+    }
+
+    // Check if email is already taken by another user
+    const existingUser = await collection.findOne({
+      email: newEmail,
+      _id: { $ne: new ObjectId(userId) }
+    });
+    if (existingUser) {
+      throw new ApiError(409, 'Email is already in use by another account');
+    }
+
+    // Update email
+    const result = await collection.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $set: { email: newEmail, updatedAt: new Date() } },
+      { returnDocument: 'after' }
+    );
+
+    if (!result) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    return {
+      id: result._id?.toString() || '',
+      email: result.email,
+      name: result.name,
+      role: result.role,
+      createdAt: result.createdAt,
+    };
+  },
+
+  /**
    * Delete user (admin only)
    */
   async deleteUser(id: string): Promise<void> {

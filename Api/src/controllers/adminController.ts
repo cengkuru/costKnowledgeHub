@@ -6,6 +6,7 @@ import { topicService } from '../services/topicService';
 import { resourceService } from '../services/resourceService';
 import { aiService } from '../services/aiService';
 import { authService } from '../services/authService';
+import { usageTrackingService } from '../services/usageTrackingService';
 import { runDescriptionJobNow } from '../jobs/descriptionJob';
 import { CreateTopicSchema, UpdateTopicSchema } from '../models/Topic';
 import { JwtPayload } from '../middleware/auth';
@@ -1123,6 +1124,80 @@ export const adminController = {
       await authService.deleteUser(id);
 
       res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // ============ Usage Analytics ============
+
+  /**
+   * GET /api/admin/usage/stats
+   * Get quick usage stats for dashboard
+   */
+  async getUsageQuickStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const stats = await usageTrackingService.getQuickStats();
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * GET /api/admin/usage/analytics
+   * Get detailed usage analytics for a date range
+   */
+  async getUsageAnalytics(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      // Default to last 30 days
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 30);
+
+      // Parse query params
+      if (req.query.startDate) {
+        startDate.setTime(new Date(req.query.startDate as string).getTime());
+      }
+      if (req.query.endDate) {
+        endDate.setTime(new Date(req.query.endDate as string).getTime());
+      }
+
+      // Validate date range (max 90 days)
+      const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysDiff > 90) {
+        return res.status(400).json({ error: 'Date range cannot exceed 90 days' });
+      }
+
+      const analytics = await usageTrackingService.getAnalytics(startDate, endDate);
+      res.json(analytics);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * GET /api/admin/usage/recent
+   * Get recent activity feed
+   */
+  async getRecentActivity(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+      const activity = await usageTrackingService.getRecentActivity(limit);
+
+      res.json({ data: activity, total: activity.length });
     } catch (error) {
       next(error);
     }
