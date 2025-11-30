@@ -8,7 +8,7 @@
 
 import { aiService } from '../../services/aiService';
 import { topicService } from '../../services/topicService';
-import config from '../../config';
+import { config } from '../../config';
 import fs from 'fs';
 import path from 'path';
 

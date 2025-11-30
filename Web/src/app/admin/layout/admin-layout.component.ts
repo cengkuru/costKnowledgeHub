@@ -55,17 +55,6 @@ import { AuthService } from '../services/auth.service';
             </svg>
             Topics
           </a>
-          <a routerLink="/admin/types" routerLinkActive="bg-cost-blue/10 text-cost-blue"
-            class="flex items-center gap-3 px-4 py-3 rounded-xl text-cost-dark hover:bg-cost-light/30 transition-colors">
-            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-            </svg>
-            Types
-          </a>
         </nav>
 
         <!-- User section -->

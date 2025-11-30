@@ -19,9 +19,18 @@
     </div>
 
     <!-- Title -->
-    <h3 class="font-semibold text-cost-dark group-hover:text-cost-blue transition-colors duration-300 mb-3 flex-1 line-clamp-2">
+    <h3 class="font-semibold text-cost-dark group-hover:text-cost-blue transition-colors duration-300 mb-2 line-clamp-2">
       {{ resource.title }}
     </h3>
+
+    <!-- Description -->
+    @if (resource.description) {
+      <p class="text-sm text-cost-medium line-clamp-2 mb-3 flex-1">
+        {{ resource.description }}
+      </p>
+    } @else {
+      <div class="flex-1"></div>
+    }
 
     <!-- Footer with tags and access link -->
     <div class="flex items-center justify-between pt-3 border-t border-cost-light/30 mt-auto">

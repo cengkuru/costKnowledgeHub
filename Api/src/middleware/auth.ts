@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import { config } from '../config';
 import { ApiError } from './errorHandler';
 import { tokenBlacklistService } from '../services/tokenBlacklistService';
 import { tokenService } from '../services/tokenService';

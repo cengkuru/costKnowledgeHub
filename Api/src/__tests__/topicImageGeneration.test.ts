@@ -3,7 +3,7 @@ import { connectToDatabase, closeDatabase, getDatabase } from '../db';
 import { aiService, initializeAI } from '../services/aiService';
 import { topicService } from '../services/topicService';
 import { TOPICS_COLLECTION_NAME, Topic } from '../models/Topic';
-import config from '../config';
+import { config } from '../config';
 import { ObjectId } from 'mongodb';
 
 describe('Topic Image Generation Tests', () => {

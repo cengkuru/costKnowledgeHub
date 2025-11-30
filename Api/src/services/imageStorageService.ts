@@ -1,5 +1,5 @@
 import { Storage } from '@google-cloud/storage';
-import config from '../config';
+import { config } from '../config';
 
 let storage: Storage | null = null;
 
@@ -88,6 +88,82 @@ export const imageStorageService = {
    */
   isConfigured(): boolean {
     return !!config.gcsBucketName;
+  },
+
+  /**
+   * Upload a resource cover image to GCS and return the public URL
+   * @param resourceId - The resource ID
+   * @param imageBuffer - The image buffer to upload
+   * @param imageType - Type of image: 'upload' for user uploads, 'ai' for AI-generated
+   */
+  async uploadResourceCover(
+    resourceId: string,
+    imageBuffer: Buffer,
+    imageType: 'upload' | 'ai' = 'upload'
+  ): Promise<string> {
+    const bucketName = config.gcsBucketName;
+    const filename = `resources/${resourceId}/${imageType}-${Date.now()}.png`;
+
+    console.log('GCS Resource Cover Upload:', { bucketName, filename, bufferSize: imageBuffer.length });
+
+    try {
+      const bucket = getStorage().bucket(bucketName);
+      const file = bucket.file(filename);
+
+      await file.save(imageBuffer, {
+        contentType: 'image/png',
+        metadata: {
+          cacheControl: 'public, max-age=31536000', // 1 year cache
+        },
+      });
+
+      const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+      console.log('GCS Resource Cover Upload Success:', { publicUrl });
+
+      return publicUrl;
+    } catch (error) {
+      console.error('GCS Resource Cover Upload Error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a resource cover image from GCS
+   */
+  async deleteResourceCover(imageUrl: string): Promise<void> {
+    // Only process GCS URLs
+    if (!imageUrl.includes('storage.googleapis.com')) {
+      console.log('Not a GCS URL, skipping delete:', imageUrl.substring(0, 50));
+      return;
+    }
+
+    const bucketName = config.gcsBucketName;
+
+    // Extract filename from URL: https://storage.googleapis.com/bucket/path/to/file.png
+    const match = imageUrl.match(/storage\.googleapis\.com\/[^/]+\/(.+)/);
+    if (!match) {
+      console.warn('Could not parse GCS URL:', imageUrl);
+      return;
+    }
+
+    const filename = match[1];
+    console.log('GCS Resource Cover Delete:', { bucketName, filename });
+
+    try {
+      const bucket = getStorage().bucket(bucketName);
+      const file = bucket.file(filename);
+
+      const [exists] = await file.exists();
+      if (exists) {
+        await file.delete();
+        console.log('GCS Resource Cover Delete Success:', { filename });
+      } else {
+        console.log('GCS file does not exist, skipping:', filename);
+      }
+    } catch (error) {
+      console.error('GCS Resource Cover Delete Error:', error);
+      // Don't throw - deletion failure shouldn't block operations
+    }
   },
 };
 

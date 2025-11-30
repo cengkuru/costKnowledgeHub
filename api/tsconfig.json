@@ -10,7 +10,8 @@
         "forceConsistentCasingInFileNames": true,
         "noImplicitAny": false,
         "strictNullChecks": false,
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
+        "noEmitOnError": false
     },
     "include": [
         "src/**/*"

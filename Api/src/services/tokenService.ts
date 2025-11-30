@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
-import config from '../config';
+import { config } from '../config';
 import { AccessTokenPayload, RefreshTokenPayload, TokenPair } from '../types/tokenTypes';
 
 /**

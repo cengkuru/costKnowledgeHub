@@ -32,23 +32,28 @@ export interface StreamChunkHandler {
   (chunk: string): Promise<void> | void;
 }
 
-// Model configuration - Maps to actual Claude model names
-const MODELS = {
-  haiku: 'claude-3-5-haiku-20241022',
-  opus: 'claude-opus-4-20250514'
-} as const;
+// Default model IDs (Claude 4.5 family only - NO Claude 3.x allowed)
+const DEFAULT_FAST_MODEL = 'claude-sonnet-4-5-20250929';
+const DEFAULT_POWERFUL_MODEL = 'claude-opus-4-20250514';
 
-// Pricing per 1M tokens (as of Nov 2024)
-const PRICING = {
-  'claude-3-5-haiku-20241022': {
-    input: 0.80,
-    output: 4.00
+// Model configuration - reads from environment variables with fallback to defaults
+// Environment variables: CLAUDE_MODEL_FAST, CLAUDE_MODEL_POWERFUL
+const getModels = () => ({
+  haiku: process.env.CLAUDE_MODEL_FAST || DEFAULT_FAST_MODEL,
+  opus: process.env.CLAUDE_MODEL_POWERFUL || DEFAULT_POWERFUL_MODEL
+});
+
+// Pricing per 1M tokens (Claude 4.5 family)
+const PRICING: Record<string, { input: number; output: number }> = {
+  'claude-sonnet-4-5-20250929': {
+    input: 3.00,
+    output: 15.00
   },
   'claude-opus-4-20250514': {
     input: 15.00,
     output: 75.00
   }
-} as const;
+};
 
 // Global client instance
 let claudeClient: Anthropic | null = null;
@@ -128,7 +133,8 @@ export async function chat(
   systemPrompt?: string
 ): Promise<ClaudeResponse> {
   const client = ensureClient();
-  const modelId = MODELS[model];
+  const models = getModels();
+  const modelId = models[model];
 
   // Validate messages
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -343,7 +349,8 @@ export async function streamChat(
   systemPrompt?: string
 ): Promise<TokenUsage> {
   const client = ensureClient();
-  const modelId = MODELS[model];
+  const models = getModels();
+  const modelId = models[model];
 
   // Validate messages
   if (!Array.isArray(messages) || messages.length === 0) {

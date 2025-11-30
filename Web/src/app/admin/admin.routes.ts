@@ -31,10 +31,6 @@ export const adminRoutes: Routes = [
       {
         path: 'topics',
         loadComponent: () => import('./pages/topics/topic-list.component').then(m => m.TopicListComponent)
-      },
-      {
-        path: 'types',
-        loadComponent: () => import('./pages/types/type-list.component').then(m => m.TypeListComponent)
       }
     ]
   }

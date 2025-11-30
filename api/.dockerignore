@@ -7,5 +7,4 @@ npm-debug.log
 README.md
 .vscode
 .idea
-*.md
-dist
+src

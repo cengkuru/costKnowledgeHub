@@ -239,81 +239,146 @@
                 [class]="selectedTopic() === 'All' ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
                 class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-9 h-9 rounded-full border border-white/50 shadow-sm flex items-center justify-center bg-cost-light/60 text-xs font-semibold text-white shrink-0"
+                  <div class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md flex items-center justify-center bg-cost-light/60 text-xs font-semibold text-white shrink-0 ring-2 ring-white"
                     [style.background]="getTopicGradient(t().filters.allTopics)">
                     <span>{{ getTopicInitial(t().filters.allTopics) }}</span>
                   </div>
                   <span class="truncate">{{ t().filters.allTopics }}</span>
                 </div>
-                @if (selectedTopic() === 'All') {
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                }
+                <div class="flex items-center gap-2">
+                  <span [class]="selectedTopic() === 'All' ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
+                    class="text-xs font-semibold px-2 py-0.5 rounded-full">
+                    {{ getTotalResourceCount() }}
+                  </span>
+                  @if (selectedTopic() === 'All') {
+                  <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  }
+                </div>
               </button>
               @for (topic of topicsData(); track topic.slug) {
-              <button (click)="selectedTopic.set(topic.name)"
-                [class]="selectedTopic() === topic.name ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-9 h-9 rounded-full border border-white/50 shadow-sm overflow-hidden bg-cost-light/60 flex items-center justify-center text-xs font-semibold text-white shrink-0"
-                    [style.background]="topic.image ? 'transparent' : getTopicGradient(topic.name)">
-                    @if (topic.image) {
-                    <img [src]="topic.image" [alt]="topic.name" class="w-full h-full object-cover" />
-                    } @else {
-                    <span>{{ getTopicInitial(topic.name) }}</span>
+                @if (topic.resourceCount > 0) {
+                <button (click)="selectedTopic.set(topic.name)"
+                  [class]="selectedTopic() === topic.name ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
+                  class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md overflow-hidden bg-cost-light/60 flex items-center justify-center text-xs font-semibold text-white shrink-0 ring-2 ring-white"
+                      [style.background]="topic.image ? 'transparent' : getTopicGradient(topic.name)">
+                      @if (topic.image) {
+                      <img [src]="topic.image" [alt]="topic.name" class="w-full h-full object-cover" />
+                      } @else {
+                      <span>{{ getTopicInitial(topic.name) }}</span>
+                      }
+                    </div>
+                    <span class="truncate">{{ topic.name }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span [class]="selectedTopic() === topic.name ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
+                      class="text-xs font-semibold px-2 py-0.5 rounded-full">
+                      {{ topic.resourceCount }}
+                    </span>
+                    @if (selectedTopic() === topic.name) {
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                     }
                   </div>
-                  <span class="truncate">{{ topic.name }}</span>
-                </div>
-                @if (selectedTopic() === topic.name) {
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                </button>
                 }
-              </button>
               }
             </div>
           </div>
 
-          <!-- Type Filter -->
+          <!-- Popular Resources -->
+          @if (topPopularResources().length > 0) {
           <div class="space-y-3">
-            <label class="block text-sm font-semibold text-cost-dark uppercase tracking-wider">{{ t().filters.type
-              }}</label>
+            <label class="block text-sm font-semibold text-cost-dark uppercase tracking-wider flex items-center gap-2">
+              <svg class="w-4 h-4 text-cost-red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+              </svg>
+              Trending
+            </label>
             <div class="space-y-2">
-              <button (click)="selectedType.set('All')"
-                [class]="selectedType() === 'All' ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between group">
-                {{ t().filters.allTypes }}
-                @if (selectedType() === 'All') {
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                }
-              </button>
-              @for (type of types; track type) {
-              <button (click)="selectedType.set(type)"
-                [class]="selectedType() === type ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between group">
-                {{ type }}
-                @if (selectedType() === type) {
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                }
-              </button>
+              @for (resource of topPopularResources(); track resource.id; let i = $index) {
+              <a [routerLink]="['/resource', resource.id]" (click)="handleResourceInteract(resource.id)"
+                class="block p-3 bg-white rounded-xl border border-cost-light/30 hover:border-cost-blue/50 hover:shadow-md transition-all duration-200 group">
+                <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cost-red/10 text-cost-red text-xs font-bold flex items-center justify-center">
+                    {{ i + 1 }}
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-medium text-cost-dark group-hover:text-cost-blue transition-colors line-clamp-2">
+                      {{ resource.title }}
+                    </h4>
+                    <p class="text-xs text-cost-medium mt-1 truncate">{{ resource.category }}</p>
+                  </div>
+                </div>
+              </a>
               }
             </div>
           </div>
+          }
+
         </div>
       </aside>
 
       <!-- Main Content -->
       <main class="flex-1 min-w-0 relative lg:min-h-[400px]" role="main">
+        <!-- Topic Cover Banner (LinkedIn-style) -->
+        @if (getSelectedTopicData(); as topicData) {
+        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-lg animate-fade-in">
+          <!-- Cover Image -->
+          <div class="h-32 sm:h-40 lg:h-48 relative">
+            @if (topicData.image) {
+            <img [src]="topicData.image" [alt]="topicData.name"
+              class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+            } @else {
+            <div class="w-full h-full" [style.background]="getTopicGradient(topicData.name)"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            }
+          </div>
+
+          <!-- Topic Info Overlay -->
+          <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+            <div class="flex items-end gap-4">
+              <!-- Topic Avatar -->
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-4 border-white shadow-lg overflow-hidden bg-white flex-shrink-0">
+                @if (topicData.image) {
+                <img [src]="topicData.image" [alt]="topicData.name" class="w-full h-full object-cover" />
+                } @else {
+                <div class="w-full h-full flex items-center justify-center text-2xl font-bold text-white"
+                  [style.background]="getTopicGradient(topicData.name)">
+                  {{ getTopicInitial(topicData.name) }}
+                </div>
+                }
+              </div>
+
+              <!-- Topic Details -->
+              <div class="flex-1 min-w-0 pb-1">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white drop-shadow-lg truncate">
+                  {{ topicData.name }}
+                </h2>
+                <p class="text-white/90 text-sm sm:text-base mt-1 flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    {{ topicData.resourceCount }} resources
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+
         <!-- Results Header & Active Filters -->
         <div class="mb-8 space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -625,7 +690,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               @for (resource of group.resources; track resource.id) {
               <app-resource-card [resource]="resource" [isPopular]="popularIds().has(resource.id)"
-                (interact)="handleResourceInteract($event)" (filterByType)="handleFilterByType($event)"
+                (interact)="handleResourceInteract($event)"
                 (filterByCategory)="handleFilterByCategory($event)" (filterByTag)="handleFilterByTag($event)" />
               }
             </div>
@@ -648,7 +713,7 @@
           </section>
           }
         </div>
-        } @else if (searchQuery() || selectedTopic() !== 'All' || selectedType() !== 'All' || selectedTag()) {
+        } @else if (searchQuery() || selectedTopic() !== 'All' || selectedTag()) {
         <!-- No results only when actively filtering/searching -->
         <div class="text-center py-24 bg-white rounded-3xl border border-dashed border-cost-light/50">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cost-offwhite mb-6">

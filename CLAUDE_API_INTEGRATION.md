@@ -73,16 +73,18 @@ ANTHROPIC_API_KEY=
 
 ## Model Configuration
 
-### Available Models
-1. **Claude 3.5 Haiku** (`claude-3-5-haiku-20241022`)
-   - Fast, efficient model for simple tasks
-   - Used for: summarization, categorization, query analysis
-   - Cost: ~$0.80 per 1M input tokens, $4.00 per 1M output tokens
+### Available Models (Claude 4.5 Family Only)
+1. **Claude 4.5 Sonnet** (`claude-sonnet-4-5-20250929`)
+   - Fast, cost-effective model for most tasks
+   - Used for: summarization, categorization, query analysis, semantic search
+   - Cost: ~$3.00 per 1M input tokens, $15.00 per 1M output tokens
 
 2. **Claude Opus 4** (`claude-opus-4-20250514`)
    - Most capable model for complex reasoning
    - Used for: conversational AI, detailed analysis
    - Cost: $15.00 per 1M input tokens, $75.00 per 1M output tokens
+
+> **Note**: This platform exclusively uses Claude 4.5 family models. Claude 3.x models are not permitted.
 
 ---
 

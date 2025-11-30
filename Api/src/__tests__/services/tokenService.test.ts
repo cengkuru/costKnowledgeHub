@@ -1,6 +1,6 @@
 import { tokenService } from '../../services/tokenService';
 import jwt from 'jsonwebtoken';
-import config from '../../config';
+import { config } from '../../config';
 import { randomUUID } from 'crypto';
 
 describe('TokenService', () => {

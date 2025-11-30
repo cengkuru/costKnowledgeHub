@@ -51,18 +51,14 @@ export class App implements OnInit {
   semanticGroups = signal<SearchResultGroup[] | null>(null);
 
   selectedTopic = signal<string>('All');
-  selectedType = signal<ResourceType | 'All'>('All' as any);
   selectedTag = signal<string | null>(null);
-  sortOrder = signal<SortOption>('newest');
+  sortOrder = signal<SortOption>('popular');
 
   // Active filters display
   activeFilters = computed(() => {
     const filters: { type: string; value: string }[] = [];
     if (this.selectedTopic() !== 'All') {
       filters.push({ type: 'topic', value: this.selectedTopic() });
-    }
-    if (this.selectedType() !== 'All') {
-      filters.push({ type: 'type', value: this.selectedType() as string });
     }
     if (this.selectedTag()) {
       filters.push({ type: 'tag', value: this.selectedTag()! });
@@ -104,6 +100,19 @@ export class App implements OnInit {
     return images;
   });
 
+  // Top 5 popular resources for sidebar
+  topPopularResources = computed(() => {
+    const popular = this.popularIds();
+    const resources = this.displayResources();
+    if (popular.size === 0) return [];
+
+    // Get resources that are in the popular set, maintaining order from popularIds
+    return Array.from(popular)
+      .map(id => resources.find(r => r.id === id))
+      .filter((r): r is ResourceItem => r !== undefined)
+      .slice(0, 5);
+  });
+
   // Translation Cache
   private translationCache = new Map<string, ResourceItem[]>();
 
@@ -138,7 +147,6 @@ export class App implements OnInit {
   filteredResources = computed(() => {
     let result = [...this.displayResources()];
     const topic = this.selectedTopic();
-    const type = this.selectedType();
     const tag = this.selectedTag();
     const query = this.searchQuery();
     const semantic = this.isSemanticMode();
@@ -147,11 +155,6 @@ export class App implements OnInit {
     // Filter by category
     if (topic !== 'All') {
       result = result.filter((r) => r.category === topic);
-    }
-
-    // Filter by type
-    if (type !== 'All') {
-      result = result.filter((r) => r.type === type);
     }
 
     // Filter by tag
@@ -303,8 +306,6 @@ export class App implements OnInit {
   // Get all topics for template
   topics = Object.values(ResourceCategory);
 
-  // Get all types for template (excluding ALL)
-  types = Object.values(ResourceType).filter((t) => t !== ResourceType.ALL);
 
   constructor(
     private resourceService: ResourceService,
@@ -445,7 +446,6 @@ export class App implements OnInit {
   resetFilters() {
     this.searchQuery.set('');
     this.selectedTopic.set('All');
-    this.selectedType.set('All' as any);
     this.selectedTag.set(null);
     this.semanticGroups.set(null);
   }
@@ -455,9 +455,6 @@ export class App implements OnInit {
       case 'topic':
         this.selectedTopic.set('All');
         break;
-      case 'type':
-        this.selectedType.set('All' as any);
-        break;
       case 'tag':
         this.selectedTag.set(null);
         break;
@@ -465,11 +462,6 @@ export class App implements OnInit {
         this.searchQuery.set('');
         break;
     }
-  }
-
-  handleFilterByType(type: string) {
-    this.selectedType.set(type as ResourceType);
-    this.scrollToFilters();
   }
 
   handleFilterByCategory(category: string) {
@@ -498,7 +490,6 @@ export class App implements OnInit {
     const filters = this.t().filters;
     switch (type) {
       case 'topic': return filters.topic;
-      case 'type': return filters.type;
       case 'tag': return filters.tag;
       case 'search': return filters.search;
       default: return type;
@@ -507,6 +498,23 @@ export class App implements OnInit {
 
   getTopicInitial(topic: string): string {
     return topic?.trim()?.charAt(0)?.toUpperCase() || 'T';
+  }
+
+  getTotalResourceCount(): number {
+    return this.topicsData().reduce((sum, topic) => sum + (topic.resourceCount || 0), 0);
+  }
+
+  getSelectedTopicData(): { name: string; image: string | null; description: string; resourceCount: number } | null {
+    const selected = this.selectedTopic();
+    if (selected === 'All') return null;
+    const topic = this.topicsData().find(t => t.name === selected);
+    if (!topic) return null;
+    return {
+      name: topic.name,
+      image: topic.image || null,
+      description: topic.description || '',
+      resourceCount: topic.resourceCount || 0
+    };
   }
 
   getTopicGradient(topic: string): string {

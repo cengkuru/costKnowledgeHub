@@ -9,7 +9,7 @@ import { connectToDatabase, closeDatabase, getDatabase } from '../db';
 import { aiService, initializeAI } from '../services/aiService';
 import { topicService } from '../services/topicService';
 import { imageStorageService } from '../services/imageStorageService';
-import config from '../config';
+import { config } from '../config';
 import * as fs from 'fs';
 import * as path from 'path';
 

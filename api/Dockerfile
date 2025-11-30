@@ -7,16 +7,11 @@ WORKDIR /usr/src/app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies
+# Install production dependencies only
 RUN npm ci --only=production
 
-# Copy application source
-COPY . .
-
-# Build TypeScript to JavaScript
-RUN npm install -D typescript @types/node @types/express @types/cors && \
-    npx tsc && \
-    npm uninstall typescript @types/node @types/express @types/cors
+# Copy pre-built dist folder (built locally before deploy)
+COPY dist ./dist
 
 # Set production environment
 ENV NODE_ENV=production

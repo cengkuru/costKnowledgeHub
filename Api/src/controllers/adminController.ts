@@ -5,6 +5,7 @@ import { discoveryService } from '../services/discoveryService';
 import { topicService } from '../services/topicService';
 import { resourceService } from '../services/resourceService';
 import { aiService } from '../services/aiService';
+import { authService } from '../services/authService';
 import { runDescriptionJobNow } from '../jobs/descriptionJob';
 import { CreateTopicSchema, UpdateTopicSchema } from '../models/Topic';
 import { JwtPayload } from '../middleware/auth';
@@ -978,6 +979,150 @@ export const adminController = {
         message: 'Description fill job completed',
         ...result
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // ============ User Management ============
+
+  /**
+   * GET /api/admin/users
+   * List all users (admin only)
+   */
+  async listUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const users = await authService.listUsers();
+      res.json({ data: users, total: users.length });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * POST /api/admin/users
+   * Create a new admin user with welcome email
+   */
+  async createUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { email, name, sendEmail = true } = req.body;
+
+      if (!email || !name) {
+        return res.status(400).json({ error: 'Email and name are required' });
+      }
+
+      console.log(`[Admin] Creating new admin user: ${email} (by ${req.user.email})`);
+
+      const result = await authService.createAdminUser(email, name, sendEmail);
+
+      res.status(201).json({
+        message: result.emailSent
+          ? 'Admin user created and welcome email sent'
+          : 'Admin user created (email not sent)',
+        user: result.user,
+        emailSent: result.emailSent,
+        // Only include temporary password if email wasn't sent (for manual sharing)
+        ...(result.emailSent ? {} : { temporaryPassword: result.temporaryPassword }),
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * PUT /api/admin/users/:id/role
+   * Update user role
+   */
+  async updateUserRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { id } = req.params;
+      const { role } = req.body;
+
+      if (!role || !['admin', 'user'].includes(role)) {
+        return res.status(400).json({ error: 'Valid role is required (admin or user)' });
+      }
+
+      // Prevent self-demotion
+      if (req.user.id === id && role === 'user') {
+        return res.status(400).json({ error: 'You cannot demote yourself' });
+      }
+
+      console.log(`[Admin] Updating role for user ${id} to ${role} (by ${req.user.email})`);
+
+      const user = await authService.updateUserRole(id, role);
+
+      res.json({
+        message: 'User role updated',
+        user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * POST /api/admin/users/:id/resend-welcome
+   * Resend welcome email with new temporary password
+   */
+  async resendWelcomeEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { id } = req.params;
+
+      console.log(`[Admin] Resending welcome email for user ${id} (by ${req.user.email})`);
+
+      const result = await authService.resendWelcomeEmail(id);
+
+      res.json({
+        message: result.emailSent
+          ? 'Welcome email resent with new temporary password'
+          : 'Failed to send email - new password generated',
+        emailSent: result.emailSent,
+        // Only include temporary password if email wasn't sent
+        ...(result.emailSent ? {} : { temporaryPassword: result.temporaryPassword }),
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * DELETE /api/admin/users/:id
+   * Delete a user
+   */
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { id } = req.params;
+
+      // Prevent self-deletion
+      if (req.user.id === id) {
+        return res.status(400).json({ error: 'You cannot delete yourself' });
+      }
+
+      console.log(`[Admin] Deleting user ${id} (by ${req.user.email})`);
+
+      await authService.deleteUser(id);
+
+      res.json({ message: 'User deleted successfully' });
     } catch (error) {
       next(error);
     }

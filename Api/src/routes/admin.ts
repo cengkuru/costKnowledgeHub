@@ -179,4 +179,27 @@ router.post('/topics/update-counts', adminController.updateTopicCounts);
 // Manually trigger description fill job
 router.post('/jobs/fill-descriptions', adminController.runDescriptionFillJob);
 
+// ============ User Management ============
+
+// List all users
+router.get('/users', adminController.listUsers);
+
+// Create a new admin user (sends welcome email)
+router.post('/users', validateBody(z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  sendEmail: z.boolean().optional().default(true)
+})), adminController.createUser);
+
+// Update user role
+router.put('/users/:id/role', validateBody(z.object({
+  role: z.enum(['admin', 'user'])
+})), adminController.updateUserRole);
+
+// Resend welcome email with new temporary password
+router.post('/users/:id/resend-welcome', adminController.resendWelcomeEmail);
+
+// Delete a user
+router.delete('/users/:id', adminController.deleteUser);
+
 export default router;

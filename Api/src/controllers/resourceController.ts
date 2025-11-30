@@ -141,19 +141,22 @@ export const resourceController = {
   /**
    * GET /api/topics
    * Get all active topics with their images (public endpoint)
+   * Only returns topics that are published and have content
    */
   async getTopics(req: Request, res: Response, next: NextFunction) {
     try {
       const topics = await topicService.listTopics(false); // Only active topics
 
-      // Return simplified topic data for public consumption
-      const publicTopics = topics.map(topic => ({
-        name: topic.name,
-        slug: topic.slug,
-        description: topic.description,
-        image: topic.aiGeneratedImage || null,
-        resourceCount: topic.resourceCount || 0,
-      }));
+      // Filter out empty topics and return simplified topic data for public consumption
+      const publicTopics = topics
+        .filter(topic => (topic.resourceCount || 0) > 0) // Only topics with content
+        .map(topic => ({
+          name: topic.name,
+          slug: topic.slug,
+          description: topic.description,
+          image: topic.aiGeneratedImage || null,
+          resourceCount: topic.resourceCount || 0,
+        }));
 
       res.json(publicTopics);
     } catch (error) {
