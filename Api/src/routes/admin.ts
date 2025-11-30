@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { adminController } from '../controllers/adminController';
 import { authenticate, requireAdmin } from '../middleware/auth';
 import { validateBody } from '../middleware/validation';
+import upload from '../middleware/upload';
 import { z } from 'zod';
 import { CreateResourceSchema, UpdateResourceSchema, UpdateStatusSchema } from '../models/Resource';
 import { CreateTopicSchema, UpdateTopicSchema } from '../models/Topic';
-import { CreateResourceTypeSchema, UpdateResourceTypeSchema } from '../models/ResourceTypeModel';
 
 const router = Router();
 
@@ -46,6 +46,52 @@ router.post('/resources/:id/status', validateBody(UpdateStatusSchema), adminCont
 
 // Delete a resource (soft delete to archived)
 router.delete('/resources/:id', adminController.deleteResource);
+
+// ============ AI Tag Suggestion Endpoints ============
+
+// Suggest tags for a resource based on title and description
+router.post('/resources/suggest-tags', validateBody(z.object({
+  title: z.string().optional(),
+  description: z.string().optional()
+})), adminController.suggestTags);
+
+// ============ AI Description Management Endpoints ============
+
+// Get description statistics
+router.get('/resources/description-stats', adminController.getDescriptionStats);
+
+// Generate AI description for all resources missing them (batch)
+router.post('/resources/batch-generate-descriptions', adminController.batchGenerateDescriptions);
+
+// Generate AI description for a single resource
+router.post('/resources/:id/generate-description', adminController.generateDescription);
+
+// Toggle description lock for a resource
+router.post('/resources/:id/lock-description', validateBody(z.object({
+  locked: z.boolean()
+})), adminController.toggleDescriptionLock);
+
+// ============ Resource Cover Image Endpoints ============
+
+// Regenerate AI cover image for a resource
+router.post('/resources/:id/regenerate-cover', adminController.regenerateResourceCover);
+
+// Upload a cover image for a resource
+router.post('/resources/:id/upload-cover', upload.single('cover'), adminController.uploadResourceCover);
+
+// Delete cover image from a resource
+router.delete('/resources/:id/cover', adminController.deleteResourceCover);
+
+// ============ Resource Cleanup Endpoints ============
+
+// Validate resource URLs (dry run - find broken links)
+router.get('/resources/validate-urls', adminController.validateResourceUrls);
+
+// Cleanup broken resources (archive or delete)
+router.post('/resources/cleanup-broken', validateBody(z.object({
+  confirm: z.boolean(),
+  action: z.enum(['archive', 'delete']).default('archive')
+})), adminController.cleanupBrokenResources);
 
 // ============ Category Endpoints ============
 
@@ -128,30 +174,9 @@ router.post('/topics/seed', adminController.seedTopics);
 // Update topic resource counts
 router.post('/topics/update-counts', adminController.updateTopicCounts);
 
-// ============ Resource Type Endpoints ============
+// ============ Scheduled Jobs ============
 
-// List all resource types
-router.get('/types', adminController.listTypes);
-
-// Get a single resource type
-router.get('/types/:id', adminController.getType);
-
-// Create a new resource type
-router.post('/types', validateBody(CreateResourceTypeSchema), adminController.createType);
-
-// Update a resource type
-router.put('/types/:id', validateBody(UpdateResourceTypeSchema), adminController.updateType);
-
-// Delete a resource type
-router.delete('/types/:id', adminController.deleteType);
-
-// Regenerate AI icon for a resource type
-router.post('/types/:id/regenerate-icon', adminController.regenerateTypeIcon);
-
-// Seed default resource types
-router.post('/types/seed', adminController.seedTypes);
-
-// Update type resource counts
-router.post('/types/update-counts', adminController.updateTypeCounts);
+// Manually trigger description fill job
+router.post('/jobs/fill-descriptions', adminController.runDescriptionFillJob);
 
 export default router;

@@ -43,7 +43,8 @@ export const AUDIENCE_LEVELS = [
   'technical', 'policy', 'msg', 'civil_society', 'academic', 'general'
 ] as const;
 
-// Resource Types
+// Resource Types (DEPRECATED - kept for migration only)
+// Use tags instead of resourceType for new resources
 export const RESOURCE_TYPES = [
   'assurance_report', 'guidance', 'case_study', 'tool', 'template',
   'research', 'news', 'training', 'policy'
@@ -56,6 +57,9 @@ export const LANGUAGE_CODES = [
 
 // Access Levels
 export const ACCESS_LEVELS = ['public', 'members', 'internal'] as const;
+
+// Description Sources (for AI-generated descriptions)
+export const DESCRIPTION_SOURCES = ['manual', 'ai', 'discovery'] as const;
 
 // ============================================================================
 // LEGACY ENUMS (for backward compatibility)
@@ -91,6 +95,7 @@ export type Workstream = typeof WORKSTREAMS[number];
 export type AudienceLevel = typeof AUDIENCE_LEVELS[number];
 export type LanguageCode = typeof LANGUAGE_CODES[number];
 export type AccessLevel = typeof ACCESS_LEVELS[number];
+export type DescriptionSource = typeof DESCRIPTION_SOURCES[number];
 
 // ============================================================================
 // SUPPORTING TYPES
@@ -120,9 +125,12 @@ export interface Resource {
   // Core Identity
   title: string;
   description: string;
+  descriptionLocked: boolean;  // If true, AI will not overwrite this description
+  descriptionSource: DescriptionSource;  // How the description was generated
   url: string;
   slug: string;
-  resourceType: ResourceType;
+  tags: string[];  // AI-suggested and user-defined tags
+  resourceType?: ResourceType;  // DEPRECATED - kept for migration only
 
   // CoST Domain Taxonomy
   countryPrograms: CountryProgram[];
@@ -171,6 +179,9 @@ export interface Resource {
   lastClickedAt?: Date;
   aiCitations: number;
 
+  // Cover Image
+  coverImage?: string;
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
@@ -179,7 +190,6 @@ export interface Resource {
 
   // Legacy fields (deprecated, for backward compatibility)
   category?: ObjectId;
-  tags?: string[];
   topics?: string[];
   regions?: string[];
 }
@@ -216,8 +226,12 @@ export const ResourceSchema = z.object({
   // Core Identity
   title: z.string().min(1).max(500),
   description: z.string().min(1).max(5000),
+  descriptionLocked: z.boolean().default(false),
+  descriptionSource: z.enum(DESCRIPTION_SOURCES).default('manual'),
   url: z.string().url(),
   slug: z.string().min(1).max(200),
+  tags: z.array(z.string()).default([]),  // AI-suggested and user-defined tags
+  // DEPRECATED - kept for migration only
   resourceType: z.enum([
     ResourceType.GUIDANCE,
     ResourceType.CASE_STUDY,
@@ -228,7 +242,7 @@ export const ResourceSchema = z.object({
     ResourceType.NEWS,
     ResourceType.TRAINING,
     ResourceType.POLICY
-  ]),
+  ]).optional(),
 
   // CoST Domain Taxonomy
   countryPrograms: z.array(z.enum(COUNTRY_PROGRAMS)).default([]),
@@ -284,6 +298,9 @@ export const ResourceSchema = z.object({
   lastClickedAt: z.date().optional(),
   aiCitations: z.number().int().min(0).default(0),
 
+  // Cover Image
+  coverImage: z.string().url().optional(),
+
   // Timestamps
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
@@ -291,8 +308,8 @@ export const ResourceSchema = z.object({
   updatedBy: z.instanceof(ObjectId),
 
   // Legacy fields (optional for backward compatibility)
-  category: z.instanceof(ObjectId).optional(),
-  tags: z.array(z.string()).default([]),
+  // category is now stored as string (topic name) not ObjectId
+  category: z.string().optional(),
   topics: z.array(z.string()).default([]),
   regions: z.array(z.string()).default([])
 });
@@ -332,9 +349,11 @@ export const UpdateStatusSchema = z.object({
 export const CreateResourceSchema = ResourceInputSchema.pick({
   title: true,
   description: true,
+  descriptionLocked: true,
+  descriptionSource: true,
   url: true,
   slug: true,
-  resourceType: true,
+  tags: true,
   countryPrograms: true,
   themes: true,
   oc4idsAlignment: true,
@@ -345,15 +364,16 @@ export const CreateResourceSchema = ResourceInputSchema.pick({
   isTranslation: true,
   translations: true,
   category: true,
-  tags: true,
   topics: true,
   regions: true
 }).extend({
   title: z.string().min(1).max(500),
   description: z.string().min(1).max(5000),
+  descriptionLocked: z.boolean().default(false),
+  descriptionSource: z.enum(DESCRIPTION_SOURCES).default('manual'),
   url: z.string().url(),
   slug: z.string().min(1).max(200),
-  resourceType: z.string().min(1),
+  tags: z.array(z.string()).default([]),  // AI-suggested and user-defined tags
   countryPrograms: z.array(z.string()).default([]),
   themes: z.array(z.string()).default([]),
   oc4idsAlignment: z.array(z.string()).default([]),
@@ -362,12 +382,17 @@ export const CreateResourceSchema = ResourceInputSchema.pick({
   accessLevel: z.enum(ACCESS_LEVELS).default('public'),
   language: z.enum(LANGUAGE_CODES).default('en'),
   isTranslation: z.boolean().default(false),
-  translations: z.array(TranslationLinkSchema).default([]),
-  // Legacy fields
-  category: z.instanceof(ObjectId).optional(),
-  tags: z.array(z.string()).default([]),
+  // Translations with string resourceId (converted to ObjectId in service layer)
+  translations: z.array(z.object({
+    language: z.enum(LANGUAGE_CODES),
+    resourceId: z.string()
+  })).default([]),
+  // Legacy fields - category is now a string (topic name)
+  category: z.string().optional(),
   topics: z.array(z.string()).default([]),
-  regions: z.array(z.string()).default([])
+  regions: z.array(z.string()).default([]),
+  // Cover image - allow empty string or valid URL
+  coverImage: z.string().optional()
 });
 
 // Schema for updating resources

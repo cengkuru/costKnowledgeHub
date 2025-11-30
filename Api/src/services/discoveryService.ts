@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GoogleGenAI, Type } from '@google/genai';
-import config from '../config';
+import { config } from '../config';
 import { getDatabase } from '../db';
 import {
   Resource,
@@ -239,6 +239,8 @@ If this doesn't appear to be a valid CoST resource, return null.
     const resource: Partial<Resource> = {
       title: extracted.title,
       description: extracted.description,
+      descriptionLocked: false,  // Allow AI to update if needed
+      descriptionSource: 'discovery',  // Mark as discovered by crawler
       url: extracted.url,
       slug: this.createSlug(extracted.title),
       resourceType: resourceType as ResourceType,

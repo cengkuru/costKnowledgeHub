@@ -8,7 +8,6 @@ import {
   Category,
   Topic,
   DeleteTopicResponse,
-  ResourceTypeEntity,
   PaginatedResponse,
   DashboardStats
 } from '../models/admin-types';
@@ -25,15 +24,21 @@ export class AdminApiService {
 
   /**
    * List resources with pagination and filters
+   * @param semantic Enable semantic search (AI-powered) for better results
    */
   listResources(
     page: number = 1,
     limit: number = 20,
-    filters?: Record<string, string>
+    filters?: Record<string, string>,
+    semantic: boolean = false
   ): Observable<PaginatedResponse<AdminResource>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
+
+    if (semantic) {
+      params = params.set('semantic', 'true');
+    }
 
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -79,6 +84,95 @@ export class AdminApiService {
    */
   deleteResource(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/admin/resources/${id}`);
+  }
+
+  // ==================== Resource Cover Images ====================
+
+  /**
+   * Regenerate AI cover image for a resource
+   */
+  regenerateResourceCover(id: string): Observable<AdminResource> {
+    return this.http.post<AdminResource>(`${this.apiUrl}/admin/resources/${id}/regenerate-cover`, {});
+  }
+
+  /**
+   * Upload a cover image for a resource
+   */
+  uploadResourceCover(id: string, file: File): Observable<AdminResource> {
+    const formData = new FormData();
+    formData.append('cover', file);
+    return this.http.post<AdminResource>(`${this.apiUrl}/admin/resources/${id}/upload-cover`, formData);
+  }
+
+  /**
+   * Delete cover image from a resource
+   */
+  deleteResourceCover(id: string): Observable<AdminResource> {
+    return this.http.delete<AdminResource>(`${this.apiUrl}/admin/resources/${id}/cover`);
+  }
+
+  // ==================== AI Tag Suggestions ====================
+
+  /**
+   * Suggest tags for a resource using AI
+   */
+  suggestTags(title: string, description: string): Observable<{ tags: string[] }> {
+    return this.http.post<{ tags: string[] }>(`${this.apiUrl}/admin/resources/suggest-tags`, { title, description });
+  }
+
+  // ==================== AI Description Management ====================
+
+  /**
+   * Generate AI description for a single resource
+   */
+  generateDescription(id: string): Observable<{ message: string; description: string; source: string }> {
+    return this.http.post<{ message: string; description: string; source: string }>(
+      `${this.apiUrl}/admin/resources/${id}/generate-description`,
+      {}
+    );
+  }
+
+  /**
+   * Toggle description lock for a resource
+   */
+  toggleDescriptionLock(id: string, locked: boolean): Observable<{ message: string; locked: boolean }> {
+    return this.http.post<{ message: string; locked: boolean }>(
+      `${this.apiUrl}/admin/resources/${id}/lock-description`,
+      { locked }
+    );
+  }
+
+  /**
+   * Generate descriptions for all resources missing them (batch operation)
+   */
+  batchGenerateDescriptions(): Observable<{ message: string; processed: number; failed: number; errors: string[] }> {
+    return this.http.post<{ message: string; processed: number; failed: number; errors: string[] }>(
+      `${this.apiUrl}/admin/resources/batch-generate-descriptions`,
+      {}
+    );
+  }
+
+  /**
+   * Get description statistics
+   */
+  getDescriptionStats(): Observable<{
+    total: number;
+    withDescription: number;
+    withoutDescription: number;
+    locked: number;
+    aiGenerated: number;
+    manual: number;
+    discovery: number;
+  }> {
+    return this.http.get<{
+      total: number;
+      withDescription: number;
+      withoutDescription: number;
+      locked: number;
+      aiGenerated: number;
+      manual: number;
+      discovery: number;
+    }>(`${this.apiUrl}/admin/resources/description-stats`);
   }
 
   /**
@@ -159,42 +253,36 @@ export class AdminApiService {
     return this.http.post<Topic>(`${this.apiUrl}/admin/topics/${id}/regenerate-image`, {});
   }
 
-  // ==================== Resource Types ====================
+  // ==================== Scheduled Jobs ====================
 
   /**
-   * List all resource types
+   * Manually trigger the description fill job
    */
-  listResourceTypes(): Observable<ResourceTypeEntity[]> {
-    return this.http.get<{ data: ResourceTypeEntity[] }>(`${this.apiUrl}/admin/types`).pipe(
-      map(response => response.data)
+  runDescriptionFillJob(): Observable<{ message: string; processed: number; failed: number; skipped: number }> {
+    return this.http.post<{ message: string; processed: number; failed: number; skipped: number }>(
+      `${this.apiUrl}/admin/jobs/fill-descriptions`,
+      {}
+    );
+  }
+
+  // ==================== Resource Cleanup ====================
+
+  /**
+   * Validate resource URLs and find broken links (dry run)
+   */
+  validateResourceUrls(): Observable<{ broken: { _id: string; title: string; url: string; error: string }[]; total: number }> {
+    return this.http.get<{ broken: { _id: string; title: string; url: string; error: string }[]; total: number }>(
+      `${this.apiUrl}/admin/resources/validate-urls`
     );
   }
 
   /**
-   * Create a new resource type
+   * Cleanup broken resources (archive or delete)
    */
-  createResourceType(data: Partial<ResourceTypeEntity>): Observable<ResourceTypeEntity> {
-    return this.http.post<ResourceTypeEntity>(`${this.apiUrl}/admin/types`, data);
-  }
-
-  /**
-   * Update a resource type
-   */
-  updateResourceType(id: string, data: Partial<ResourceTypeEntity>): Observable<ResourceTypeEntity> {
-    return this.http.put<ResourceTypeEntity>(`${this.apiUrl}/admin/types/${id}`, data);
-  }
-
-  /**
-   * Delete a resource type
-   */
-  deleteResourceType(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/admin/types/${id}`);
-  }
-
-  /**
-   * Regenerate SVG icon for a resource type
-   */
-  regenerateTypeIcon(id: string): Observable<ResourceTypeEntity> {
-    return this.http.post<ResourceTypeEntity>(`${this.apiUrl}/admin/types/${id}/regenerate-icon`, {});
+  cleanupBrokenResources(action: 'archive' | 'delete'): Observable<{ message: string; processed: number; failed: number; errors: string[] }> {
+    return this.http.post<{ message: string; processed: number; failed: number; errors: string[] }>(
+      `${this.apiUrl}/admin/resources/cleanup-broken`,
+      { confirm: true, action }
+    );
   }
 }

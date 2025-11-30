@@ -5,6 +5,16 @@ import { AuthService } from '../../services/auth.service';
 import { AdminApiService } from '../../services/admin-api.service';
 import { AdminResource, DashboardStats } from '../../models/admin-types';
 
+interface DescriptionStats {
+  total: number;
+  withDescription: number;
+  withoutDescription: number;
+  locked: number;
+  aiGenerated: number;
+  manual: number;
+  discovery: number;
+}
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -136,6 +146,66 @@ import { AdminResource, DashboardStats } from '../../models/admin-types';
         </div>
       </div>
 
+      <!-- AI Description Stats -->
+      @if (descriptionStats()) {
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-cost-dark">AI Descriptions</h2>
+          <button
+            (click)="fillMissingDescriptions()"
+            [disabled]="isFillingDescriptions() || descriptionStats()!.withoutDescription === 0"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (isFillingDescriptions()) {
+              <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              Filling...
+            } @else {
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3 7h7l-5.5 4.5 2 7L12 16l-6.5 4.5 2-7L2 9h7l3-7z" />
+              </svg>
+              Fill Missing ({{ descriptionStats()!.withoutDescription }})
+            }
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-1">
+            <span class="text-cost-medium">Description Coverage</span>
+            <span class="font-medium text-cost-dark">{{ getDescriptionCoverage() }}%</span>
+          </div>
+          <div class="h-2 bg-cost-light/30 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-500"
+              [style.width.%]="getDescriptionCoverage()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center p-3 bg-green-50 rounded-xl">
+            <p class="text-2xl font-bold text-green-600">{{ descriptionStats()!.withDescription }}</p>
+            <p class="text-xs text-cost-medium">With Description</p>
+          </div>
+          <div class="text-center p-3 bg-amber-50 rounded-xl">
+            <p class="text-2xl font-bold text-amber-600">{{ descriptionStats()!.withoutDescription }}</p>
+            <p class="text-xs text-cost-medium">Missing</p>
+          </div>
+          <div class="text-center p-3 bg-purple-50 rounded-xl">
+            <p class="text-2xl font-bold text-purple-600">{{ descriptionStats()!.aiGenerated }}</p>
+            <p class="text-xs text-cost-medium">AI Generated</p>
+          </div>
+          <div class="text-center p-3 bg-blue-50 rounded-xl">
+            <p class="text-2xl font-bold text-blue-600">{{ descriptionStats()!.locked }}</p>
+            <p class="text-xs text-cost-medium">Locked</p>
+          </div>
+        </div>
+      </div>
+      }
+
       <!-- Recent Resources -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-cost-light/30">
         <h2 class="text-lg font-semibold text-cost-dark mb-4">Recent Resources</h2>
@@ -157,7 +227,7 @@ import { AdminResource, DashboardStats } from '../../models/admin-types';
             <thead>
               <tr class="text-left text-sm text-cost-medium border-b border-cost-light/30">
                 <th class="pb-3 font-medium">Title</th>
-                <th class="pb-3 font-medium">Type</th>
+                <th class="pb-3 font-medium">Tags</th>
                 <th class="pb-3 font-medium">Status</th>
                 <th class="pb-3 font-medium">Updated</th>
                 <th class="pb-3 font-medium"></th>
@@ -170,7 +240,18 @@ import { AdminResource, DashboardStats } from '../../models/admin-types';
                   <span class="font-medium text-cost-dark">{{ resource.title }}</span>
                 </td>
                 <td class="py-3">
-                  <span class="text-sm text-cost-medium capitalize">{{ (resource.resourceType || 'unknown').replace('_', ' ') }}</span>
+                  @if (resource.tags && resource.tags.length > 0) {
+                    <div class="flex flex-wrap gap-1">
+                      @for (tag of resource.tags.slice(0, 2); track tag) {
+                        <span class="inline-flex px-2 py-0.5 bg-cost-light/30 text-cost-dark rounded text-xs">{{ tag }}</span>
+                      }
+                      @if (resource.tags.length > 2) {
+                        <span class="text-xs text-cost-medium">+{{ resource.tags.length - 2 }}</span>
+                      }
+                    </div>
+                  } @else {
+                    <span class="text-xs text-cost-light italic">No tags</span>
+                  }
                 </td>
                 <td class="py-3">
                   <span [class]="getStatusClass(resource.status)"
@@ -199,8 +280,10 @@ import { AdminResource, DashboardStats } from '../../models/admin-types';
 })
 export class DashboardComponent implements OnInit {
   stats = signal<DashboardStats>({ total: 0, published: 0, pending: 0, archived: 0 });
+  descriptionStats = signal<DescriptionStats | null>(null);
   recentResources = signal<AdminResource[]>([]);
   isLoading = signal(true);
+  isFillingDescriptions = signal(false);
 
   constructor(
     public authService: AuthService,
@@ -220,6 +303,14 @@ export class DashboardComponent implements OnInit {
       }
     });
 
+    // Load description stats
+    this.adminApi.getDescriptionStats().subscribe({
+      next: (stats) => this.descriptionStats.set(stats),
+      error: () => {
+        // Ignore errors for description stats
+      }
+    });
+
     // Load recent resources
     this.adminApi.listResources(1, 5).subscribe({
       next: (response) => {
@@ -230,6 +321,32 @@ export class DashboardComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  fillMissingDescriptions(): void {
+    if (this.isFillingDescriptions()) return;
+
+    this.isFillingDescriptions.set(true);
+    this.adminApi.runDescriptionFillJob().subscribe({
+      next: (result) => {
+        this.isFillingDescriptions.set(false);
+        alert(`Description fill complete: ${result.processed} processed, ${result.failed} failed`);
+        // Reload description stats
+        this.adminApi.getDescriptionStats().subscribe({
+          next: (stats) => this.descriptionStats.set(stats)
+        });
+      },
+      error: () => {
+        this.isFillingDescriptions.set(false);
+        alert('Failed to run description fill job');
+      }
+    });
+  }
+
+  getDescriptionCoverage(): number {
+    const stats = this.descriptionStats();
+    if (!stats || stats.total === 0) return 0;
+    return Math.round((stats.withDescription / stats.total) * 100);
   }
 
   getStatusClass(status: string): string {

@@ -1,15 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import config, { validateConfig } from './config';
+import { config } from './config';
 import { connectToDatabase } from './db';
 import { initializeAI } from './services/aiService';
 import { ensureSearchIndexes } from './utils/ensureSearchIndex';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { apiLimiter } from './middleware/rateLimiter';
-
-// Validate configuration
-validateConfig();
+import { startDescriptionJob } from './jobs/descriptionJob';
 
 const app = express();
 
@@ -59,6 +57,10 @@ async function startServer() {
     // Initialize AI service
     initializeAI();
     console.log('✅ AI service initialized');
+
+    // Start scheduled jobs
+    startDescriptionJob();
+    console.log('✅ Scheduled jobs initialized');
 
     // Start listening
     app.listen(config.port, () => {

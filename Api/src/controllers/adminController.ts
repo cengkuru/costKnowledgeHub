@@ -3,9 +3,10 @@ import { adminService, ListQuery } from '../services/adminService';
 import { translationService } from '../services/translationService';
 import { discoveryService } from '../services/discoveryService';
 import { topicService } from '../services/topicService';
-import { resourceTypeService } from '../services/resourceTypeService';
+import { resourceService } from '../services/resourceService';
+import { aiService } from '../services/aiService';
+import { runDescriptionJobNow } from '../jobs/descriptionJob';
 import { CreateTopicSchema, UpdateTopicSchema } from '../models/Topic';
-import { CreateResourceTypeSchema, UpdateResourceTypeSchema } from '../models/ResourceTypeModel';
 import { JwtPayload } from '../middleware/auth';
 import { ObjectId } from 'mongodb';
 import { ApiError } from '../middleware/errorHandler';
@@ -35,6 +36,7 @@ export const adminController = {
   /**
    * GET /api/admin/resources
    * List all resources with pagination, filtering, and search
+   * Supports semantic search when ?semantic=true is passed
    */
   async listResources(req: Request, res: Response, next: NextFunction) {
     try {
@@ -48,9 +50,14 @@ export const adminController = {
         q: req.query.q as string,
         sort: req.query.sort as string,
         order: req.query.order as 'asc' | 'desc',
+        semantic: req.query.semantic === 'true',
       };
 
-      const result = await adminService.listResources(query);
+      // Use semantic search if enabled and there's a search query
+      const result = query.semantic && query.q
+        ? await adminService.semanticSearch(query)
+        : await adminService.listResources(query);
+
       res.json(result);
     } catch (error) {
       next(error);
@@ -617,137 +624,360 @@ export const adminController = {
     }
   },
 
-  // ============ Resource Type Management Endpoints ============
+  // ============ AI Tag Suggestion Endpoint ============
 
   /**
-   * GET /api/admin/types
-   * List all resource types
+   * POST /api/admin/resources/suggest-tags
+   * Suggest tags for a resource based on title and description
+   * Uses Claude Haiku for fast, accurate tag generation
    */
-  async listTypes(req: Request, res: Response, next: NextFunction) {
+  async suggestTags(req: Request, res: Response, next: NextFunction) {
     try {
-      const includeInactive = req.query.includeInactive === 'true';
-      const types = await resourceTypeService.listTypes(includeInactive);
-      res.json({ data: types });
-    } catch (error) {
-      next(error);
-    }
-  },
+      const { title, description } = req.body;
 
-  /**
-   * GET /api/admin/types/:id
-   * Get a single resource type
-   */
-  async getType(req: Request, res: Response, next: NextFunction) {
-    try {
-      const type = await resourceTypeService.getTypeById(req.params.id);
-      if (!type) {
-        return res.status(404).json({ error: 'Resource type not found' });
+      if (!title && !description) {
+        return res.status(400).json({ error: 'Title or description is required' });
       }
-      res.json(type);
+
+      const tags = await aiService.suggestTags(title || '', description || '');
+      res.json({ tags });
     } catch (error) {
       next(error);
     }
   },
 
+  // ============ AI Description Management Endpoints ============
+
   /**
-   * POST /api/admin/types
-   * Create a new resource type
+   * POST /api/admin/resources/:id/generate-description
+   * Generate AI description for a single resource
+   * Uses Claude Haiku to analyze URL content and create a concise description
    */
-  async createType(req: Request, res: Response, next: NextFunction) {
+  async generateDescription(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const validation = CreateResourceTypeSchema.safeParse(req.body);
-      if (!validation.success) {
-        return res.status(400).json({ error: 'Validation failed', details: validation.error.issues });
+      const { id } = req.params;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid resource ID format' });
       }
 
-      const type = await resourceTypeService.createType(validation.data, new ObjectId(req.user.id));
-      res.status(201).json(type);
+      // Get the resource
+      const resource = await adminService.getResource(id);
+      if (!resource) {
+        return res.status(404).json({ error: 'Resource not found' });
+      }
+
+      // Check if description is locked
+      if (resource.descriptionLocked) {
+        return res.status(400).json({ error: 'Description is locked. Unlock it first to regenerate.' });
+      }
+
+      // Generate description using AI
+      const description = await aiService.generateDescription(resource.url, resource.title);
+
+      // Update the resource with new description
+      await adminService.updateResource(id, {
+        description,
+        descriptionSource: 'ai',
+      }, req.user.id);
+
+      res.json({
+        message: 'Description generated successfully',
+        description,
+        source: 'ai'
+      });
     } catch (error) {
       next(error);
     }
   },
 
   /**
-   * PUT /api/admin/types/:id
-   * Update a resource type
+   * POST /api/admin/resources/:id/lock-description
+   * Toggle the description lock for a resource
    */
-  async updateType(req: Request, res: Response, next: NextFunction) {
+  async toggleDescriptionLock(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const validation = UpdateResourceTypeSchema.safeParse(req.body);
-      if (!validation.success) {
-        return res.status(400).json({ error: 'Validation failed', details: validation.error.issues });
+      const { id } = req.params;
+      const { locked } = req.body;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid resource ID format' });
       }
 
-      const type = await resourceTypeService.updateType(req.params.id, validation.data, new ObjectId(req.user.id));
-      res.json(type);
+      if (typeof locked !== 'boolean') {
+        return res.status(400).json({ error: 'locked must be a boolean' });
+      }
+
+      await adminService.updateResource(id, {
+        descriptionLocked: locked,
+      }, req.user.id);
+
+      res.json({
+        message: locked ? 'Description locked' : 'Description unlocked',
+        locked
+      });
     } catch (error) {
       next(error);
     }
   },
 
   /**
-   * DELETE /api/admin/types/:id
-   * Delete a resource type
+   * POST /api/admin/resources/batch-generate-descriptions
+   * Generate descriptions for all resources that are missing them
+   * Skips locked descriptions and processes sequentially with delays
    */
-  async deleteType(req: Request, res: Response, next: NextFunction) {
-    try {
-      await resourceTypeService.deleteType(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  /**
-   * POST /api/admin/types/:id/regenerate-icon
-   * Regenerate AI SVG icon for a resource type
-   */
-  async regenerateTypeIcon(req: Request, res: Response, next: NextFunction) {
+  async batchGenerateDescriptions(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const type = await resourceTypeService.regenerateIcon(req.params.id, new ObjectId(req.user.id));
-      res.json(type);
+      const userId = req.user.id;
+
+      // Get resources without descriptions (or with very short ones)
+      const result = await adminService.listResources({
+        page: 1,
+        limit: 1000, // Get all
+      });
+
+      const resourcesNeedingDescription = result.data.filter(r =>
+        !r.description || r.description.length < 20
+      ).filter(r =>
+        !r.descriptionLocked
+      );
+
+      if (resourcesNeedingDescription.length === 0) {
+        return res.json({
+          message: 'No resources need descriptions',
+          processed: 0,
+          failed: 0
+        });
+      }
+
+      // Process sequentially with delays to avoid rate limits
+      let processed = 0;
+      let failed = 0;
+      const errors: string[] = [];
+
+      for (const resource of resourcesNeedingDescription) {
+        try {
+          const description = await aiService.generateDescription(
+            resource.url,
+            resource.title
+          );
+
+          await adminService.updateResource(resource._id!.toString(), {
+            description,
+            descriptionSource: 'ai',
+          }, userId);
+
+          processed++;
+          console.log(`Generated description for: ${resource.title}`);
+
+          // Add delay between requests (500ms)
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (err: any) {
+          failed++;
+          errors.push(`${resource.title}: ${err.message}`);
+          console.error(`Failed to generate description for ${resource.title}:`, err.message);
+        }
+      }
+
+      res.json({
+        message: 'Batch description generation complete',
+        processed,
+        failed,
+        errors: errors.slice(0, 10) // Return first 10 errors
+      });
     } catch (error) {
       next(error);
     }
   },
 
   /**
-   * POST /api/admin/types/seed
-   * Seed default resource types
+   * GET /api/admin/resources/description-stats
+   * Get statistics about description completion
    */
-  async seedTypes(req: Request, res: Response, next: NextFunction) {
+  async getDescriptionStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      const stats = await adminService.getDescriptionStats();
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // ============ Resource Cover Image Endpoints ============
+
+  /**
+   * POST /api/admin/resources/:id/regenerate-cover
+   * Generate HBR-quality AI cover image for a resource
+   * Uses all resource metadata (title, description, type, themes, workstreams)
+   */
+  async regenerateResourceCover(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      await resourceTypeService.seedDefaultTypes(new ObjectId(req.user.id));
-      res.json({ message: 'Default resource types seeded successfully' });
+      const { id } = req.params;
+
+      // Service handles all metadata fetching and validation
+      await resourceService.generateCoverImage(id);
+
+      // Return updated resource
+      const updatedResource = await adminService.getResource(id);
+      res.json(updatedResource);
     } catch (error) {
       next(error);
     }
   },
 
   /**
-   * POST /api/admin/types/update-counts
-   * Update resource counts for all types
+   * POST /api/admin/resources/:id/upload-cover
+   * Upload a cover image for a resource (requires multer middleware)
    */
-  async updateTypeCounts(req: Request, res: Response, next: NextFunction) {
+  async uploadResourceCover(req: Request, res: Response, next: NextFunction) {
     try {
-      await resourceTypeService.updateResourceCounts();
-      res.json({ message: 'Resource type counts updated' });
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { id } = req.params;
+
+      // Check if file was uploaded
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      // Upload the cover image
+      await resourceService.uploadCoverImage(id, req.file.buffer);
+
+      // Return updated resource
+      const updatedResource = await adminService.getResource(id);
+      res.json(updatedResource);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * DELETE /api/admin/resources/:id/cover
+   * Delete cover image from a resource
+   */
+  async deleteResourceCover(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { id } = req.params;
+
+      await resourceService.deleteCoverImage(id);
+
+      // Return updated resource
+      const updatedResource = await adminService.getResource(id);
+      res.json(updatedResource);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // ============ Resource Cleanup Endpoints ============
+
+  /**
+   * GET /api/admin/resources/validate-urls
+   * Check all resource URLs for broken links (dry run)
+   * Returns list of resources with broken URLs without deleting them
+   */
+  async validateResourceUrls(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const limit = parseInt(req.query.limit as string) || 100;
+      const brokenResources = await adminService.findBrokenResourceUrls(limit);
+
+      res.json({
+        message: `Found ${brokenResources.length} resources with broken URLs`,
+        count: brokenResources.length,
+        resources: brokenResources.map(r => ({
+          _id: r._id?.toString(),
+          title: r.title,
+          url: r.url,
+          status: r.status,
+          error: r.error
+        }))
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * POST /api/admin/resources/cleanup-broken
+   * Delete or archive resources with broken URLs
+   * Requires confirmation in request body: { confirm: true, action: 'archive' | 'delete' }
+   */
+  async cleanupBrokenResources(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const { confirm, action = 'archive' } = req.body;
+
+      if (!confirm) {
+        return res.status(400).json({
+          error: 'Confirmation required. Send { confirm: true, action: "archive" | "delete" } to proceed'
+        });
+      }
+
+      if (action !== 'archive' && action !== 'delete') {
+        return res.status(400).json({
+          error: 'Invalid action. Use "archive" or "delete"'
+        });
+      }
+
+      const result = await adminService.cleanupBrokenResources(req.user.id, action);
+
+      res.json({
+        message: `Cleanup complete: ${result.processed} resources ${action === 'delete' ? 'deleted' : 'archived'}`,
+        ...result
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // ============ Scheduled Jobs ============
+
+  /**
+   * POST /api/admin/jobs/fill-descriptions
+   * Manually trigger the description fill job
+   */
+  async runDescriptionFillJob(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      console.log(`[Admin] Manual description fill triggered by ${req.user.email}`);
+      const result = await runDescriptionJobNow();
+
+      res.json({
+        message: 'Description fill job completed',
+        ...result
+      });
     } catch (error) {
       next(error);
     }

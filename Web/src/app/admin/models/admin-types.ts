@@ -1,7 +1,5 @@
 // Admin Types - Ported from Next.js admin
-// Resource Types
 export type ContentStatus = 'discovered' | 'pending_review' | 'approved' | 'published' | 'archived' | 'rejected';
-export type ResourceType = 'assurance_report' | 'guidance' | 'case_study' | 'tool' | 'template' | 'research' | 'news' | 'training' | 'policy';
 export type CountryProgram = 'ethiopia' | 'malawi' | 'mozambique' | 'seychelles' | 'uganda' | 'zambia' | 'colombia' | 'costa_rica' | 'ecuador' | 'el_salvador' | 'guatemala' | 'honduras' | 'panama' | 'mexico' | 'afghanistan' | 'indonesia' | 'thailand' | 'timor_leste' | 'vietnam' | 'ukraine' | 'global';
 export type Theme = 'climate' | 'gender' | 'local_government' | 'beneficial_ownership' | 'social_safeguards' | 'environmental' | 'procurement' | 'project_monitoring' | 'data_standards' | 'msg_governance' | 'digital_tools' | 'impact_measurement';
 export type OC4IDSSection = 'project_identification' | 'project_preparation' | 'project_completion' | 'contracting_process' | 'implementation' | 'project_scope' | 'project_parties' | 'cost_schedule' | 'documents' | 'full_schema';
@@ -22,13 +20,18 @@ export interface TranslationLink {
   resourceId: string;
 }
 
+export type DescriptionSource = 'manual' | 'ai' | 'discovery';
+
 export interface AdminResource {
   _id: string;
   title: string;
   description: string;
+  descriptionLocked?: boolean;  // If true, AI will not overwrite this description
+  descriptionSource?: DescriptionSource;  // How the description was generated
   url: string;
   slug: string;
-  resourceType: ResourceType;
+  tags?: string[]; // AI-suggested and user-defined tags
+  category?: string; // Topic name (e.g., "Independent Reviews", "OC4IDS")
   topics?: string[];
   countryPrograms: CountryProgram[];
   themes: Theme[];
@@ -57,6 +60,7 @@ export interface AdminResource {
   clicks: number;
   lastClickedAt?: string;
   aiCitations: number;
+  coverImage?: string;
   createdAt: string;
   updatedAt: string;
   createdBy: string;
@@ -88,17 +92,6 @@ export interface Topic {
 export interface DeleteTopicResponse {
   message: string;
   reassignedCount: number;
-}
-
-export interface ResourceTypeEntity {
-  _id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  iconSvg?: string;
-  svgIcon?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface User {
@@ -144,18 +137,6 @@ export const CONTENT_STATUS_OPTIONS: { value: ContentStatus; label: string }[] =
   { value: 'published', label: 'Published' },
   { value: 'archived', label: 'Archived' },
   { value: 'rejected', label: 'Rejected' },
-];
-
-export const RESOURCE_TYPE_OPTIONS: { value: ResourceType; label: string }[] = [
-  { value: 'assurance_report', label: 'Assurance Report' },
-  { value: 'guidance', label: 'Guidance' },
-  { value: 'case_study', label: 'Case Study' },
-  { value: 'tool', label: 'Tool' },
-  { value: 'template', label: 'Template' },
-  { value: 'research', label: 'Research' },
-  { value: 'news', label: 'News' },
-  { value: 'training', label: 'Training' },
-  { value: 'policy', label: 'Policy' },
 ];
 
 export const LANGUAGE_OPTIONS: { value: LanguageCode; label: string }[] = [
