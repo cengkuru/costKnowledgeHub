@@ -162,28 +162,37 @@ interface CleanupResult {
             <table class="w-full">
               <thead>
                 <tr class="text-left text-sm text-cost-medium bg-cost-offwhite border-b border-cost-light/30">
-                  <th class="px-6 py-4 font-medium">Title</th>
-                  <th class="px-6 py-4 font-medium">Topic</th>
-                  <th class="px-6 py-4 font-medium">Tags</th>
-                  <th class="px-6 py-4 font-medium">Status</th>
-                  <th class="px-6 py-4 font-medium">Updated</th>
-                  <th class="px-6 py-4 font-medium text-right">Actions</th>
+                  <th class="px-4 py-3 font-medium">Title</th>
+                  <th class="px-4 py-3 font-medium hidden lg:table-cell">Topic</th>
+                  <th class="px-4 py-3 font-medium hidden sm:table-cell">Status</th>
+                  <th class="px-4 py-3 font-medium hidden 2xl:table-cell">Updated</th>
+                  <th class="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 @for (resource of resources(); track resource._id) {
                   <tr class="border-b border-cost-light/20 hover:bg-cost-offwhite/50 transition-colors">
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-3">
                       <div>
                         <p class="font-medium text-cost-dark">{{ resource.title }}</p>
                         <p class="text-sm text-cost-medium truncate max-w-md">{{ resource.description }}</p>
+                        <!-- Mobile/Tablet meta info -->
+                        <div class="mt-1 flex flex-wrap gap-2 lg:hidden">
+                          <span [class]="getStatusClass(resource.status)"
+                            class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium sm:hidden">
+                            {{ formatStatus(resource.status) }}
+                          </span>
+                          @if (resource.category) {
+                            <span class="text-xs text-cost-blue bg-cost-blue/10 px-1.5 py-0.5 rounded">{{ resource.category }}</span>
+                          }
+                        </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-3 hidden lg:table-cell">
                       @if (resource.category) {
                         <button (click)="filterByTopic(resource.category)"
                           [class]="topicFilter === resource.category ? 'bg-cost-blue text-white' : 'bg-cost-blue/10 text-cost-blue hover:bg-cost-blue/20'"
-                          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer">
+                          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer whitespace-nowrap">
                           <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                             <line x1="7" y1="7" x2="7.01" y2="7" />
@@ -194,33 +203,19 @@ interface CleanupResult {
                         <span class="text-sm text-cost-light italic">Uncategorized</span>
                       }
                     </td>
-                    <td class="px-6 py-4">
-                      @if (resource.tags && resource.tags.length > 0) {
-                        <div class="flex flex-wrap gap-1 max-w-xs">
-                          @for (tag of resource.tags.slice(0, 3); track tag) {
-                            <span class="inline-flex px-2 py-0.5 bg-cost-light/30 text-cost-dark rounded text-xs">{{ tag }}</span>
-                          }
-                          @if (resource.tags.length > 3) {
-                            <span class="text-xs text-cost-medium">+{{ resource.tags.length - 3 }}</span>
-                          }
-                        </div>
-                      } @else {
-                        <span class="text-sm text-cost-light italic">No tags</span>
-                      }
-                    </td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-3 hidden sm:table-cell">
                       <span [class]="getStatusClass(resource.status)"
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
                         {{ formatStatus(resource.status) }}
                       </span>
                     </td>
-                    <td class="px-6 py-4">
-                      <span class="text-sm text-cost-medium">{{ formatDate(resource.updatedAt) }}</span>
+                    <td class="px-4 py-3 hidden 2xl:table-cell">
+                      <span class="text-sm text-cost-medium whitespace-nowrap">{{ formatDate(resource.updatedAt) }}</span>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-3">
                       <div class="flex items-center justify-end gap-1">
                         <a [routerLink]="['/admin/resources', resource._id]"
-                          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-cost-blue bg-cost-blue/10 hover:bg-cost-blue hover:text-white rounded-lg transition-colors"
+                          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-cost-blue bg-cost-blue/10 hover:bg-cost-blue hover:text-white rounded-lg transition-colors whitespace-nowrap"
                           title="Edit resource">
                           <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -229,7 +224,7 @@ interface CleanupResult {
                           Edit
                         </a>
                         <button (click)="confirmDelete(resource)"
-                          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
+                          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-600 hover:text-white rounded-lg transition-colors whitespace-nowrap"
                           title="Delete resource">
                           <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6" />
@@ -424,7 +419,7 @@ export class ResourceListComponent implements OnInit {
     private adminApi: AdminApiService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Check for topic filter from query params

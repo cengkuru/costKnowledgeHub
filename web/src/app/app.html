@@ -68,8 +68,8 @@
         <a routerLink="/admin/login"
           class="flex items-center gap-2 text-sm font-medium text-cost-medium hover:text-cost-blue transition-colors duration-300 ease-out px-3 py-2 min-h-[44px]"
           aria-label="Admin Login">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
@@ -96,10 +96,10 @@
 
     <div class="relative z-10 max-w-4xl mx-auto text-center">
       <h1
-        class="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-5 xs:mb-6 text-white drop-shadow-sm animate-slide-up">
+        class="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-5 xs:mb-6 text-white drop-shadow-sm animate-slide-up-fade">
         {{ t().hero.title }}
       </h1>
-      <p class="text-base xs:text-lg md:text-xl text-slate-100 mb-8 xs:mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed animate-slide-up"
+      <p class="text-base xs:text-lg md:text-xl text-slate-100 mb-8 xs:mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed animate-slide-up-fade"
         style="animation-delay: 100ms;">
         {{ t().hero.subtitle }}
       </p>
@@ -107,7 +107,7 @@
       <!-- Search Container -->
       <div class="max-w-2xl mx-auto">
         <!-- Search Type Toggle - Improved visibility -->
-        <div class="flex justify-center mb-5 gap-2 animate-slide-up" style="animation-delay: 200ms;">
+        <div class="flex justify-center mb-5 gap-2 animate-slide-up-fade" style="animation-delay: 200ms;">
           <div class="inline-flex bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
             <button (click)="toggleSemanticMode(false)"
               [class]="!isSemanticMode() ? 'bg-white text-cost-blue shadow-lg' : 'text-white/90 hover:text-white hover:bg-white/10'"
@@ -211,7 +211,7 @@
   <div id="filters-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 xs:py-12 sm:py-16">
     <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
       <!-- Sidebar Filters -->
-      <aside class="w-full lg:w-64 flex-shrink-0 space-y-8">
+      <aside class="w-full lg:w-64 flex-shrink-0 space-y-8 reveal-on-scroll">
         <div class="lg:sticky lg:top-24 space-y-8">
           <!-- Filter Header -->
           <div class="flex items-center justify-between lg:hidden">
@@ -239,14 +239,16 @@
                 [class]="selectedTopic() === 'All' ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
                 class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md flex items-center justify-center bg-cost-light/60 text-xs font-semibold text-white shrink-0 ring-2 ring-white"
+                  <div
+                    class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md flex items-center justify-center bg-cost-light/60 text-xs font-semibold text-white shrink-0 ring-2 ring-white"
                     [style.background]="getTopicGradient(t().filters.allTopics)">
                     <span>{{ getTopicInitial(t().filters.allTopics) }}</span>
                   </div>
                   <span class="truncate">{{ t().filters.allTopics }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span [class]="selectedTopic() === 'All' ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
+                  <span
+                    [class]="selectedTopic() === 'All' ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
                     class="text-xs font-semibold px-2 py-0.5 rounded-full">
                     {{ getTotalResourceCount() }}
                   </span>
@@ -259,35 +261,37 @@
                 </div>
               </button>
               @for (topic of topicsData(); track topic.slug) {
-                @if (topic.resourceCount > 0) {
-                <button (click)="selectedTopic.set(topic.name)"
-                  [class]="selectedTopic() === topic.name ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
-                  class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md overflow-hidden bg-cost-light/60 flex items-center justify-center text-xs font-semibold text-white shrink-0 ring-2 ring-white"
-                      [style.background]="topic.image ? 'transparent' : getTopicGradient(topic.name)">
-                      @if (topic.image) {
-                      <img [src]="topic.image" [alt]="topic.name" class="w-full h-full object-cover" />
-                      } @else {
-                      <span>{{ getTopicInitial(topic.name) }}</span>
-                      }
-                    </div>
-                    <span class="truncate">{{ topic.name }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span [class]="selectedTopic() === topic.name ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
-                      class="text-xs font-semibold px-2 py-0.5 rounded-full">
-                      {{ topic.resourceCount }}
-                    </span>
-                    @if (selectedTopic() === topic.name) {
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+              @if (topic.resourceCount > 0) {
+              <button (click)="selectedTopic.set(topic.name)"
+                [class]="selectedTopic() === topic.name ? 'bg-cost-blue text-white shadow-md' : 'text-cost-medium hover:bg-cost-light/30 hover:text-cost-blue'"
+                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between gap-3 group">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div
+                    class="w-9 h-9 rounded-full border-2 border-cost-light/80 shadow-md overflow-hidden bg-cost-light/60 flex items-center justify-center text-xs font-semibold text-white shrink-0 ring-2 ring-white"
+                    [style.background]="topic.image ? 'transparent' : getTopicGradient(topic.name)">
+                    @if (topic.image) {
+                    <img [src]="topic.image" [alt]="topic.name" class="w-full h-full object-cover" />
+                    } @else {
+                    <span>{{ getTopicInitial(topic.name) }}</span>
                     }
                   </div>
-                </button>
-                }
+                  <span class="truncate">{{ topic.name }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    [class]="selectedTopic() === topic.name ? 'bg-white/20 text-white' : 'bg-cost-light/50 text-cost-medium'"
+                    class="text-xs font-semibold px-2 py-0.5 rounded-full">
+                    {{ topic.resourceCount }}
+                  </span>
+                  @if (selectedTopic() === topic.name) {
+                  <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  }
+                </div>
+              </button>
+              }
               }
             </div>
           </div>
@@ -298,23 +302,25 @@
             <label class="block text-sm font-semibold text-cost-dark uppercase tracking-wider flex items-center gap-2">
               <svg class="w-4 h-4 text-cost-red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
-                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                <path
+                  d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
               </svg>
               Trending
             </label>
             <div class="space-y-2">
               @for (resource of topPopularResources(); track resource.id; let i = $index) {
               <a [routerLink]="['/resource', resource.id]" (click)="handleResourceInteract(resource.id)"
-                class="block p-3 bg-white rounded-xl border border-cost-light/30 hover:border-cost-blue/50 hover:shadow-md transition-all duration-200 group">
+                class="block p-4 bg-white rounded-xl border border-cost-light/30 hover:border-cost-blue/50 hover:shadow-md transition-all duration-200 group hover:-translate-y-0.5">
                 <div class="flex items-start gap-3">
-                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cost-red/10 text-cost-red text-xs font-bold flex items-center justify-center">
+                  <span
+                    class="flex-shrink-0 w-6 h-6 rounded-full bg-cost-red/10 text-cost-red text-xs font-bold flex items-center justify-center mt-0.5">
                     {{ i + 1 }}
                   </span>
                   <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-cost-dark group-hover:text-cost-blue transition-colors line-clamp-2">
+                    <h4 class="text-sm font-bold text-cost-dark group-hover:text-cost-blue transition-colors mb-1">
                       {{ resource.title }}
                     </h4>
-                    <p class="text-xs text-cost-medium mt-1 truncate">{{ resource.category }}</p>
+                    <p class="text-xs text-cost-medium truncate">{{ resource.category }}</p>
                   </div>
                 </div>
               </a>
@@ -330,12 +336,11 @@
       <main class="flex-1 min-w-0 relative lg:min-h-[400px]" role="main">
         <!-- Topic Cover Banner (LinkedIn-style) -->
         @if (getSelectedTopicData(); as topicData) {
-        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-lg animate-fade-in">
+        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-lg animate-fade-in reveal-on-scroll">
           <!-- Cover Image -->
           <div class="h-32 sm:h-40 lg:h-48 relative">
             @if (topicData.image) {
-            <img [src]="topicData.image" [alt]="topicData.name"
-              class="w-full h-full object-cover" />
+            <img [src]="topicData.image" [alt]="topicData.name" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
             } @else {
             <div class="w-full h-full" [style.background]="getTopicGradient(topicData.name)"></div>
@@ -347,7 +352,8 @@
           <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
             <div class="flex items-end gap-4">
               <!-- Topic Avatar -->
-              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-4 border-white shadow-lg overflow-hidden bg-white flex-shrink-0">
+              <div
+                class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-4 border-white shadow-lg overflow-hidden bg-white flex-shrink-0">
                 @if (topicData.image) {
                 <img [src]="topicData.image" [alt]="topicData.name" class="w-full h-full object-cover" />
                 } @else {
@@ -413,7 +419,7 @@
                   </svg>
                   }
                 </div>
-                <select [(ngModel)]="sortOrder"
+                <select [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event)"
                   class="appearance-none w-full pl-10 pr-8 py-2.5 bg-white border border-cost-light/50 text-cost-dark text-sm rounded-xl focus:ring-4 focus:ring-cost-blue/20 focus:border-cost-blue block cursor-pointer hover:border-cost-blue transition-all duration-300 ease-out font-medium"
                   aria-label="Sort resources">
                   <option value="newest">{{ t().filters.mostRecent }}</option>
@@ -453,7 +459,8 @@
 
         <!-- Featured: Independent Review & Assurance Section -->
         @if (activeFilters().length === 0) {
-        <section class="bg-gradient-to-b from-cost-blue/5 to-cost-offwhite rounded-3xl p-6 xs:p-8 mb-10"
+        <section
+          class="bg-gradient-to-b from-cost-blue/5 to-cost-offwhite rounded-3xl p-6 xs:p-8 mb-10 reveal-on-scroll"
           aria-labelledby="featured-heading">
           <div class="flex items-center justify-between mb-6">
             <div>
@@ -526,11 +533,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             @for (resource of featuredResources().slice(0, 6); track resource.id) {
             <a [routerLink]="['/resource', resource.id]" (click)="handleResourceInteract(resource.id)"
-              class="bg-white rounded-2xl shadow-sm border border-cost-light/30 hover:shadow-lg hover:border-cost-blue/30 transition-all duration-300 overflow-hidden group animate-fade-in cursor-pointer block">
-              <div class="p-5">
-                <div class="flex items-start justify-between mb-3">
+              class="bg-white rounded-2xl shadow-sm border border-cost-light/30 hover:border-cost-blue/30 hover:shadow-xl transition-all duration-300 overflow-hidden group animate-fade-in cursor-pointer block hover:-translate-y-1 flex flex-col h-full">
+              <div class="p-6 flex flex-col h-full">
+                <div class="flex items-start justify-between mb-4">
                   <span
-                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-cost-red/10 text-cost-red">
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-cost-offwhite text-cost-medium group-hover:bg-cost-blue/10 group-hover:text-cost-blue transition-colors">
                     {{ resource.type }}
                   </span>
                   @if (resource.featured) {
@@ -543,21 +550,22 @@
                   }
                 </div>
                 <h3
-                  class="font-semibold text-cost-dark group-hover:text-cost-blue transition-colors duration-300 mb-3">
+                  class="font-bold text-lg text-cost-dark group-hover:text-cost-blue transition-colors duration-300 mb-3">
                   {{ resource.title }}
                 </h3>
-                <div class="flex items-center justify-between pt-3 border-t border-cost-light/30">
+                <div class="flex-1"></div>
+                <div class="flex items-center justify-between pt-4 border-t border-cost-light/20 mt-auto">
                   <div class="flex flex-wrap gap-1.5">
                     @for (tag of (resource.tags || []).slice(0, 2); track tag) {
                     <span class="text-xs px-2 py-0.5 bg-cost-light/30 text-cost-medium rounded-full">{{ tag }}</span>
                     }
                   </div>
                   <span
-                    class="flex items-center gap-1 text-cost-blue group-hover:text-cost-red font-medium text-sm transition-colors duration-300">
+                    class="flex items-center gap-1 text-cost-blue group-hover:text-cost-red font-semibold text-sm transition-colors duration-300 group-hover:translate-x-1 transition-transform">
                     {{ t().featured.access }}
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="2">
-                      <path d="M9 18l6-6-6-6"/>
+                      <path d="M9 18l6-6-6-6" />
                     </svg>
                   </span>
                 </div>
@@ -658,7 +666,7 @@
         <!-- Content Render Loop: Sections/Groups -->
         <div class="space-y-12 xs:space-y-16 sm:space-y-20">
           @for (group of viewGroups(); track group.title; let i = $index) {
-          <section class="animate-fade-in" [attr.aria-labelledby]="'section-title-' + i">
+          <section class="animate-fade-in reveal-on-scroll" [attr.aria-labelledby]="'section-title-' + i">
             <!-- Section Header -->
             <div class="flex items-start gap-4 mb-8 border-b border-cost-light/50 pb-6">
               <div [class]="isSemanticMode() ? 'bg-cost-blue/10 text-cost-blue' : 'bg-cost-light/20 text-cost-medium'"
@@ -690,8 +698,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               @for (resource of group.resources; track resource.id) {
               <app-resource-card [resource]="resource" [isPopular]="popularIds().has(resource.id)"
-                (interact)="handleResourceInteract($event)"
-                (filterByCategory)="handleFilterByCategory($event)" (filterByTag)="handleFilterByTag($event)" />
+                (interact)="handleResourceInteract($event)" (filterByCategory)="handleFilterByCategory($event)"
+                (filterByTag)="handleFilterByTag($event)" />
               }
             </div>
             } @else {
